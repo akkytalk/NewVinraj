@@ -6,6 +6,8 @@ import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose, combineReducers } from "redux";
 import thunk from "redux-thunk";
 import departmentReducer from "./reduxStore/reducers/RDepartment";
+import formReducer from "./reduxStore/reducers/RForm";
+import prefixReducer from "./reduxStore/reducers/RPrefix";
 
 const composeEnhancers =
   process.env.NODE_ENV === "development"
@@ -14,6 +16,8 @@ const composeEnhancers =
 
 const rootReducer = combineReducers({
   department: departmentReducer,
+  form: formReducer,
+  prefix: prefixReducer,
 });
 
 const store = createStore(

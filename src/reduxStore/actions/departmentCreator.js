@@ -87,21 +87,6 @@ export const editDepartmentRowStart = () => {
   };
 };
 
-export const setEditDepartment = (data) => {
-  return {
-    type: actionType.SET_EDIT_DEPARTMENT,
-    data: data,
-  };
-};
-
-export const currentUserEditDepartment = (id, name) => {
-  return {
-    type: actionType.SET_EDIT_DEPARTMENT,
-    id: id,
-    name: name,
-  };
-};
-
 export const failEditDepartment = () => {
   return {
     type: actionType.FAIL_EDIT_DEPARTMENT,

@@ -124,7 +124,7 @@ function Department(props) {
                                 Update
                               </button>
                               <button
-                                className="btn btn-primary ml-4"
+                                className="btn btn-primary ml-3"
                                 type="button"
                                 onClick={() => setEditing(false)}
                               >
