@@ -8,6 +8,10 @@ import thunk from "redux-thunk";
 import departmentReducer from "./reduxStore/reducers/RDepartment";
 import formReducer from "./reduxStore/reducers/RForm";
 import prefixReducer from "./reduxStore/reducers/RPrefix";
+import accountGroupReducer from "./reduxStore/reducers/RAccountGroup";
+import accountNameReducer from "./reduxStore/reducers/RAccountName";
+import itemGroupReducer from "./reduxStore/reducers/RItemGroup";
+import itemNameReducer from "./reduxStore/reducers/RItemName";
 
 const composeEnhancers =
   process.env.NODE_ENV === "development"
@@ -18,6 +22,10 @@ const rootReducer = combineReducers({
   department: departmentReducer,
   form: formReducer,
   prefix: prefixReducer,
+  accountGroup: accountGroupReducer,
+  accountName: accountNameReducer,
+  itemName: itemNameReducer,
+  itemGroup: itemGroupReducer,
 });
 
 const store = createStore(

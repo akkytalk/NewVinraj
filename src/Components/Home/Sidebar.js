@@ -173,7 +173,7 @@ function Sidebar() {
               </li>
 
               <li className="nav-item">
-                <Link to="/master" className="nav-link">
+                <Link to="/user-master" className="nav-link">
                   <p>Users & Pws</p>
                 </Link>
               </li>

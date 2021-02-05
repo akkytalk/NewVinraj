@@ -1,8 +1,102 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Fragment } from "react";
 import Sidebar from "../../../Home/Sidebar";
+import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
+import * as actions from "../../../../reduxStore/actions/index";
+import { connect } from "react-redux";
 
-function ItemName() {
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+  },
+}));
+
+function ItemName(props) {
+  const classes = useStyles();
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  useEffect(() => {
+    console.log("currentUser data from redux ", currentUser);
+
+    props.onItemGroupGetData();
+    props.onItemNameGetData();
+    props.onDeleteItemName();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [user, setUser] = useState({
+    name: "",
+    item_group_id: "",
+  });
+
+  const [editing, setEditing] = useState(false);
+
+  const initialFormState = {
+    id: "",
+    name: "",
+    item_group_id: "",
+    group_name: "",
+  };
+
+  const [currentUser, setCurrentUser] = useState(initialFormState);
+
+  const currentUserInputChange = (event) => {
+    const { name, value } = event.target;
+    setCurrentUser({ ...currentUser, [name]: value });
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setUser({ ...user, [name]: value });
+  };
+
+  // console.log("currentUser data from redux ", currentUser.group_name);
+  console.log("User data from redux ", currentUser);
+
   return (
     <Fragment>
       <div className="wrapper">
@@ -20,11 +114,11 @@ function ItemName() {
                 <i className="fas fa-bars"> </i>
               </a>
             </li>
-            <li className="nav-item d-none d-sm-inline-block">
+            {/* <li className="nav-item d-none d-sm-inline-block">
               <a href="/" className="nav-link">
                 Home
               </a>
-            </li>
+            </li> */}
           </ul>
           {/* SEARCH FORM */}
         </nav>
@@ -35,20 +129,196 @@ function ItemName() {
         <div class="content-wrapper">
           <section className="content">
             <div className="container-fluid">
-              <div className="container">
-                <div className="flex-row">
-                  <div className="flex-large">
-                    {/* <DepartmentAddUserForm
-                currentUser={currentUser}
-                editing={editing}
-                setEditing={setEditing}
-                setCurrentUser={setCurrentUser}
-              /> */}
+              <div className={classes.root}>
+                <AppBar position="static">
+                  <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    aria-label="simple tabs example"
+                  >
+                    <Tab label="Item" {...a11yProps(0)} />
+                  </Tabs>
+                </AppBar>
+                <TabPanel value={value} index={0}>
+                  <div className="container">
+                    <div className="flex-row">
+                      <div className="flex-large">
+                        <form
+                          onSubmit={(event) => {
+                            event.preventDefault();
+                            props.onPostItemNameData(user);
+                          }}
+                        >
+                          <div
+                            className="form-row"
+                            style={{ fontSize: "12px" }}
+                          >
+                            <div className="form-group col-md-3">
+                              <label htmlFor="inputPassword4">
+                                {" "}
+                                Item Name{" "}
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                id="inputPassword4"
+                                placeholder=""
+                                value={!editing ? user.name : currentUser.name}
+                                name="name"
+                                onChange={
+                                  editing
+                                    ? currentUserInputChange
+                                    : handleInputChange
+                                }
+                              />
+                            </div>
+                            <div className="form-group col-md-3">
+                              <label htmlFor="inputPassword4">
+                                Under Item Group
+                              </label>
+                              <select
+                                type="text"
+                                className="form-control"
+                                id="inputPassword4"
+                                name="item_group_id"
+                                value={
+                                  editing
+                                    ? currentUser.item_group_id
+                                    : user.item_group_id
+                                }
+                                onChange={
+                                  editing
+                                    ? currentUserInputChange
+                                    : handleInputChange
+                                }
+                              >
+                                <option>select</option> &&
+                                {props.itemGroup?.map((accgrp) => (
+                                  <option key={accgrp.id} value={accgrp.id}>
+                                    {accgrp.name}
+                                  </option>
+                                ))}
+                                {/* {!editing
+                                  ? props.itemGroup?.map((accgrp) => (
+                                      <option key={accgrp.id} value={accgrp.id}>
+                                        {accgrp.name}
+                                      </option>
+                                    ))
+                                  : currentUser
+                                  ? props.itemGroup?.map((accgrp) => (
+                                      <option key={accgrp.id} value={accgrp.id}>
+                                        {accgrp.name}
+                                      </option>
+                                    ))
+                                  : null} */}
+                              </select>
+                            </div>
+
+                            <div className="form-group col-md-3 mt-4">
+                              {!editing ? (
+                                <button
+                                  className="btn btn-primary "
+                                  type="submit"
+                                >
+                                  Add
+                                </button>
+                              ) : (
+                                <div className="d-flex">
+                                  <button
+                                    className="btn btn-success"
+                                    type="button"
+                                    onClick={() =>
+                                      props.onUpdateItemNameData(
+                                        currentUser.id,
+                                        editing,
+                                        setEditing,
+                                        currentUser,
+                                        setCurrentUser
+                                      )
+                                    }
+                                  >
+                                    Update
+                                  </button>
+                                  <button
+                                    className="btn btn-primary ml-3"
+                                    type="button"
+                                    onClick={() => setEditing(false)}
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                      <div className="flex-large">
+                        <table className="table" style={{ fontSize: "12px" }}>
+                          <thead>
+                            <tr>
+                              {/* <th>ID</th> */}
+                              <th scope="col">Item Name</th>
+                              <th scope="col">Under Item Group</th>
+
+                              <th scope="col">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {props.itemName.length > 0 ? (
+                              props.itemName.map((user) => (
+                                <tr key={user.id}>
+                                  {/* <td>{user.id}</td> */}
+                                  <td>{user.name}</td>
+                                  <td>
+                                    {user.item_group
+                                      ? user.item_group.name
+                                      : null}
+                                  </td>
+
+                                  <td className="d-flex">
+                                    <button
+                                      onClick={() =>
+                                        props.onEditItemNameRow(
+                                          user.id,
+                                          editing,
+                                          setEditing,
+                                          currentUser,
+                                          setCurrentUser
+                                        )
+                                      }
+                                    >
+                                      <i
+                                        className="fa fa-edit"
+                                        aria-hidden="true"
+                                      ></i>
+                                    </button>
+
+                                    <button
+                                      className="ml-3"
+                                      onClick={() =>
+                                        props.onDeleteItemName(user.id)
+                                      }
+                                    >
+                                      <i
+                                        className="fa fa-trash-alt "
+                                        value={user.id}
+                                        aria-hidden="true"
+                                      ></i>
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan={3}>No users</td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-large">
-                    {/* <DepartmentTable editRow={editRow} /> */}
-                  </div>
-                </div>
+                </TabPanel>
               </div>
             </div>
           </section>
@@ -58,4 +328,46 @@ function ItemName() {
   );
 }
 
-export default ItemName;
+const mapStateToProps = (state) => {
+  return {
+    itemGroup: state.itemGroup.itemGroup,
+    itemName: state.itemName.itemName,
+    form: state.form.form,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onItemGroupGetData: () => dispatch(actions.itemGroupGetData()),
+    onItemNameGetData: () => dispatch(actions.itemNameGetData()),
+    onDeleteItemName: (id) => dispatch(actions.deleteItemName(id)),
+    onPostItemNameData: (user) => dispatch(actions.postItemNameData(user)),
+    onUpdateItemNameData: (
+      id,
+      editing,
+      setEditing,
+      currentUser,
+      setCurrentUser
+    ) =>
+      dispatch(
+        actions.updateItemNameData(
+          id,
+          editing,
+          setEditing,
+          currentUser,
+          setCurrentUser
+        )
+      ),
+    onEditItemNameRow: (id, editing, setEditing, currentUser, setCurrentUser) =>
+      dispatch(
+        actions.editItemNameRow(
+          id,
+          editing,
+          setEditing,
+          currentUser,
+          setCurrentUser
+        )
+      ),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ItemName);

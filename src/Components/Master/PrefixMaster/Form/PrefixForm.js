@@ -39,6 +39,8 @@ function PrefixForm(props) {
     setUser({ ...user, [name]: value });
   };
 
+  console.log("User data from redux and prefix Form ", currentUser);
+
   return (
     <Fragment>
       <div className="wrapper">
@@ -102,22 +104,27 @@ function PrefixForm(props) {
                             }
                           >
                             <option>select</option> &&
-                            {!editing
+                            {props.department?.map((dep) => (
+                              <option key={dep.id} value={dep.id}>
+                                {dep.name}
+                              </option>
+                            ))}
+                            {/* {!editing
                               ? props.department?.map((dep) => (
                                   <option key={dep.id} value={dep.id}>
                                     {dep.name}
                                   </option>
                                 ))
                               : currentUser
-                              ? (
-                                  <option>{currentUser.department_name}</option>
-                                ) &&
+                              ? // (
+                                //     <option>{currentUser.department_name}</option>
+                                //   ) &&
                                 props.department?.map((dep) => (
                                   <option key={dep.id} value={dep.id}>
                                     {dep.name}
                                   </option>
                                 ))
-                              : null}
+                              : null} */}
                           </select>
                         </div>
 
