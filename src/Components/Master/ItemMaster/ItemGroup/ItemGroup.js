@@ -290,9 +290,14 @@ function ItemGroup(props) {
 
                                     <button
                                       className="ml-3"
-                                      onClick={() =>
-                                        props.onDeleteItemGroup(user.id)
-                                      }
+                                      onClick={() => {
+                                        if (
+                                          window.confirm(
+                                            "Are you sure you wish to delete this Item Group?"
+                                          )
+                                        )
+                                          props.onDeleteItemGroup(user.id);
+                                      }}
                                     >
                                       <i
                                         className="fa fa-trash-alt "

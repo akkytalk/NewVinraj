@@ -71,7 +71,10 @@ function Sidebar() {
         style={{ overflow: "scroll", width: "250px;", height: "100vh" }}
       >
         {/* Sidebar */}
-        <div className="sidebar" style={{ paddingRight: "0px;" }}>
+        <div
+          className="sidebar"
+          style={{ paddingRight: "0px;", fontSize: "15px" }}
+        >
           {/* Sidebar user panel (optional) */}
           <div className="user-panel mt-3 pb-3 mb-3 d-flex">
             <div className="image">
@@ -99,41 +102,17 @@ function Sidebar() {
             >
               {/* Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library */}
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link to="/" className="nav-link">
                   <p>Dashboard</p>
                 </Link>
-              </li>
+              </li> */}
 
               <li className="nav-item ">
                 <Link to="#" className="nav-link">
                   <p>Master</p>
                 </Link>
                 <ul className="nav nav-treeview">
-                  <li className="nav-item">
-                    <Link to="#" className="nav-link">
-                      <p>Reference Number Prefix</p>
-                    </Link>
-
-                    <ul className="nav nav-treeview">
-                      <li className="nav-item">
-                        <Link to="/department" exact className="nav-link">
-                          <p>Department</p>
-                        </Link>
-                      </li>
-                      <li className="nav-item">
-                        <Link to="/form" className="nav-link">
-                          <p>Form</p>
-                        </Link>
-                      </li>
-
-                      <li className="nav-item">
-                        <Link to="/prefix" className="nav-link">
-                          <p>Prefix</p>
-                        </Link>
-                      </li>
-                    </ul>
-                  </li>
                   <li className="nav-item">
                     <a href="n" className="nav-link">
                       <p>Account Master</p>
@@ -142,12 +121,12 @@ function Sidebar() {
                     <ul className="nav nav-treeview">
                       <li className="nav-item">
                         <Link to="/account-group" className="nav-link">
-                          <p>Account Group</p>
+                          <p>Account Group Master</p>
                         </Link>
                       </li>
                       <li className="nav-item">
                         <Link to="/account-name" className="nav-link">
-                          <p>Account Name</p>
+                          <p>Account Name Master</p>
                         </Link>
                       </li>
                     </ul>
@@ -159,16 +138,45 @@ function Sidebar() {
                     <ul className="nav nav-treeview">
                       <li className="nav-item">
                         <Link to="/item-group" className="nav-link">
-                          <p>Item Group </p>
+                          <p>Item Group Master</p>
                         </Link>
                       </li>
                       <li className="nav-item">
                         <Link to="/item-name" className="nav-link">
-                          <p>Item Name</p>
+                          <p>Item Name Master</p>
+                        </Link>
+                      </li>
+                      <li className="nav-item">
+                        <Link to="/item-units" className="nav-link">
+                          <p>Item Units Master</p>
                         </Link>
                       </li>
                     </ul>
                   </li>
+                  {/* <li className="nav-item">
+                    <Link to="#" className="nav-link">
+                      <p>Reference Number Prefix</p>
+                    </Link> */}
+
+                  {/* <ul className="nav nav-treeview"> */}
+                  <li className="nav-item">
+                    <Link to="/department" exact className="nav-link">
+                      <p>Department Name Master</p>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/form" className="nav-link">
+                      <p>Form Name Master</p>
+                    </Link>
+                  </li>
+
+                  <li className="nav-item">
+                    <Link to="/prefix" className="nav-link">
+                      <p>Prefix Name Master</p>
+                    </Link>
+                  </li>
+                  {/* </ul> */}
+                  {/* </li> */}
                 </ul>
               </li>
 

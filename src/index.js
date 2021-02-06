@@ -12,6 +12,7 @@ import accountGroupReducer from "./reduxStore/reducers/RAccountGroup";
 import accountNameReducer from "./reduxStore/reducers/RAccountName";
 import itemGroupReducer from "./reduxStore/reducers/RItemGroup";
 import itemNameReducer from "./reduxStore/reducers/RItemName";
+import itemUnitsReducer from "./reduxStore/reducers/RItemUnits";
 import userMasterReducer from "./reduxStore/reducers/RAddUserMaster";
 
 const composeEnhancers =
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   accountName: accountNameReducer,
   itemName: itemNameReducer,
   itemGroup: itemGroupReducer,
+  itemUnits: itemUnitsReducer,
   userMaster: userMasterReducer,
 });
 

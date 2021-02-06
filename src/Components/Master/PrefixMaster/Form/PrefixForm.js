@@ -221,7 +221,14 @@ function PrefixForm(props) {
 
                                 <button
                                   className="ml-3"
-                                  onClick={() => props.onDeleteForm(user.id)}
+                                  onClick={() => {
+                                    if (
+                                      window.confirm(
+                                        "Are you sure you wish to delete this Form Name?"
+                                      )
+                                    )
+                                      props.onDeleteForm(user.id);
+                                  }}
                                 >
                                   <i
                                     className="fa fa-trash-alt "

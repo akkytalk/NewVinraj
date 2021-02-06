@@ -295,9 +295,14 @@ function ItemName(props) {
 
                                     <button
                                       className="ml-3"
-                                      onClick={() =>
-                                        props.onDeleteItemName(user.id)
-                                      }
+                                      onClick={() => {
+                                        if (
+                                          window.confirm(
+                                            "Are you sure you wish to delete this Item Name?"
+                                          )
+                                        )
+                                          props.onDeleteItemName(user.id);
+                                      }}
                                     >
                                       <i
                                         className="fa fa-trash-alt "

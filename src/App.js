@@ -48,6 +48,7 @@ import CustomerComplaintRecord from "./Components/QMS/CustomerComplaintRecord";
 import CustomerComplaintReport from "./Components/QMS/CustomerComplaintReport";
 import Capa from "./Components/QMS/Capa";
 import ProductionMa from "./Components/QMS/ProductionMa";
+import ItemUnits from "./Components/Master/ItemMaster/ItemUnits/ItemUnits";
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
           <Route path="/account-group" component={AccountGroup} />
           <Route path="/item-name" component={ItemName} />
           <Route path="/item-group" component={ItemGroup} />
+          <Route path="/item-units" component={ItemUnits} />
 
           {/* MAINTENANCE routing start here */}
           <Route

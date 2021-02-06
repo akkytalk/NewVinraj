@@ -173,9 +173,14 @@ function Department(props) {
 
                                 <button
                                   className="ml-4"
-                                  onClick={() =>
-                                    props.onDeleteDepartment(user.id)
-                                  }
+                                  onClick={() => {
+                                    if (
+                                      window.confirm(
+                                        "Are you sure you wish to delete this Department?"
+                                      )
+                                    )
+                                      props.onDeleteDepartment(user.id);
+                                  }}
                                 >
                                   <i
                                     className="fa fa-trash-alt"

@@ -282,7 +282,14 @@ function Prefix(props) {
 
                                 <button
                                   className="ml-4 "
-                                  onClick={() => props.onDeletePrefix(user.id)}
+                                  onClick={() => {
+                                    if (
+                                      window.confirm(
+                                        "Are you sure you wish to delete this Prefix?"
+                                      )
+                                    )
+                                      props.onDeletePrefix(user.id);
+                                  }}
                                 >
                                   <i
                                     className="fa fa-trash-alt "

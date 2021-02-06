@@ -295,9 +295,14 @@ function AccountName(props) {
 
                                     <button
                                       className="ml-3"
-                                      onClick={() =>
-                                        props.onDeleteAccountName(user.id)
-                                      }
+                                      onClick={() => {
+                                        if (
+                                          window.confirm(
+                                            "Are you sure you wish to delete this Account Name?"
+                                          )
+                                        )
+                                          props.onDeleteAccountName(user.id);
+                                      }}
                                     >
                                       <i
                                         className="fa fa-trash-alt "
