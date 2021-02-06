@@ -12,6 +12,7 @@ import accountGroupReducer from "./reduxStore/reducers/RAccountGroup";
 import accountNameReducer from "./reduxStore/reducers/RAccountName";
 import itemGroupReducer from "./reduxStore/reducers/RItemGroup";
 import itemNameReducer from "./reduxStore/reducers/RItemName";
+import userMasterReducer from "./reduxStore/reducers/RAddUserMaster";
 
 const composeEnhancers =
   process.env.NODE_ENV === "development"
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   accountName: accountNameReducer,
   itemName: itemNameReducer,
   itemGroup: itemGroupReducer,
+  userMaster: userMasterReducer,
 });
 
 const store = createStore(

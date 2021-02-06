@@ -33,7 +33,7 @@ function RightsUserMaster() {
           Search the user by name or phone number
         </label>
         <input type="search" className="form-control" />{" "}
-        <button className="btn btn-primary">Search</button>
+        <button className="btn btn-primary mt-3 mb-3">Search</button>
         <table className="table" style={{ fontSize: "12px" }}>
           <thead className="thead-dark">
             <tr>

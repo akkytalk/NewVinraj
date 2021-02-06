@@ -3,78 +3,79 @@ import { connect } from "react-redux";
 import * as actions from "../../reduxStore/actions/index";
 
 function AddUserMaster(props) {
-  const initialFormState = { id: null, name: "", username: "" };
-  const [user, setUser] = useState(initialFormState);
+  // const initialFormState = { id: null, name: "", username: "" };
+  // const [user, setUser] = useState(initialFormState);
+
+  // const handleInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setUser({ ...user, [name]: value });
+  // };
+
+  // const usersData = [
+  //   { id: 1, name: "AAA", username: "aiueo", phone: "9967258482" },
+  //   { id: 2, name: "BBB", username: "kakikukeko", phone: "1234567898" },
+  //   { id: 3, name: "CCC", username: "sasisuseso", phone: "7584986321" },
+  // ];
+
+  // const [users, setUsers] = useState(usersData);
+
+  // const addUser = (user) => {
+  //   user.id = users.length + 1;
+  //   setUsers([...users, user]);
+  // };
+
+  // const deleteUser = (id) => {
+  //   setUsers(users.filter((user) => user.id !== id));
+  // };
+
+  // const [editing, setEditing] = useState(false);
+  // const initialFormStates = { id: null, name: "", username: "" };
+
+  // const [currentUser, setCurrentUser] = useState(initialFormStates);
+
+  // const editRow = (user) => {
+  //   setEditing(true);
+  //   setCurrentUser({ id: user.id, name: user.name, username: user.username });
+  // };
+
+  // const updateUser = (id, updateUser) => {
+  //   setEditing(false);
+  //   setUsers(users.map((user) => (user.id === id ? updateUser : user)));
+  // };
+  useEffect(() => {
+    console.log("currentUser data from redux ", currentUser);
+
+    props.onUserMasterGetData();
+    props.onDeleteUserMaster();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const [editing, setEditing] = useState(false);
+
+  const initialFormState = {
+    id: "",
+    name: "",
+    email: "",
+    password: "",
+  };
+
+  const [currentUser, setCurrentUser] = useState(initialFormState);
+
+  const currentUserInputChange = (event) => {
+    const { name, value } = event.target;
+    setCurrentUser({ ...currentUser, [name]: value });
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUser({ ...user, [name]: value });
   };
-
-  const usersData = [
-    { id: 1, name: "AAA", username: "aiueo", phone: "9967258482" },
-    { id: 2, name: "BBB", username: "kakikukeko", phone: "1234567898" },
-    { id: 3, name: "CCC", username: "sasisuseso", phone: "7584986321" },
-  ];
-
-  const [users, setUsers] = useState(usersData);
-
-  const addUser = (user) => {
-    user.id = users.length + 1;
-    setUsers([...users, user]);
-  };
-
-  const deleteUser = (id) => {
-    setUsers(users.filter((user) => user.id !== id));
-  };
-
-  const [editing, setEditing] = useState(false);
-  const initialFormStates = { id: null, name: "", username: "" };
-
-  const [currentUser, setCurrentUser] = useState(initialFormStates);
-
-  const editRow = (user) => {
-    setEditing(true);
-    setCurrentUser({ id: user.id, name: user.name, username: user.username });
-  };
-
-  const updateUser = (id, updateUser) => {
-    setEditing(false);
-    setUsers(users.map((user) => (user.id === id ? updateUser : user)));
-  };
-  //   useEffect(() => {
-  //     console.log("currentUser data from redux ", currentUser);
-
-  //     props.onAccountGroupGetData();
-  //     props.onAccountGroupGetData();
-  //     props.onDeleteAccountGroup();
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, []);
-
-  //   const [user, setUser] = useState({
-  //     name: "",
-  //     under_group_name: "",
-  //   });
-
-  //   const [editing, setEditing] = useState(false);
-
-  //   const initialFormState = {
-  //     id: "",
-  //     name: "",
-  //     under_group_name: "",
-  //   };
-
-  //   const [currentUser, setCurrentUser] = useState(initialFormState);
-
-  //   const currentUserInputChange = (event) => {
-  //     const { name, value } = event.target;
-  //     setCurrentUser({ ...currentUser, [name]: value });
-  //   };
-
-  //   const handleInputChange = (event) => {
-  //     const { name, value } = event.target;
-  //     setUser({ ...user, [name]: value });
-  //   };
 
   return (
     <Fragment>
@@ -84,12 +85,10 @@ function AddUserMaster(props) {
             <form
               onSubmit={(event) => {
                 event.preventDefault();
-                if (!user.name || !user.username) return;
-                addUser(user);
-                setUser(initialFormState);
+                props.onPostUserMasterData(user);
               }}
             >
-              <div className="form-row" style={{ fontSize: "10px" }}>
+              <div className="form-row" style={{ fontSize: "12px" }}>
                 <div className="form-group col-md-3">
                   <label htmlFor="inputPassword4"> Name </label>
                   <input
@@ -97,9 +96,11 @@ function AddUserMaster(props) {
                     className="form-control"
                     id="inputPassword4"
                     placeholder=""
-                    value={user.name}
+                    value={editing ? currentUser.name : user.name}
                     name="name"
-                    onChange={handleInputChange}
+                    onChange={
+                      editing ? currentUserInputChange : handleInputChange
+                    }
                   />
                 </div>
                 <div className="form-group col-md-3">
@@ -109,9 +110,11 @@ function AddUserMaster(props) {
                     className="form-control"
                     id="inputPassword4"
                     placeholder=""
-                    value={user.username}
-                    name="username"
-                    onChange={handleInputChange}
+                    value={editing ? currentUser.email : user.email}
+                    name="email"
+                    onChange={
+                      editing ? currentUserInputChange : handleInputChange
+                    }
                   />
                 </div>
                 {/*  */}
@@ -122,6 +125,11 @@ function AddUserMaster(props) {
                     className="form-control"
                     id="inputPassword4"
                     placeholder="password"
+                    value={editing ? currentUser.password : user.password}
+                    name="password"
+                    onChange={
+                      editing ? currentUserInputChange : handleInputChange
+                    }
                   />
                 </div>
 
@@ -142,9 +150,9 @@ function AddUserMaster(props) {
                     type="phone"
                     className="form-control"
                     id="inputCity"
-                    value={user.phone}
-                    name="phone"
-                    onChange={handleInputChange}
+                    // value={user.phone}
+                    // name="phone"
+                    // onChange={handleInputChange}
                   />
                 </div>
                 <div className="form-group col-md-3">
@@ -155,7 +163,46 @@ function AddUserMaster(props) {
                   <label htmlFor="inputState">State</label>
                   <select id="inputState" className="form-control">
                     <option selected>Choose...</option>
-                    <option>...</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Andaman and Nicobar Islands">
+                      Andaman and Nicobar Islands
+                    </option>
+                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Chandigarh">Chandigarh</option>
+                    <option value="Chhattisgarh">Chhattisgarh</option>
+                    <option value="Dadar and Nagar Haveli">
+                      Dadar and Nagar Haveli
+                    </option>
+                    <option value="Daman and Diu">Daman and Diu</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Lakshadweep">Lakshadweep</option>
+                    <option value="Puducherry">Puducherry</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Gujarat">Gujarat</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                    <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                    <option value="Jharkhand">Jharkhand</option>
+                    <option value="Karnataka">Karnataka</option>
+                    <option value="Kerala">Kerala</option>
+                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                    <option value="Maharashtra">Maharashtra</option>
+                    <option value="Manipur">Manipur</option>
+                    <option value="Meghalaya">Meghalaya</option>
+                    <option value="Mizoram">Mizoram</option>
+                    <option value="Nagaland">Nagaland</option>
+                    <option value="Odisha">Odisha</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Rajasthan">Rajasthan</option>
+                    <option value="Sikkim">Sikkim</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Telangana">Telangana</option>
+                    <option value="Tripura">Tripura</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Uttarakhand">Uttarakhand</option>
+                    <option value="West Bengal">West Bengal</option>
                   </select>
                 </div>
                 <div className="form-group col-md-3">
@@ -163,7 +210,9 @@ function AddUserMaster(props) {
                   <input type="text" className="form-control" id="inputZip" />
                 </div>
               </div>
-              <button className="btn btn-primary">Add</button>
+              <button className="btn btn-primary mb-3" type="submit">
+                Add
+              </button>
               <br />
             </form>
           </div>
@@ -173,36 +222,42 @@ function AddUserMaster(props) {
                 <tr>
                   <th scope="col">Item Name</th>
                   <th scope="col">Under Item Single</th>
-                  <th scope="col"> Phone</th>
+                  {/* <th scope="col"> Phone</th> */}
                   <th scope="col">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {users?.length > 0 ? (
-                  users?.map((user) => (
+                {props.userMaster?.length > 0 ? (
+                  props.userMaster?.map((user) => (
                     <tr key={user.id}>
                       <td>{user.name}</td>
-                      <td>{user.username}</td>
-                      <td>{user.phone}</td>
-                      <td>
-                        {/* <button
-                                className="btn btn-primary"
-                                onClick={() => editRow(user)}
-                            >
-                                Edit
-              </button> */}
-                        <i
-                          className="fa fa-minus"
-                          aria-hidden="true"
-                          onClick={() => deleteUser(user.id)}
-                        ></i>
-                        {/* <button
+                      <td>{user.email}</td>
+                      {/* <td>{user.phone}</td> */}
+                      <td className="d-flex">
+                        <button
+                          onClick={() =>
+                            props.onEditUserMasterRow(
+                              user.id,
+                              editing,
+                              setEditing,
+                              currentUser,
+                              setCurrentUser
+                            )
+                          }
+                        >
+                          <i className="fa fa-edit" aria-hidden="true"></i>
+                        </button>
 
-                                className="btn btn-primary ml-5"
-                                onClick={() => props.deleteUser(user.id)}
-                            >
-                                Delete
-              </button> */}
+                        <button
+                          className="ml-3"
+                          onClick={() => props.onDeleteUserMaster(user.id)}
+                        >
+                          <i
+                            className="fa fa-trash-alt "
+                            value={user.id}
+                            aria-hidden="true"
+                          ></i>
+                        </button>
                       </td>
                     </tr>
                   ))
@@ -222,18 +277,17 @@ function AddUserMaster(props) {
 
 const mapStateToProps = (state) => {
   return {
-    accountGroup: state.accountGroup.accountGroup,
+    userMaster: state.userMaster.userMaster,
     form: state.form.form,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAccountGroupGetData: () => dispatch(actions.accountGroupGetData()),
-    onDeleteAccountGroup: (id) => dispatch(actions.deleteAccountGroup(id)),
-    onPostAccountGroupData: (user) =>
-      dispatch(actions.postAccountGroupData(user)),
-    onUpdateAccountGroupData: (
+    onUserMasterGetData: () => dispatch(actions.userMasterGetData()),
+    onDeleteUserMaster: (id) => dispatch(actions.deleteUserMaster(id)),
+    onPostUserMasterData: (user) => dispatch(actions.postUserMasterData(user)),
+    onUpdateUserMasterData: (
       id,
       editing,
       setEditing,
@@ -241,7 +295,7 @@ const mapDispatchToProps = (dispatch) => {
       setCurrentUser
     ) =>
       dispatch(
-        actions.updateAccountGroupData(
+        actions.updateUserMasterData(
           id,
           editing,
           setEditing,
@@ -249,7 +303,7 @@ const mapDispatchToProps = (dispatch) => {
           setCurrentUser
         )
       ),
-    onEditAccountGroupRow: (
+    onEditUserMasterRow: (
       id,
       editing,
       setEditing,
@@ -257,7 +311,7 @@ const mapDispatchToProps = (dispatch) => {
       setCurrentUser
     ) =>
       dispatch(
-        actions.editAccountGroupRow(
+        actions.editUserMasterRow(
           id,
           editing,
           setEditing,
