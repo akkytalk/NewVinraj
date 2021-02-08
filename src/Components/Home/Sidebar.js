@@ -172,7 +172,7 @@ function Sidebar() {
 
                   <li className="nav-item">
                     <Link to="/prefix" className="nav-link">
-                      <p>Prefix Name Master</p>
+                      <p>Form Prefix Master</p>
                     </Link>
                   </li>
                   {/* </ul> */}

@@ -114,6 +114,11 @@ export const editUserMasterRow = (
           name: res.data.name,
           email: res.data.email,
           password: res.data.password,
+          address: res.data.address,
+          phone: res.data.phone,
+          city: res.data.city,
+          state: res.data.state,
+          pincode: res.data.pincode,
         });
       })
       .catch((error) => dispatch(failEditUserMaster()));

@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { Link } from "react-router-dom";
 import Sidebar from "./Sidebar";
 
 function Home() {
@@ -20,9 +21,9 @@ function Home() {
               </a>
             </li>
             <li className="nav-item d-none d-sm-inline-block">
-              <a href="index3.html" className="nav-link">
+              <Link href="/" className="nav-link">
                 Home
-              </a>
+              </Link>
             </li>
           </ul>
           {/* SEARCH FORM */}

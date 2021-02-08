@@ -5,6 +5,10 @@ import { Fragment } from "react";
 import Sidebar from "../../../Home/Sidebar";
 import * as actions from "../../../../reduxStore/actions/index";
 import { connect } from "react-redux";
+import Breadcrumbs from "@material-ui/core/Breadcrumbs";
+import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
+import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 
 function Department(props) {
   useEffect(() => {
@@ -36,6 +40,11 @@ function Department(props) {
     setUser({ ...user, [name]: value });
   };
 
+  function handleClick(event) {
+    event.preventDefault();
+    console.info("You clicked a breadcrumb.");
+  }
+
   // console.log("editing", editing);
   // console.log("Current User", currentUser);
 
@@ -45,7 +54,7 @@ function Department(props) {
         {/* Navbar */}
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
           {/* Left navbar links */}
-          <ul className="navbar-nav">
+          <ul className="navbar-nav d-flex align-items-center">
             <li className="nav-item">
               <a
                 className="nav-link"
@@ -56,10 +65,23 @@ function Department(props) {
                 <i className="fas fa-bars"> </i>
               </a>
             </li>
-            <li className="nav-item d-none d-sm-inline-block">
-              <a href="/" className="nav-link">
-                Home
-              </a>
+            <li className="nav-item d-none d-sm-inline-block ml-2">
+              <Breadcrumbs
+                separator={<NavigateNextIcon fontSize="small" />}
+                aria-label="breadcrumb"
+              >
+                <Link color="inherit" href="/" onClick={handleClick}>
+                  Home
+                </Link>
+                <Link
+                  color="inherit"
+                  href="/getting-started/installation/"
+                  onClick={handleClick}
+                >
+                  Master
+                </Link>
+                <Typography color="textPrimary">Department</Typography>
+              </Breadcrumbs>
             </li>
           </ul>
           {/* SEARCH FORM */}
@@ -138,7 +160,12 @@ function Department(props) {
                     {/* Department Form Section End here */}
                   </div>
                   <div className="flex-large">
-                    <table className="table" style={{ fontSize: "12px" }}>
+                    <table
+                      className="table"
+                      style={{
+                        fontSize: "12px",
+                      }}
+                    >
                       <thead>
                         <tr>
                           {/* <th>ID</th> */}

@@ -69,14 +69,14 @@ function ItemUnits(props) {
   }, []);
 
   const [user, setUser] = useState({
-    name: "",
+    unit_name: "",
   });
 
   const [editing, setEditing] = useState(false);
 
   const initialFormState = {
     id: "",
-    name: "",
+    unit_name: "",
   };
 
   const [currentUser, setCurrentUser] = useState(initialFormState);
@@ -156,9 +156,13 @@ function ItemUnits(props) {
                                 type="text"
                                 className="form-control"
                                 id="inputPassword4"
-                                placeholder="Kg"
-                                value={!editing ? user.name : currentUser.name}
-                                name="name"
+                                placeholder=""
+                                value={
+                                  !editing
+                                    ? user.unit_name
+                                    : currentUser.unit_name
+                                }
+                                name="unit_name"
                                 onChange={
                                   editing
                                     ? currentUserInputChange
@@ -221,7 +225,7 @@ function ItemUnits(props) {
                               props.itemUnits.map((user) => (
                                 <tr key={user.id}>
                                   {/* <td>{user.id}</td> */}
-                                  <td>{user.name}</td>
+                                  <td>{user.unit_name}</td>
                                   {/* <td>
                                     {user.item_group
                                       ? user.item_group.name

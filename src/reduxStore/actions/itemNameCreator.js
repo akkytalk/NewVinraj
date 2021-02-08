@@ -113,6 +113,8 @@ export const editItemNameRow = (
           name: res.data.name,
           item_group_id: res.data.item_group.id,
           group_name: res.data.item_group.name,
+          unit_id: res.data.unit_id,
+          unit_name: res.data.unit.unit_name,
         });
       })
       .catch((error) => dispatch(failEditItemName()));

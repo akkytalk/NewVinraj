@@ -18,7 +18,7 @@ export const itemUnitsFailData = () => {
 export const itemUnitsGetData = () => {
   return (dispatch) => {
     axios
-      .get("itemUnits")
+      .get("units")
       .then((res) => {
         console.log(res.data, "res");
         dispatch(itemUnitsSetData(res.data));
@@ -38,7 +38,7 @@ export const deleteItemUnits = (id) => {
   return (dispatch) => {
     if (id) {
       axios
-        .delete(`itemUnits/${id}`)
+        .delete(`units/${id}`)
         .then(() => {
           console.log("swal");
           swal("Successfully Deleted Item Units!").then(() => {
@@ -64,11 +64,11 @@ export const postItemUnitsDataFail = () => {
 
 export const postItemUnitsData = (user) => {
   return (dispatch) => {
-    if (!user.name) return;
+    if (!user.unit_name) return;
 
     dispatch(postItemUnitsDataStart());
     axios
-      .post("itemUnits", user)
+      .post("units", user)
       .then(() => {
         console.log("swal");
         swal("Successfully Created Item Units!").then(() => {
@@ -104,13 +104,13 @@ export const editItemUnitsRow = (
     dispatch(editItemUnitsRowStart());
     setEditing(true);
     axios
-      .get(`itemUnits/${id}`)
+      .get(`units/${id}`)
       .then((res) => {
         // console.log(res.data, "editing data res");
         setEditing(res.data);
         setCurrentUser({
           id: res.data.id,
-          name: res.data.name,
+          unit_name: res.data.unit_name,
         });
       })
       .catch((error) => dispatch(failEditItemUnits()));
@@ -135,7 +135,7 @@ export const updateItemUnitsData = (
     setEditing(false);
 
     axios
-      .put(`itemUnits/${id}`, currentUser)
+      .put(`units/${id}`, currentUser)
       .then(() => {
         console.log("swal");
         swal("Successfully Updated Item Units!").then(() => {

@@ -62,6 +62,7 @@ function ItemName(props) {
   useEffect(() => {
     console.log("currentUser data from redux ", currentUser);
 
+    props.onItemUnitsGetData();
     props.onItemGroupGetData();
     props.onItemNameGetData();
     props.onDeleteItemName();
@@ -71,6 +72,7 @@ function ItemName(props) {
   const [user, setUser] = useState({
     name: "",
     item_group_id: "",
+    unit_id: "",
   });
 
   const [editing, setEditing] = useState(false);
@@ -80,6 +82,8 @@ function ItemName(props) {
     name: "",
     item_group_id: "",
     group_name: "",
+    unit_id: "",
+    unit_name: "",
   };
 
   const [currentUser, setCurrentUser] = useState(initialFormState);
@@ -213,6 +217,31 @@ function ItemName(props) {
                                   : null} */}
                               </select>
                             </div>
+                            <div className="form-group col-md-3">
+                              <label htmlFor="inputPassword4">Units</label>
+                              <select
+                                type="text"
+                                className="form-control"
+                                id="inputPassword4"
+                                name="unit_id"
+                                value={
+                                  editing ? currentUser.unit_id : user.unit_id
+                                }
+                                onChange={
+                                  editing
+                                    ? currentUserInputChange
+                                    : handleInputChange
+                                }
+                              >
+                                {" "}
+                                <option>select</option>
+                                {props.itemUnits?.map((units) => (
+                                  <option key={units.id} value={units.id}>
+                                    {units.unit_name}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
 
                             <div className="form-group col-md-3 mt-4">
                               {!editing ? (
@@ -259,6 +288,7 @@ function ItemName(props) {
                               {/* <th>ID</th> */}
                               <th scope="col">Item Name</th>
                               <th scope="col">Under Item Group</th>
+                              <th scope="col">Units</th>
 
                               <th scope="col">Actions</th>
                             </tr>
@@ -273,6 +303,9 @@ function ItemName(props) {
                                     {user.item_group
                                       ? user.item_group.name
                                       : null}
+                                  </td>
+                                  <td>
+                                    {user.unit ? user.unit.unit_name : null}
                                   </td>
 
                                   <td className="d-flex">
@@ -335,6 +368,7 @@ function ItemName(props) {
 
 const mapStateToProps = (state) => {
   return {
+    itemUnits: state.itemUnits.itemUnits,
     itemGroup: state.itemGroup.itemGroup,
     itemName: state.itemName.itemName,
     form: state.form.form,
@@ -343,6 +377,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    onItemUnitsGetData: () => dispatch(actions.itemUnitsGetData()),
     onItemGroupGetData: () => dispatch(actions.itemGroupGetData()),
     onItemNameGetData: () => dispatch(actions.itemNameGetData()),
     onDeleteItemName: (id) => dispatch(actions.deleteItemName(id)),

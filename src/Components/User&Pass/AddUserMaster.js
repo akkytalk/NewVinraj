@@ -54,6 +54,11 @@ function AddUserMaster(props) {
     name: "",
     email: "",
     password: "",
+    address: "",
+    phone: "",
+    city: "",
+    state: "",
+    pincode: "",
   });
 
   const [editing, setEditing] = useState(false);
@@ -63,6 +68,11 @@ function AddUserMaster(props) {
     name: "",
     email: "",
     password: "",
+    address: "",
+    phone: "",
+    city: "",
+    state: "",
+    pincode: "",
   };
 
   const [currentUser, setCurrentUser] = useState(initialFormState);
@@ -140,6 +150,11 @@ function AddUserMaster(props) {
                     className="form-control"
                     id="inputAddress"
                     placeholder="D-20 Main St"
+                    value={editing ? currentUser.address : user.address}
+                    name="address"
+                    onChange={
+                      editing ? currentUserInputChange : handleInputChange
+                    }
                   />
                 </div>
               </div>
@@ -150,18 +165,37 @@ function AddUserMaster(props) {
                     type="phone"
                     className="form-control"
                     id="inputCity"
-                    // value={user.phone}
-                    // name="phone"
-                    // onChange={handleInputChange}
+                    value={editing ? currentUser.phone : user.phone}
+                    name="phone"
+                    onChange={
+                      editing ? currentUserInputChange : handleInputChange
+                    }
                   />
                 </div>
                 <div className="form-group col-md-3">
                   <label htmlFor="inputCity">City</label>
-                  <input type="text" className="form-control" id="inputCity" />
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={editing ? currentUser.city : user.city}
+                    name="city"
+                    onChange={
+                      editing ? currentUserInputChange : handleInputChange
+                    }
+                    id="inputCity"
+                  />
                 </div>
                 <div className="form-group col-md-3">
                   <label htmlFor="inputState">State</label>
-                  <select id="inputState" className="form-control">
+                  <select
+                    id="inputState"
+                    value={editing ? currentUser.state : user.state}
+                    name="state"
+                    onChange={
+                      editing ? currentUserInputChange : handleInputChange
+                    }
+                    className="form-control"
+                  >
                     <option selected>Choose...</option>
                     <option value="Andhra Pradesh">Andhra Pradesh</option>
                     <option value="Andaman and Nicobar Islands">
@@ -207,7 +241,16 @@ function AddUserMaster(props) {
                 </div>
                 <div className="form-group col-md-3">
                   <label htmlFor="inputZip">Zip</label>
-                  <input type="text" className="form-control" id="inputZip" />
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="inputZip"
+                    value={editing ? currentUser.pincode : user.pincode}
+                    name="pincode"
+                    onChange={
+                      editing ? currentUserInputChange : handleInputChange
+                    }
+                  />
                 </div>
               </div>
               <button className="btn btn-primary mb-3" type="submit">
@@ -253,7 +296,7 @@ function AddUserMaster(props) {
                           onClick={() => props.onDeleteUserMaster(user.id)}
                         >
                           <i
-                            className="fa fa-trash-alt "
+                            className="fa fa-trash-alt"
                             value={user.id}
                             aria-hidden="true"
                           ></i>
