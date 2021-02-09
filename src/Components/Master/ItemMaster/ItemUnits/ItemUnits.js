@@ -10,6 +10,10 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import * as actions from "../../../../reduxStore/actions/index";
 import { connect } from "react-redux";
+import Breadcrumbs from "@material-ui/core/Breadcrumbs";
+
+import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import Link from "@material-ui/core/Link";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -100,7 +104,7 @@ function ItemUnits(props) {
         {/* Navbar */}
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
           {/* Left navbar links */}
-          <ul className="navbar-nav">
+          <ul  className="navbar-nav d-flex align-items-center">
             <li className="nav-item">
               <a
                 className="nav-link"
@@ -108,14 +112,32 @@ function ItemUnits(props) {
                 href="n"
                 role="button"
               >
-                <i className="fas fa-bars"> </i>
+                <i className="fas fa-bars" />
               </a>
             </li>
-            {/* <li className="nav-item d-none d-sm-inline-block">
-              <a href="/" className="nav-link">
-                Home
-              </a>
-            </li> */}
+            <li className="nav-item d-none d-sm-inline-block ml-2">
+              <Breadcrumbs
+                separator={<NavigateNextIcon fontSize="small" />}
+                aria-label="breadcrumb"
+              >
+                <Link color="inherit" href="/" >
+                  Home
+                </Link>
+                <Link
+                  color="inherit"
+                  
+                >
+                  Master
+                </Link>
+                <Link
+                  color="inherit"
+                  
+                >
+                 Item Master
+                </Link>
+                <Typography color="textPrimary">Item Units Master</Typography>
+              </Breadcrumbs>
+            </li>
           </ul>
           {/* SEARCH FORM */}
         </nav>

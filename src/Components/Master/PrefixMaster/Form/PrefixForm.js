@@ -3,6 +3,10 @@ import { Fragment } from "react";
 import { connect } from "react-redux";
 import Sidebar from "../../../Home/Sidebar";
 import * as actions from "../../../../reduxStore/actions/index";
+import Breadcrumbs from "@material-ui/core/Breadcrumbs";
+import Typography from "@material-ui/core/Typography";
+import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import Link from "@material-ui/core/Link";
 
 function PrefixForm(props) {
   useEffect(() => {
@@ -39,6 +43,7 @@ function PrefixForm(props) {
     setUser({ ...user, [name]: value });
   };
 
+
   console.log("User data from redux and prefix Form ", currentUser);
 
   return (
@@ -47,7 +52,7 @@ function PrefixForm(props) {
         {/* Navbar */}
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
           {/* Left navbar links */}
-          <ul className="navbar-nav">
+          <ul  className="navbar-nav d-flex align-items-center">
             <li className="nav-item">
               <a
                 className="nav-link"
@@ -58,10 +63,23 @@ function PrefixForm(props) {
                 <i className="fas fa-bars" />
               </a>
             </li>
-            <li className="nav-item d-none d-sm-inline-block">
-              <a href="/" className="nav-link">
-                Home
-              </a>
+            <li className="nav-item d-none d-sm-inline-block ml-2">
+              <Breadcrumbs
+                separator={<NavigateNextIcon fontSize="small" />}
+                aria-label="breadcrumb"
+              >
+                <Link color="inherit" href="/" >
+                  Home
+                </Link>
+                <Link
+                  color="inherit"
+                  
+                  
+                >
+                  Master
+                </Link>
+                <Typography color="textPrimary">Form Name Master</Typography>
+              </Breadcrumbs>
             </li>
           </ul>
           {/* SEARCH FORM */}

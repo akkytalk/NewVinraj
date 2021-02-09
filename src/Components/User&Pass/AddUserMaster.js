@@ -253,9 +253,38 @@ function AddUserMaster(props) {
                   />
                 </div>
               </div>
-              <button className="btn btn-primary mb-3" type="submit">
-                Add
-              </button>
+              
+                          {!editing || !currentUser ? (
+                            <button className="btn btn-primary mb-3" type="submit">
+                              Add
+                            </button>
+                          ) : (
+                            <div>
+                              <button
+                                className="btn btn-success"
+                                type="button"
+                                onClick={() =>
+                                  props.onUpdateUserMasterData(
+                                    currentUser.id,
+                                    editing,
+                                    setEditing,
+                                    currentUser,
+                                    setCurrentUser
+                                  )
+                                }
+                              >
+                                Update
+                              </button>
+                              <button
+                                className="btn btn-primary ml-3"
+                                type="button"
+                                onClick={() => setEditing(false)}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          )}
+                        
               <br />
             </form>
           </div>
@@ -263,8 +292,8 @@ function AddUserMaster(props) {
             <table className="table" style={{ fontSize: "10px" }}>
               <thead>
                 <tr>
-                  <th scope="col">Item Name</th>
-                  <th scope="col">Under Item Single</th>
+                  <th scope="col">User Name</th>
+                  <th scope="col">E-mail</th>
                   {/* <th scope="col"> Phone</th> */}
                   <th scope="col">Actions</th>
                 </tr>

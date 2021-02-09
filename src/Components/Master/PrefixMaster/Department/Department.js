@@ -40,10 +40,7 @@ function Department(props) {
     setUser({ ...user, [name]: value });
   };
 
-  function handleClick(event) {
-    event.preventDefault();
-    console.info("You clicked a breadcrumb.");
-  }
+  
 
   // console.log("editing", editing);
   // console.log("Current User", currentUser);
@@ -70,17 +67,17 @@ function Department(props) {
                 separator={<NavigateNextIcon fontSize="small" />}
                 aria-label="breadcrumb"
               >
-                <Link color="inherit" href="/" onClick={handleClick}>
+                <Link color="inherit" href="/" >
                   Home
                 </Link>
                 <Link
                   color="inherit"
-                  href="/getting-started/installation/"
-                  onClick={handleClick}
+              
+                 
                 >
                   Master
                 </Link>
-                <Typography color="textPrimary">Department</Typography>
+                <Typography color="textPrimary">Department Master</Typography>
               </Breadcrumbs>
             </li>
           </ul>
