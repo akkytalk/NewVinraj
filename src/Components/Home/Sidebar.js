@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "../../axios";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -108,14 +109,22 @@ function Sidebar() {
                 </Link>
               </li> */}
 
-              <li className="nav-item ">
-                <Link to="#" className="nav-link">
+              <li className="nav-item">
+                <Link
+                  to="#"
+                  className="nav-link d-flex justify-content-between"
+                >
                   <p>Master</p>
+                  <ArrowDropDownIcon fontSize="small" />
                 </Link>
                 <ul className="nav nav-treeview">
                   <li className="nav-item">
-                    <a href="n" className="nav-link">
+                    <a
+                      href="n"
+                      className="nav-link d-flex justify-content-between"
+                    >
                       <p>Account Master</p>
+                      <ArrowDropDownIcon fontSize="small" />
                     </a>
 
                     <ul className="nav nav-treeview">
@@ -132,8 +141,12 @@ function Sidebar() {
                     </ul>
                   </li>
                   <li className="nav-item">
-                    <a href="n" className="nav-link">
+                    <a
+                      href="n"
+                      className="nav-link d-flex justify-content-between"
+                    >
                       <p>Item Master</p>
+                      <ArrowDropDownIcon fontSize="small" />
                     </a>
                     <ul className="nav nav-treeview">
                       <li className="nav-item">
@@ -197,8 +210,13 @@ function Sidebar() {
               ) : (
                 department.map((dep, index) => (
                   <li key={dep.id} className="nav-item">
-                    <a href="n" className="nav-link ">
+                    <a
+                      href="n"
+                      className="nav-link d-flex justify-content-between"
+                    >
                       <p>{dep.name}</p>
+
+                      <ArrowDropDownIcon fontSize="small" />
                     </a>
                     <ul className="nav nav-treeview">
                       {form.map((form) => {
