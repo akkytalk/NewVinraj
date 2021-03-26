@@ -1,6 +1,7 @@
 import * as actionType from "./actionType";
 import axios from "../../axios";
 import swal from "sweetalert";
+import { baseUrl } from "../../shared/baseUrl";
 
 export const formSetData = (form) => {
   return {
@@ -9,39 +10,53 @@ export const formSetData = (form) => {
   };
 };
 
-export const formFailData = () => {
+export const formFailData = (error) => {
   return {
     type: actionType.FORM_FAIL_DATA,
+    error: error,
   };
 };
 
-export const formGetData = () => {
+export const formGetData = (data) => {
   return (dispatch) => {
     axios
-      .get("forms")
+      .get(baseUrl + "forms", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
         console.log(res.data, "res");
         dispatch(formSetData(res.data));
       })
 
-      .catch((error) => dispatch(formFailData()));
+      .catch((error) => dispatch(formFailData(error)));
   };
 };
 
-export const deleteFormFail = () => {
+export const deleteFormFail = (error) => {
   return {
     type: actionType.DELETE_FORM_FAIL,
+    error: error,
   };
 };
 
-export const deleteForm = (id) => {
+export const deleteForm = (id, data) => {
   return (dispatch) => {
     if (id) {
       axios
-        .delete(`forms/${id}`)
+        .delete(baseUrl + `forms/${id}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + data?.token,
+          },
+        })
         .then(() => {
           console.log("swal");
-          swal("Successfully Deleted Form Name!").then(() => {
+          swal("Successfully Deleted Form!").then(() => {
             window.location.reload();
           });
         })
@@ -56,26 +71,34 @@ export const postFormDataStart = () => {
   };
 };
 
-export const postFormDataFail = () => {
+export const postFormDataFail = (error) => {
   return {
     type: actionType.POST_FORM_DATA_FAIL,
+    error: error,
   };
 };
 
-export const postFormData = (user) => {
+export const postFormData = (data, user) => {
   return (dispatch) => {
-    if (!user.name) return;
-
+    //if (!user.name) return;
+    // console.log("data", data);
+    console.log("user", user);
     dispatch(postFormDataStart());
     axios
-      .post("forms", user)
+      .post(baseUrl + "forms", user, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
-        swal("Successfully Created Form Name!").then(() => {
+        swal("Successfully Created Form!").then(() => {
           window.location.reload();
         });
       })
-      .catch((error) => dispatch(postFormDataFail()));
+      .catch((error) => dispatch(postFormDataFail(error)));
     // props.addUser(user);
     // setUser(initialFormState);
   };
@@ -87,13 +110,15 @@ export const editFormRowStart = () => {
   };
 };
 
-export const failEditForm = () => {
+export const failEditForm = (error) => {
   return {
     type: actionType.FAIL_EDIT_FORM,
+    error: error,
   };
 };
 
 export const editFormRow = (
+  data,
   id,
   editing,
   setEditing,
@@ -104,18 +129,23 @@ export const editFormRow = (
     dispatch(editFormRowStart());
     setEditing(true);
     axios
-      .get(`forms/${id}`)
+      .get(baseUrl + `forms/${id}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
         console.log(res.data, "editing data res");
         setEditing(res.data);
         setCurrentUser({
           id: res.data.id,
-          department_id: res.data.department.id,
-          department_name: res.data.department.name,
           name: res.data.name,
+          department_id: res.data.department_id,
         });
       })
-      .catch((error) => dispatch(failEditForm()));
+      .catch((error) => dispatch(failEditForm(error)));
   };
 };
 
@@ -126,6 +156,7 @@ export const updateFormDataStart = () => {
 };
 
 export const updateFormData = (
+  data,
   id,
   editing,
   setEditing,
@@ -137,10 +168,16 @@ export const updateFormData = (
     setEditing(false);
 
     axios
-      .put(`forms/${id}`, currentUser)
+      .put(baseUrl + `forms/${id}`, currentUser, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
-        swal("Successfully Updated Form Name!").then(() => {
+        swal("Successfully Updated form!").then(() => {
           window.location.reload();
         });
       })

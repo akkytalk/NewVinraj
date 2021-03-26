@@ -63,12 +63,19 @@ function ItemUnits(props) {
     setValue(newValue);
   };
 
+  let data = {
+    token: props.login?.login?.success?.token,
+  };
+
+  //  console.log("data", data);
+  //  console.log("login", props.login?.login);
+
   useEffect(() => {
-    console.log("currentUser data from redux ", currentUser);
+    // console.log("currentUser data from redux ", currentUser);
 
     // props.onItemGroupGetData();
-    props.onItemUnitsGetData();
-    props.onDeleteItemUnits();
+    props.onItemUnitsGetData(data);
+    props.onDeleteItemUnits(data);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -104,7 +111,7 @@ function ItemUnits(props) {
         {/* Navbar */}
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
           {/* Left navbar links */}
-          <ul  className="navbar-nav d-flex align-items-center">
+          <ul className="navbar-nav d-flex align-items-center">
             <li className="nav-item">
               <a
                 className="nav-link"
@@ -120,21 +127,11 @@ function ItemUnits(props) {
                 separator={<NavigateNextIcon fontSize="small" />}
                 aria-label="breadcrumb"
               >
-                <Link color="inherit" href="/" >
+                <Link color="inherit" href="/">
                   Home
                 </Link>
-                <Link
-                  color="inherit"
-                  
-                >
-                  Master
-                </Link>
-                <Link
-                  color="inherit"
-                  
-                >
-                 Item Master
-                </Link>
+                <Link color="inherit">Master</Link>
+                <Link color="inherit">Item Master</Link>
                 <Typography color="textPrimary">Item Units Master</Typography>
               </Breadcrumbs>
             </li>
@@ -165,7 +162,7 @@ function ItemUnits(props) {
                         <form
                           onSubmit={(event) => {
                             event.preventDefault();
-                            props.onPostItemUnitsData(user);
+                            props.onPostItemUnitsData(data, user);
                           }}
                         >
                           <div
@@ -208,6 +205,7 @@ function ItemUnits(props) {
                                     type="button"
                                     onClick={() =>
                                       props.onUpdateItemUnitsData(
+                                        data,
                                         currentUser.id,
                                         editing,
                                         setEditing,
@@ -258,6 +256,7 @@ function ItemUnits(props) {
                                     <button
                                       onClick={() =>
                                         props.onEditItemUnitsRow(
+                                          data,
                                           user.id,
                                           editing,
                                           setEditing,
@@ -280,7 +279,10 @@ function ItemUnits(props) {
                                             "Are you sure you wish to delete this Item Units?"
                                           )
                                         )
-                                          props.onDeleteItemUnits(user.id);
+                                          props.onDeleteItemUnits(
+                                            user.id,
+                                            data
+                                          );
                                       }}
                                     >
                                       <i
@@ -317,16 +319,20 @@ const mapStateToProps = (state) => {
     // itemGroup: state.itemGroup.itemGroup,
     itemUnits: state.itemUnits.itemUnits,
     form: state.form.form,
+    login: state.login,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     // onItemGroupGetData: () => dispatch(actions.itemGroupGetData()),
-    onItemUnitsGetData: () => dispatch(actions.itemUnitsGetData()),
-    onDeleteItemUnits: (id) => dispatch(actions.deleteItemUnits(id)),
-    onPostItemUnitsData: (user) => dispatch(actions.postItemUnitsData(user)),
+    onItemUnitsGetData: (data) => dispatch(actions.itemUnitsGetData(data)),
+    onDeleteItemUnits: (id, data) =>
+      dispatch(actions.deleteItemUnits(id, data)),
+    onPostItemUnitsData: (data, user) =>
+      dispatch(actions.postItemUnitsData(data, user)),
     onUpdateItemUnitsData: (
+      data,
       id,
       editing,
       setEditing,
@@ -335,6 +341,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.updateItemUnitsData(
+          data,
           id,
           editing,
           setEditing,
@@ -343,6 +350,7 @@ const mapDispatchToProps = (dispatch) => {
         )
       ),
     onEditItemUnitsRow: (
+      data,
       id,
       editing,
       setEditing,
@@ -351,6 +359,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.editItemUnitsRow(
+          data,
           id,
           editing,
           setEditing,

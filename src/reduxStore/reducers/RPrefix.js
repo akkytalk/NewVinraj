@@ -18,13 +18,13 @@ const reducer = (state = initialState, action) => {
     case actionType.PREFIX_FAIL_DATA:
       return {
         ...state,
-        error: true,
+        error: action.error,
       };
 
     case actionType.POST_PREFIX_DATA_FAIL:
       return {
         ...state,
-        error: true,
+        error: action.error,
       };
 
     case actionType.EDIT_PREFIX_ROW_START:

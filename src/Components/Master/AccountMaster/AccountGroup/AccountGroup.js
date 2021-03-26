@@ -63,12 +63,19 @@ function AccountGroup(props) {
     setValue(newValue);
   };
 
+  let data = {
+    token: props.login?.login?.success?.token,
+  };
+
+  //  console.log("data", data);
+  //  console.log("login", props.login?.login);
+
   useEffect(() => {
     console.log("currentUser data from redux ", currentUser);
 
-    props.onAccountGroupGetData();
-    props.onAccountGroupGetData();
-    props.onDeleteAccountGroup();
+    props.onAccountGroupGetData(data);
+    props.onAccountGroupGetData(data);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -103,7 +110,7 @@ function AccountGroup(props) {
         {/* Navbar */}
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
           {/* Left navbar links */}
-          <ul  className="navbar-nav d-flex align-items-center">
+          <ul className="navbar-nav d-flex align-items-center">
             <li className="nav-item">
               <a
                 className="nav-link"
@@ -119,24 +126,14 @@ function AccountGroup(props) {
                 separator={<NavigateNextIcon fontSize="small" />}
                 aria-label="breadcrumb"
               >
-                <Link color="inherit" href="/" >
+                <Link color="inherit" href="/">
                   Home
                 </Link>
-                <Link
-                  color="inherit"
-                  
-                  
-                >
-                  Master
-                </Link>
-                <Link
-                  color="inherit"
-                 
-                  
-                >
-                 Account Master
-                </Link>
-                <Typography color="textPrimary">Account Group Master</Typography>
+                <Link color="inherit">Master</Link>
+                <Link color="inherit">Account Master</Link>
+                <Typography color="textPrimary">
+                  Account Group Master
+                </Typography>
               </Breadcrumbs>
             </li>
           </ul>
@@ -166,7 +163,7 @@ function AccountGroup(props) {
                         <form
                           onSubmit={(event) => {
                             event.preventDefault();
-                            props.onPostAccountGroupData(user);
+                            props.onPostAccountGroupData(data, user);
                           }}
                         >
                           <div
@@ -252,6 +249,7 @@ function AccountGroup(props) {
                                     type="button"
                                     onClick={() =>
                                       props.onUpdateAccountGroupData(
+                                        data,
                                         currentUser.id,
                                         editing,
                                         setEditing,
@@ -276,7 +274,10 @@ function AccountGroup(props) {
                         </form>
                       </div>
                       <div className="flex-large">
-                        <table className="table table-sm" style={{ fontSize: "12px" }}>
+                        <table
+                          className="table table-sm"
+                          style={{ fontSize: "12px" }}
+                        >
                           <thead>
                             <tr>
                               {/* <th>ID</th> */}
@@ -298,6 +299,7 @@ function AccountGroup(props) {
                                     <button
                                       onClick={() =>
                                         props.onEditAccountGroupRow(
+                                          data,
                                           user.id,
                                           editing,
                                           setEditing,
@@ -320,7 +322,10 @@ function AccountGroup(props) {
                                             "Are you sure you wish to delete this Account Group?"
                                           )
                                         )
-                                          props.onDeleteAccountGroup(user.id);
+                                          props.onDeleteAccountGroup(
+                                            user.id,
+                                            data
+                                          );
                                       }}
                                     >
                                       <i
@@ -356,16 +361,20 @@ const mapStateToProps = (state) => {
   return {
     accountGroup: state.accountGroup.accountGroup,
     form: state.form.form,
+    login: state.login,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAccountGroupGetData: () => dispatch(actions.accountGroupGetData()),
-    onDeleteAccountGroup: (id) => dispatch(actions.deleteAccountGroup(id)),
-    onPostAccountGroupData: (user) =>
-      dispatch(actions.postAccountGroupData(user)),
+    onAccountGroupGetData: (data) =>
+      dispatch(actions.accountGroupGetData(data)),
+    onDeleteAccountGroup: (id, data) =>
+      dispatch(actions.deleteAccountGroup(id, data)),
+    onPostAccountGroupData: (data, user) =>
+      dispatch(actions.postAccountGroupData(data, user)),
     onUpdateAccountGroupData: (
+      data,
       id,
       editing,
       setEditing,
@@ -374,6 +383,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.updateAccountGroupData(
+          data,
           id,
           editing,
           setEditing,
@@ -382,6 +392,7 @@ const mapDispatchToProps = (dispatch) => {
         )
       ),
     onEditAccountGroupRow: (
+      data,
       id,
       editing,
       setEditing,
@@ -390,6 +401,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.editAccountGroupRow(
+          data,
           id,
           editing,
           setEditing,

@@ -4,6 +4,12 @@ import axios from "../../axios";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import {
+  departmentGetData,
+  formGetData,
+  removeLogin,
+} from "../../reduxStore/actions";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,35 +28,45 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Sidebar() {
+function Sidebar(props) {
   const classes = useStyles();
   const [progress, setProgress] = useState(0);
 
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState([]);
   const [department, SetDepartment] = useState([]);
-  useEffect(() => {
-    axios
-      .get("departments")
-      .then((res) => {
-        //   console.log(res.data, "department res");
-        SetDepartment(res.data);
-        setLoading(false);
-      })
-
-      .catch((error) => console.log(error));
-  }, []);
 
   useEffect(() => {
-    axios
-      .get("forms")
-      .then((res) => {
-        //  console.log(res.data, "department res");
-        setForm(res.data);
-      })
+    let data = {
+      token: props.login?.login?.success?.token,
+    };
 
-      .catch((error) => console.log(error));
+    console.log(data);
+    props.departmentGetData(data);
+    props.onFormGetData(data);
   }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get("departments")
+  //     .then((res) => {
+  //       //   console.log(res.data, "department res");
+  //       SetDepartment(res.data);
+  //       setLoading(false);
+  //     })
+
+  //     .catch((error) => console.log(error));
+  // }, []);
+
+  // useEffect(() => {
+  //   axios
+  //     .get("forms")
+  //     .then((res) => {
+  //       //  console.log(res.data, "department res");
+  //       setForm(res.data);
+  //     })
+
+  //     .catch((error) => console.log(error));
+  // }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -63,6 +79,8 @@ function Sidebar() {
       clearInterval(timer);
     };
   }, []);
+
+  //console.log("department data", props.department);
 
   return (
     <Fragment>
@@ -110,22 +128,16 @@ function Sidebar() {
               </li> */}
 
               <li className="nav-item">
-                <Link
-                  to="#"
-                  className="nav-link d-flex justify-content-between"
-                >
+                <Link className="nav-link d-flex justify-content-between">
                   <p>Master</p>
                   <ArrowDropDownIcon fontSize="small" />
                 </Link>
                 <ul className="nav nav-treeview">
                   <li className="nav-item">
-                    <a
-                      href="n"
-                      className="nav-link d-flex justify-content-between"
-                    >
+                    <Link className="nav-link d-flex justify-content-between">
                       <p>Account Master</p>
                       <ArrowDropDownIcon fontSize="small" />
-                    </a>
+                    </Link>
 
                     <ul className="nav nav-treeview">
                       <li className="nav-item">
@@ -199,7 +211,7 @@ function Sidebar() {
                 </Link>
               </li>
 
-              {loading ? (
+              {props.department.isLoading ? (
                 <div className={classes.root}>
                   <CircularProgress
                     variant="determinate"
@@ -208,18 +220,15 @@ function Sidebar() {
                   />
                 </div>
               ) : (
-                department.map((dep, index) => (
+                props.department?.department?.map((dep, index) => (
                   <li key={dep.id} className="nav-item">
-                    <a
-                      href="n"
-                      className="nav-link d-flex justify-content-between"
-                    >
+                    <Link className="nav-link d-flex justify-content-between">
                       <p>{dep.name}</p>
 
                       <ArrowDropDownIcon fontSize="small" />
-                    </a>
+                    </Link>
                     <ul className="nav nav-treeview">
-                      {form.map((form) => {
+                      {props.form.map((form) => {
                         // eslint-disable-next-line eqeqeq
                         if (dep.id == form.department_id) {
                           // console.log("form data", dep.id);
@@ -247,4 +256,24 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+const mapStateToProps = (state) => {
+  return {
+    login: state.login,
+    department: state.department,
+    form: state.form.form,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    removeLogin: () => {
+      dispatch(removeLogin());
+    },
+    departmentGetData: (data) => {
+      dispatch(departmentGetData(data));
+    },
+    onFormGetData: (data) => dispatch(formGetData(data)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);

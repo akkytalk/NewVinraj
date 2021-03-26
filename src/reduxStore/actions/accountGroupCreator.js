@@ -1,6 +1,7 @@
 import * as actionType from "./actionType";
 import axios from "../../axios";
 import swal from "sweetalert";
+import { baseUrl } from "../../shared/baseUrl";
 
 export const accountGroupSetData = (accountGroup) => {
   return {
@@ -9,39 +10,53 @@ export const accountGroupSetData = (accountGroup) => {
   };
 };
 
-export const accountGroupFailData = () => {
+export const accountGroupFailData = (error) => {
   return {
     type: actionType.ACCOUNT_GROUP_FAIL_DATA,
+    error: error,
   };
 };
 
-export const accountGroupGetData = () => {
+export const accountGroupGetData = (data) => {
   return (dispatch) => {
     axios
-      .get("accountGroups")
+      .get(baseUrl + "accountGroups", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
         console.log(res.data, "res");
         dispatch(accountGroupSetData(res.data));
       })
 
-      .catch((error) => dispatch(accountGroupFailData()));
+      .catch((error) => dispatch(accountGroupFailData(error)));
   };
 };
 
-export const deleteAccountGroupFail = () => {
+export const deleteAccountGroupFail = (error) => {
   return {
     type: actionType.DELETE_ACCOUNT_GROUP_FAIL,
+    error: error,
   };
 };
 
-export const deleteAccountGroup = (id) => {
+export const deleteAccountGroup = (id, data) => {
   return (dispatch) => {
     if (id) {
       axios
-        .delete(`accountGroups/${id}`)
+        .delete(baseUrl + `accountGroups/${id}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + data?.token,
+          },
+        })
         .then(() => {
           console.log("swal");
-          swal("Successfully Deleted Account Group!").then(() => {
+          swal("Successfully Deleted AccountGroup!").then(() => {
             window.location.reload();
           });
         })
@@ -56,28 +71,36 @@ export const postAccountGroupDataStart = () => {
   };
 };
 
-export const postAccountGroupDataFail = () => {
+export const postAccountGroupDataFail = (error) => {
   return {
     type: actionType.POST_ACCOUNT_GROUP_DATA_FAIL,
+    error: error,
   };
 };
 
-export const postAccountGroupData = (user) => {
+export const postAccountGroupData = (data, user) => {
   return (dispatch) => {
-    if (!user.name) return;
-
+    //if (!user.name) return;
+    // console.log("data", data);
+    console.log("user", user);
     dispatch(postAccountGroupDataStart());
     axios
-      .post("accountGroups", user)
+      .post(baseUrl + "accountGroups", user, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
-        swal("Successfully Created Account Group!").then(() => {
+        swal("Successfully Created AccountGroup!").then(() => {
           window.location.reload();
         });
       })
-      .catch((error) => dispatch(postAccountGroupDataFail()));
+      .catch((error) => dispatch(postAccountGroupDataFail(error)));
     // props.addUser(user);
-    // setUser(initialFormState);
+    // setUser(initialAccountGroupState);
   };
 };
 
@@ -87,13 +110,15 @@ export const editAccountGroupRowStart = () => {
   };
 };
 
-export const failEditAccountGroup = () => {
+export const failEditAccountGroup = (error) => {
   return {
     type: actionType.FAIL_EDIT_ACCOUNT_GROUP,
+    error: error,
   };
 };
 
 export const editAccountGroupRow = (
+  data,
   id,
   editing,
   setEditing,
@@ -104,7 +129,13 @@ export const editAccountGroupRow = (
     dispatch(editAccountGroupRowStart());
     setEditing(true);
     axios
-      .get(`accountGroups/${id}`)
+      .get(baseUrl + `accountGroups/${id}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
         console.log(res.data, "editing data res");
         setEditing(res.data);
@@ -114,7 +145,7 @@ export const editAccountGroupRow = (
           under_group_name: res.data.under_group_name,
         });
       })
-      .catch((error) => dispatch(failEditAccountGroup()));
+      .catch((error) => dispatch(failEditAccountGroup(error)));
   };
 };
 
@@ -125,6 +156,7 @@ export const updateAccountGroupDataStart = () => {
 };
 
 export const updateAccountGroupData = (
+  data,
   id,
   editing,
   setEditing,
@@ -136,10 +168,16 @@ export const updateAccountGroupData = (
     setEditing(false);
 
     axios
-      .put(`accountGroups/${id}`, currentUser)
+      .put(baseUrl + `accountGroups/${id}`, currentUser, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
-        swal("Successfully Updated Account Group!").then(() => {
+        swal("Successfully Updated accountGroup!").then(() => {
           window.location.reload();
         });
       })

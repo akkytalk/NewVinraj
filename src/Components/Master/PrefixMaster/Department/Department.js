@@ -11,10 +11,16 @@ import Link from "@material-ui/core/Link";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 
 function Department(props) {
+  let data = {
+    token: props.login?.login?.success?.token,
+  };
+
+  // console.log("data", data);
+  // console.log("login", props.login?.login);
   useEffect(() => {
     console.log("department data from redux ", props.department);
-    props.onDepartmentGetData();
-    props.onDeleteDepartment();
+    props.onDepartmentGetData(data);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -39,8 +45,6 @@ function Department(props) {
     const { name, value } = event.target;
     setUser({ ...user, [name]: value });
   };
-
-  
 
   // console.log("editing", editing);
   // console.log("Current User", currentUser);
@@ -67,16 +71,10 @@ function Department(props) {
                 separator={<NavigateNextIcon fontSize="small" />}
                 aria-label="breadcrumb"
               >
-                <Link color="inherit" href="/" >
+                <Link color="inherit" href="/">
                   Home
                 </Link>
-                <Link
-                  color="inherit"
-              
-                 
-                >
-                  Master
-                </Link>
+                <Link color="inherit">Master</Link>
                 <Typography color="textPrimary">Department Master</Typography>
               </Breadcrumbs>
             </li>
@@ -97,7 +95,7 @@ function Department(props) {
                     <form
                       onSubmit={(event) => {
                         event.preventDefault();
-                        props.onPostDepartmentData(user);
+                        props.onPostDepartmentData(data, user);
                       }}
                     >
                       <div className="form-row" style={{ fontSize: "12px" }}>
@@ -132,6 +130,7 @@ function Department(props) {
                                 type="button"
                                 onClick={() =>
                                   props.onUpdateDepartmentData(
+                                    data,
                                     currentUser.id,
                                     editing,
                                     setEditing,
@@ -181,6 +180,7 @@ function Department(props) {
                                 <button
                                   onClick={() =>
                                     props.onEditDepartmentRow(
+                                      data,
                                       user.id,
                                       editing,
                                       setEditing,
@@ -203,7 +203,7 @@ function Department(props) {
                                         "Are you sure you wish to delete this Department?"
                                       )
                                     )
-                                      props.onDeleteDepartment(user.id);
+                                      props.onDeleteDepartment(user.id, data);
                                   }}
                                 >
                                   <i
@@ -236,15 +236,19 @@ function Department(props) {
 const mapStateToProps = (state) => {
   return {
     department: state.department.department,
+    login: state.login,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onDepartmentGetData: () => dispatch(actions.departmentGetData()),
-    onDeleteDepartment: (id) => dispatch(actions.deleteDepartment(id)),
-    onPostDepartmentData: (user) => dispatch(actions.postDepartmentData(user)),
+    onDepartmentGetData: (data) => dispatch(actions.departmentGetData(data)),
+    onDeleteDepartment: (id, data) =>
+      dispatch(actions.deleteDepartment(id, data)),
+    onPostDepartmentData: (data, user) =>
+      dispatch(actions.postDepartmentData(data, user)),
     onUpdateDepartmentData: (
+      data,
       id,
       editing,
       setEditing,
@@ -253,6 +257,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.updateDepartmentData(
+          data,
           id,
           editing,
           setEditing,
@@ -261,6 +266,7 @@ const mapDispatchToProps = (dispatch) => {
         )
       ),
     onEditDepartmentRow: (
+      data,
       id,
       editing,
       setEditing,
@@ -269,6 +275,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.editDepartmentRow(
+          data,
           id,
           editing,
           setEditing,

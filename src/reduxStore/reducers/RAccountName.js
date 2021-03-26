@@ -17,13 +17,13 @@ const reducer = (state = initialState, action) => {
     case actionType.ACCOUNT_NAME_FAIL_DATA:
       return {
         ...state,
-        error: true,
+        error: action.error,
       };
 
     case actionType.POST_ACCOUNT_NAME_DATA_FAIL:
       return {
         ...state,
-        error: true,
+        error: action.error,
       };
 
     case actionType.EDIT_ACCOUNT_NAME_ROW_START:

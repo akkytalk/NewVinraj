@@ -63,13 +63,19 @@ function ItemName(props) {
     setValue(newValue);
   };
 
-  useEffect(() => {
-    console.log("currentUser data from redux ", currentUser);
+  let data = {
+    token: props.login?.login?.success?.token,
+  };
 
-    props.onItemUnitsGetData();
-    props.onItemGroupGetData();
-    props.onItemNameGetData();
-    props.onDeleteItemName();
+  //  console.log("data", data);
+  //  console.log("login", props.login?.login);
+  useEffect(() => {
+    //console.log("currentUser data from redux ", currentUser);
+
+    props.onItemUnitsGetData(data);
+    props.onItemGroupGetData(data);
+    props.onItemNameGetData(data);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -111,7 +117,7 @@ function ItemName(props) {
         {/* Navbar */}
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
           {/* Left navbar links */}
-          <ul  className="navbar-nav d-flex align-items-center">
+          <ul className="navbar-nav d-flex align-items-center">
             <li className="nav-item">
               <a
                 className="nav-link"
@@ -127,21 +133,11 @@ function ItemName(props) {
                 separator={<NavigateNextIcon fontSize="small" />}
                 aria-label="breadcrumb"
               >
-                <Link color="inherit" href="/" >
+                <Link color="inherit" href="/">
                   Home
                 </Link>
-                <Link
-                  color="inherit"
-                  
-                >
-                  Master
-                </Link>
-                <Link
-                  color="inherit"
-                  
-                >
-                 Item Master
-                </Link>
+                <Link color="inherit">Master</Link>
+                <Link color="inherit">Item Master</Link>
                 <Typography color="textPrimary">Item Name Master</Typography>
               </Breadcrumbs>
             </li>
@@ -172,7 +168,7 @@ function ItemName(props) {
                         <form
                           onSubmit={(event) => {
                             event.preventDefault();
-                            props.onPostItemNameData(user);
+                            props.onPostItemNameData(data, user);
                           }}
                         >
                           <div
@@ -280,6 +276,7 @@ function ItemName(props) {
                                     type="button"
                                     onClick={() =>
                                       props.onUpdateItemNameData(
+                                        data,
                                         currentUser.id,
                                         editing,
                                         setEditing,
@@ -334,6 +331,7 @@ function ItemName(props) {
                                     <button
                                       onClick={() =>
                                         props.onEditItemNameRow(
+                                          data,
                                           user.id,
                                           editing,
                                           setEditing,
@@ -356,7 +354,7 @@ function ItemName(props) {
                                             "Are you sure you wish to delete this Item Name?"
                                           )
                                         )
-                                          props.onDeleteItemName(user.id);
+                                          props.onDeleteItemName(user.id, data);
                                       }}
                                     >
                                       <i
@@ -394,17 +392,20 @@ const mapStateToProps = (state) => {
     itemGroup: state.itemGroup.itemGroup,
     itemName: state.itemName.itemName,
     form: state.form.form,
+    login: state.login,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onItemUnitsGetData: () => dispatch(actions.itemUnitsGetData()),
-    onItemGroupGetData: () => dispatch(actions.itemGroupGetData()),
-    onItemNameGetData: () => dispatch(actions.itemNameGetData()),
-    onDeleteItemName: (id) => dispatch(actions.deleteItemName(id)),
-    onPostItemNameData: (user) => dispatch(actions.postItemNameData(user)),
+    onItemUnitsGetData: (data) => dispatch(actions.itemUnitsGetData(data)),
+    onItemGroupGetData: (data) => dispatch(actions.itemGroupGetData(data)),
+    onItemNameGetData: (data) => dispatch(actions.itemNameGetData(data)),
+    onDeleteItemName: (id, data) => dispatch(actions.deleteItemName(id, data)),
+    onPostItemNameData: (data, user) =>
+      dispatch(actions.postItemNameData(data, user)),
     onUpdateItemNameData: (
+      data,
       id,
       editing,
       setEditing,
@@ -413,6 +414,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.updateItemNameData(
+          data,
           id,
           editing,
           setEditing,
@@ -420,9 +422,17 @@ const mapDispatchToProps = (dispatch) => {
           setCurrentUser
         )
       ),
-    onEditItemNameRow: (id, editing, setEditing, currentUser, setCurrentUser) =>
+    onEditItemNameRow: (
+      data,
+      id,
+      editing,
+      setEditing,
+      currentUser,
+      setCurrentUser
+    ) =>
       dispatch(
         actions.editItemNameRow(
+          data,
           id,
           editing,
           setEditing,

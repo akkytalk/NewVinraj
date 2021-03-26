@@ -1,9 +1,27 @@
 import axios from "axios";
 import React, { Fragment, useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { departmentGetData, formGetData } from "../../reduxStore/actions";
 
-function RightsUserMaster() {
+function RightsUserMaster(props) {
   const [form, setForm] = useState([]);
   const [department, SetDepartment] = useState([]);
+
+  let data = {
+    token: props.login?.login?.success?.token,
+  };
+
+  //  console.log("data", data);
+  //  console.log("login", props.login?.login);
+
+  useEffect(() => {
+    // console.log("prefix data from redux ", props.prefix);
+    props.onDepartmentGetData(data);
+    props.onFormGetData(data);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     axios
       .get("https://uditsolutions.in/vinrajbackend/public/api/departments")
@@ -44,10 +62,10 @@ function RightsUserMaster() {
               <th scope="col">details</th>
             </tr>
           </thead>
-          {department.map((dep) => (
+          {props.department.map((dep) => (
             <tbody>
               <h6 className="mt-3">{dep.name}</h6>
-              {form.map((form) => {
+              {props.form.map((form) => {
                 if (dep.id == form.department_id) {
                   return (
                     <tr>
@@ -80,4 +98,19 @@ function RightsUserMaster() {
   );
 }
 
-export default RightsUserMaster;
+const mapStateToProps = (state) => {
+  return {
+    department: state.department.department,
+    form: state.form.form,
+    prefix: state.prefix.prefix,
+    login: state.login,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onDepartmentGetData: (data) => dispatch(departmentGetData(data)),
+    onFormGetData: (data) => dispatch(formGetData(data)),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(RightsUserMaster);

@@ -8,8 +8,14 @@ import Typography from "@material-ui/core/Typography";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import Link from "@material-ui/core/Link";
 
-
 function Prefix(props) {
+  let data = {
+    token: props.login?.login?.success?.token,
+  };
+
+  //  console.log("data", data);
+  //  console.log("login", props.login?.login);
+
   const [user, setUser] = useState({
     form_id: "",
     department_id: "",
@@ -47,16 +53,13 @@ function Prefix(props) {
   };
 
   useEffect(() => {
-    console.log("prefix data from redux ", props.prefix);
-    props.onDepartmentGetData();
-    props.onFormGetData();
-    props.onPrefixGetData();
-    props.onDeletePrefix();
+    // console.log("prefix data from redux ", props.prefix);
+    props.onDepartmentGetData(data);
+    props.onFormGetData(data);
+    props.onPrefixGetData(data);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-
- 
 
   return (
     <Fragment>
@@ -64,7 +67,7 @@ function Prefix(props) {
         {/* Navbar */}
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
           {/* Left navbar links */}
-          <ul  className="navbar-nav d-flex align-items-center">
+          <ul className="navbar-nav d-flex align-items-center">
             <li className="nav-item">
               <a
                 className="nav-link"
@@ -80,16 +83,10 @@ function Prefix(props) {
                 separator={<NavigateNextIcon fontSize="small" />}
                 aria-label="breadcrumb"
               >
-                <Link color="inherit" href="/" >
+                <Link color="inherit" href="/">
                   Home
                 </Link>
-                <Link
-                  color="inherit"
-                 
-                
-                >
-                  Master
-                </Link>
+                <Link color="inherit">Master</Link>
                 <Typography color="textPrimary">Form Prefix Master</Typography>
               </Breadcrumbs>
             </li>
@@ -109,7 +106,7 @@ function Prefix(props) {
                     <form
                       onSubmit={(event) => {
                         event.preventDefault();
-                        props.onPostPrefixData(user);
+                        props.onPostPrefixData(data, user);
                       }}
                     >
                       <div className="form-row" style={{ fontSize: "12px" }}>
@@ -240,6 +237,7 @@ function Prefix(props) {
                                 type="button"
                                 onClick={() =>
                                   props.onUpdatePrefixData(
+                                    data,
                                     currentUser.id,
                                     editing,
                                     setEditing,
@@ -288,6 +286,7 @@ function Prefix(props) {
                                 <button
                                   onClick={() =>
                                     props.onEditPrefixRow(
+                                      data,
                                       user.id,
                                       editing,
                                       setEditing,
@@ -310,7 +309,7 @@ function Prefix(props) {
                                         "Are you sure you wish to delete this Prefix?"
                                       )
                                     )
-                                      props.onDeletePrefix(user.id);
+                                      props.onDeletePrefix(user.id, data);
                                   }}
                                 >
                                   <i
@@ -345,17 +344,20 @@ const mapStateToProps = (state) => {
     department: state.department.department,
     form: state.form.form,
     prefix: state.prefix.prefix,
+    login: state.login,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onDepartmentGetData: () => dispatch(actions.departmentGetData()),
-    onFormGetData: () => dispatch(actions.formGetData()),
-    onPrefixGetData: () => dispatch(actions.prefixGetData()),
-    onDeletePrefix: (id) => dispatch(actions.deletePrefix(id)),
-    onPostPrefixData: (user) => dispatch(actions.postPrefixData(user)),
+    onDepartmentGetData: (data) => dispatch(actions.departmentGetData(data)),
+    onFormGetData: (data) => dispatch(actions.formGetData(data)),
+    onPrefixGetData: (data) => dispatch(actions.prefixGetData(data)),
+    onDeletePrefix: (id, data) => dispatch(actions.deletePrefix(id, data)),
+    onPostPrefixData: (data, user) =>
+      dispatch(actions.postPrefixData(data, user)),
     onUpdatePrefixData: (
+      data,
       id,
       editing,
       setEditing,
@@ -364,6 +366,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.updatePrefixData(
+          data,
           id,
           editing,
           setEditing,
@@ -371,9 +374,17 @@ const mapDispatchToProps = (dispatch) => {
           setCurrentUser
         )
       ),
-    onEditPrefixRow: (id, editing, setEditing, currentUser, setCurrentUser) =>
+    onEditPrefixRow: (
+      data,
+      id,
+      editing,
+      setEditing,
+      currentUser,
+      setCurrentUser
+    ) =>
       dispatch(
         actions.editPrefixRow(
+          data,
           id,
           editing,
           setEditing,

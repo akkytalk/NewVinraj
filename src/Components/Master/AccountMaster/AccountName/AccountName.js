@@ -63,12 +63,18 @@ function AccountName(props) {
     setValue(newValue);
   };
 
+  let data = {
+    token: props.login?.login?.success?.token,
+  };
+
+  //  console.log("data", data);
+  //  console.log("login", props.login?.login);
   useEffect(() => {
     console.log("currentUser data from redux ", currentUser);
 
-    props.onAccountGroupGetData();
-    props.onAccountNameGetData();
-    props.onDeleteAccountName();
+    props.onAccountGroupGetData(data);
+    props.onAccountNameGetData(data);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -107,7 +113,7 @@ function AccountName(props) {
         {/* Navbar */}
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
           {/* Left navbar links */}
-          <ul  className="navbar-nav d-flex align-items-center">
+          <ul className="navbar-nav d-flex align-items-center">
             <li className="nav-item">
               <a
                 className="nav-link"
@@ -123,21 +129,11 @@ function AccountName(props) {
                 separator={<NavigateNextIcon fontSize="small" />}
                 aria-label="breadcrumb"
               >
-                <Link color="inherit" href="/" >
+                <Link color="inherit" href="/">
                   Home
                 </Link>
-                <Link
-                  color="inherit"
-                  
-                >
-                  Master
-                </Link>
-                <Link
-                  color="inherit"
-                  
-                >
-                 Account Master
-                </Link>
+                <Link color="inherit">Master</Link>
+                <Link color="inherit">Account Master</Link>
                 <Typography color="textPrimary">Account Name Master</Typography>
               </Breadcrumbs>
             </li>
@@ -168,7 +164,7 @@ function AccountName(props) {
                         <form
                           onSubmit={(event) => {
                             event.preventDefault();
-                            props.onPostAccountNameData(user);
+                            props.onPostAccountNameData(data, user);
                           }}
                         >
                           <div
@@ -251,6 +247,7 @@ function AccountName(props) {
                                     type="button"
                                     onClick={() =>
                                       props.onUpdateAccountNameData(
+                                        data,
                                         currentUser.id,
                                         editing,
                                         setEditing,
@@ -301,6 +298,7 @@ function AccountName(props) {
                                     <button
                                       onClick={() =>
                                         props.onEditAccountNameRow(
+                                          data,
                                           user.id,
                                           editing,
                                           setEditing,
@@ -323,7 +321,10 @@ function AccountName(props) {
                                             "Are you sure you wish to delete this Account Name?"
                                           )
                                         )
-                                          props.onDeleteAccountName(user.id);
+                                          props.onDeleteAccountName(
+                                            user.id,
+                                            data
+                                          );
                                       }}
                                     >
                                       <i
@@ -360,17 +361,21 @@ const mapStateToProps = (state) => {
     accountGroup: state.accountGroup.accountGroup,
     accountName: state.accountName.accountName,
     form: state.form.form,
+    login: state.login,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAccountGroupGetData: () => dispatch(actions.accountGroupGetData()),
-    onAccountNameGetData: () => dispatch(actions.accountNameGetData()),
-    onDeleteAccountName: (id) => dispatch(actions.deleteAccountName(id)),
-    onPostAccountNameData: (user) =>
-      dispatch(actions.postAccountNameData(user)),
+    onAccountGroupGetData: (data) =>
+      dispatch(actions.accountGroupGetData(data)),
+    onAccountNameGetData: (data) => dispatch(actions.accountNameGetData(data)),
+    onDeleteAccountName: (id, data) =>
+      dispatch(actions.deleteAccountName(id, data)),
+    onPostAccountNameData: (data, user) =>
+      dispatch(actions.postAccountNameData(data, user)),
     onUpdateAccountNameData: (
+      data,
       id,
       editing,
       setEditing,
@@ -379,6 +384,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.updateAccountNameData(
+          data,
           id,
           editing,
           setEditing,
@@ -387,6 +393,7 @@ const mapDispatchToProps = (dispatch) => {
         )
       ),
     onEditAccountNameRow: (
+      data,
       id,
       editing,
       setEditing,
@@ -395,6 +402,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.editAccountNameRow(
+          data,
           id,
           editing,
           setEditing,

@@ -1,6 +1,7 @@
 import * as actionType from "./actionType";
 import axios from "../../axios";
 import swal from "sweetalert";
+import { baseUrl } from "../../shared/baseUrl";
 
 export const prefixSetData = (prefix) => {
   return {
@@ -9,36 +10,50 @@ export const prefixSetData = (prefix) => {
   };
 };
 
-export const prefixFailData = () => {
+export const prefixFailData = (error) => {
   return {
     type: actionType.PREFIX_FAIL_DATA,
+    error: error,
   };
 };
 
-export const prefixGetData = () => {
+export const prefixGetData = (data) => {
   return (dispatch) => {
     axios
-      .get("prefixs")
+      .get(baseUrl + "prefixs", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
-        console.log(res.data, "prefix res");
+        console.log(res.data, "res");
         dispatch(prefixSetData(res.data));
       })
 
-      .catch((error) => dispatch(prefixFailData()));
+      .catch((error) => dispatch(prefixFailData(error)));
   };
 };
 
-export const deletePrefixFail = () => {
+export const deletePrefixFail = (error) => {
   return {
     type: actionType.DELETE_PREFIX_FAIL,
+    error: error,
   };
 };
 
-export const deletePrefix = (id) => {
+export const deletePrefix = (id, data) => {
   return (dispatch) => {
     if (id) {
       axios
-        .delete(`prefixs/${id}`)
+        .delete(baseUrl + `prefixs/${id}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + data?.token,
+          },
+        })
         .then(() => {
           console.log("swal");
           swal("Successfully Deleted Prefix!").then(() => {
@@ -56,29 +71,36 @@ export const postPrefixDataStart = () => {
   };
 };
 
-export const postPrefixDataFail = () => {
+export const postPrefixDataFail = (error) => {
   return {
     type: actionType.POST_PREFIX_DATA_FAIL,
+    error: error,
   };
 };
 
-export const postPrefixData = (user) => {
+export const postPrefixData = (data, user) => {
   return (dispatch) => {
-    if (!user.form_id || !user.department_id || !user.prefix) return;
-
+    //if (!user.name) return;
+    // console.log("data", data);
+    console.log("user", user);
     dispatch(postPrefixDataStart());
-
     axios
-      .post("prefixs", user)
+      .post(baseUrl + "prefixs", user, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
         swal("Successfully Created Prefix!").then(() => {
           window.location.reload();
         });
       })
-      .catch((error) => dispatch(postPrefixDataFail()));
+      .catch((error) => dispatch(postPrefixDataFail(error)));
     // props.addUser(user);
-    // setUser(initialFormState);
+    // setUser(initialPrefixState);
   };
 };
 
@@ -88,13 +110,15 @@ export const editPrefixRowStart = () => {
   };
 };
 
-export const failEditPrefix = () => {
+export const failEditPrefix = (error) => {
   return {
     type: actionType.FAIL_EDIT_PREFIX,
+    error: error,
   };
 };
 
 export const editPrefixRow = (
+  data,
   id,
   editing,
   setEditing,
@@ -105,7 +129,13 @@ export const editPrefixRow = (
     dispatch(editPrefixRowStart());
     setEditing(true);
     axios
-      .get(`prefixs/${id}`)
+      .get(baseUrl + `prefixs/${id}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
         console.log(res.data, "editing data res");
         setEditing(res.data);
@@ -118,7 +148,7 @@ export const editPrefixRow = (
           prefix: res.data.prefix,
         });
       })
-      .catch((error) => dispatch(failEditPrefix()));
+      .catch((error) => dispatch(failEditPrefix(error)));
   };
 };
 
@@ -129,6 +159,7 @@ export const updatePrefixDataStart = () => {
 };
 
 export const updatePrefixData = (
+  data,
   id,
   editing,
   setEditing,
@@ -140,10 +171,16 @@ export const updatePrefixData = (
     setEditing(false);
 
     axios
-      .put(`prefixs/${id}`, currentUser)
+      .put(baseUrl + `prefixs/${id}`, currentUser, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
-        swal("Successfully Updated Prefix!").then(() => {
+        swal("Successfully Updated prefix!").then(() => {
           window.location.reload();
         });
       })

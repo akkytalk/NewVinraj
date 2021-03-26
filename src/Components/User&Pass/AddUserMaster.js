@@ -42,11 +42,18 @@ function AddUserMaster(props) {
   //   setEditing(false);
   //   setUsers(users.map((user) => (user.id === id ? updateUser : user)));
   // };
+
+  let data = {
+    token: props.login?.login?.success?.token,
+  };
+
+  //  console.log("data", data);
+  //  console.log("login", props.login?.login);
   useEffect(() => {
     console.log("currentUser data from redux ", currentUser);
 
-    props.onUserMasterGetData();
-    props.onDeleteUserMaster();
+    props.onUserMasterGetData(data);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -95,7 +102,7 @@ function AddUserMaster(props) {
             <form
               onSubmit={(event) => {
                 event.preventDefault();
-                props.onPostUserMasterData(user);
+                props.onPostUserMasterData(data, user);
               }}
             >
               <div className="form-row" style={{ fontSize: "12px" }}>
@@ -253,38 +260,39 @@ function AddUserMaster(props) {
                   />
                 </div>
               </div>
-              
-                          {!editing || !currentUser ? (
-                            <button className="btn btn-primary mb-3" type="submit">
-                              Add
-                            </button>
-                          ) : (
-                            <div>
-                              <button
-                                className="btn btn-success"
-                                type="button"
-                                onClick={() =>
-                                  props.onUpdateUserMasterData(
-                                    currentUser.id,
-                                    editing,
-                                    setEditing,
-                                    currentUser,
-                                    setCurrentUser
-                                  )
-                                }
-                              >
-                                Update
-                              </button>
-                              <button
-                                className="btn btn-primary ml-3"
-                                type="button"
-                                onClick={() => setEditing(false)}
-                              >
-                                Cancel
-                              </button>
-                            </div>
-                          )}
-                        
+
+              {!editing || !currentUser ? (
+                <button className="btn btn-primary mb-3" type="submit">
+                  Add
+                </button>
+              ) : (
+                <div>
+                  <button
+                    className="btn btn-success"
+                    type="button"
+                    onClick={() =>
+                      props.onUpdateUserMasterData(
+                        data,
+                        currentUser.id,
+                        editing,
+                        setEditing,
+                        currentUser,
+                        setCurrentUser
+                      )
+                    }
+                  >
+                    Update
+                  </button>
+                  <button
+                    className="btn btn-primary ml-3"
+                    type="button"
+                    onClick={() => setEditing(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+
               <br />
             </form>
           </div>
@@ -309,6 +317,7 @@ function AddUserMaster(props) {
                         <button
                           onClick={() =>
                             props.onEditUserMasterRow(
+                              data,
                               user.id,
                               editing,
                               setEditing,
@@ -322,7 +331,9 @@ function AddUserMaster(props) {
 
                         <button
                           className="ml-3"
-                          onClick={() => props.onDeleteUserMaster(user.id)}
+                          onClick={() =>
+                            props.onDeleteUserMaster(user.id, data)
+                          }
                         >
                           <i
                             className="fa fa-trash-alt"
@@ -351,15 +362,19 @@ const mapStateToProps = (state) => {
   return {
     userMaster: state.userMaster.userMaster,
     form: state.form.form,
+    login: state.login,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onUserMasterGetData: () => dispatch(actions.userMasterGetData()),
-    onDeleteUserMaster: (id) => dispatch(actions.deleteUserMaster(id)),
-    onPostUserMasterData: (user) => dispatch(actions.postUserMasterData(user)),
+    onUserMasterGetData: (data) => dispatch(actions.userMasterGetData(data)),
+    onDeleteUserMaster: (id, data) =>
+      dispatch(actions.deleteUserMaster(id, data)),
+    onPostUserMasterData: (data, user) =>
+      dispatch(actions.postUserMasterData(data, user)),
     onUpdateUserMasterData: (
+      data,
       id,
       editing,
       setEditing,
@@ -368,6 +383,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.updateUserMasterData(
+          data,
           id,
           editing,
           setEditing,
@@ -376,6 +392,7 @@ const mapDispatchToProps = (dispatch) => {
         )
       ),
     onEditUserMasterRow: (
+      data,
       id,
       editing,
       setEditing,
@@ -384,6 +401,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.editUserMasterRow(
+          data,
           id,
           editing,
           setEditing,

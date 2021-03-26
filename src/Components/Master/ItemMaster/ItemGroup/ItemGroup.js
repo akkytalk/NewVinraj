@@ -63,12 +63,19 @@ function ItemGroup(props) {
     setValue(newValue);
   };
 
-  useEffect(() => {
-    console.log("currentUser data from redux ", currentUser);
+  let data = {
+    token: props.login?.login?.success?.token,
+  };
 
-    props.onItemGroupGetData();
-    props.onItemGroupGetData();
-    props.onDeleteItemGroup();
+  //  console.log("data", data);
+  //  console.log("login", props.login?.login);
+
+  useEffect(() => {
+    // console.log("currentUser data from redux ", currentUser);
+
+    props.onItemGroupGetData(data);
+    props.onItemGroupGetData(data);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -103,7 +110,7 @@ function ItemGroup(props) {
         {/* Navbar */}
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
           {/* Left navbar links */}
-          <ul  className="navbar-nav d-flex align-items-center">
+          <ul className="navbar-nav d-flex align-items-center">
             <li className="nav-item">
               <a
                 className="nav-link"
@@ -119,21 +126,11 @@ function ItemGroup(props) {
                 separator={<NavigateNextIcon fontSize="small" />}
                 aria-label="breadcrumb"
               >
-                <Link color="inherit" href="/" >
+                <Link color="inherit" href="/">
                   Home
                 </Link>
-                <Link
-                  color="inherit"
-                  
-                >
-                  Master
-                </Link>
-                <Link
-                  color="inherit"
-                  
-                >
-                 Item Master
-                </Link>
+                <Link color="inherit">Master</Link>
+                <Link color="inherit">Item Master</Link>
                 <Typography color="textPrimary">Item Group Master</Typography>
               </Breadcrumbs>
             </li>
@@ -164,7 +161,7 @@ function ItemGroup(props) {
                         <form
                           onSubmit={(event) => {
                             event.preventDefault();
-                            props.onPostItemGroupData(user);
+                            props.onPostItemGroupData(data, user);
                           }}
                         >
                           <div
@@ -250,6 +247,7 @@ function ItemGroup(props) {
                                     type="button"
                                     onClick={() =>
                                       props.onUpdateItemGroupData(
+                                        data,
                                         currentUser.id,
                                         editing,
                                         setEditing,
@@ -296,6 +294,7 @@ function ItemGroup(props) {
                                     <button
                                       onClick={() =>
                                         props.onEditItemGroupRow(
+                                          data,
                                           user.id,
                                           editing,
                                           setEditing,
@@ -318,7 +317,10 @@ function ItemGroup(props) {
                                             "Are you sure you wish to delete this Item Group?"
                                           )
                                         )
-                                          props.onDeleteItemGroup(user.id);
+                                          props.onDeleteItemGroup(
+                                            user.id,
+                                            data
+                                          );
                                       }}
                                     >
                                       <i
@@ -354,15 +356,19 @@ const mapStateToProps = (state) => {
   return {
     itemGroup: state.itemGroup.itemGroup,
     form: state.form.form,
+    login: state.login,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onItemGroupGetData: () => dispatch(actions.itemGroupGetData()),
-    onDeleteItemGroup: (id) => dispatch(actions.deleteItemGroup(id)),
-    onPostItemGroupData: (user) => dispatch(actions.postItemGroupData(user)),
+    onItemGroupGetData: (data) => dispatch(actions.itemGroupGetData(data)),
+    onDeleteItemGroup: (id, data) =>
+      dispatch(actions.deleteItemGroup(id, data)),
+    onPostItemGroupData: (data, user) =>
+      dispatch(actions.postItemGroupData(data, user)),
     onUpdateItemGroupData: (
+      data,
       id,
       editing,
       setEditing,
@@ -371,6 +377,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.updateItemGroupData(
+          data,
           id,
           editing,
           setEditing,
@@ -379,6 +386,7 @@ const mapDispatchToProps = (dispatch) => {
         )
       ),
     onEditItemGroupRow: (
+      data,
       id,
       editing,
       setEditing,
@@ -387,6 +395,7 @@ const mapDispatchToProps = (dispatch) => {
     ) =>
       dispatch(
         actions.editItemGroupRow(
+          data,
           id,
           editing,
           setEditing,

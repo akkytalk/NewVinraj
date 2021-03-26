@@ -1,6 +1,7 @@
 import * as actionType from "./actionType";
 import axios from "../../axios";
 import swal from "sweetalert";
+import { baseUrl } from "../../shared/baseUrl";
 
 export const userMasterSetData = (userMaster) => {
   return {
@@ -9,43 +10,57 @@ export const userMasterSetData = (userMaster) => {
   };
 };
 
-export const userMasterFailData = () => {
+export const userMasterFailData = (error) => {
   return {
     type: actionType.USER_MASTER_FAIL_DATA,
+    error: error,
   };
 };
 
-export const userMasterGetData = () => {
+export const userMasterGetData = (data) => {
   return (dispatch) => {
     axios
-      .get("users")
+      .get(baseUrl + "users", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
-        console.log(res.data, "userMaster res");
+        console.log(res.data, "res");
         dispatch(userMasterSetData(res.data));
       })
 
-      .catch((error) => dispatch(userMasterFailData()));
+      .catch((error) => dispatch(userMasterFailData(error)));
   };
 };
 
-export const deleteUserMasterFail = () => {
+export const deleteUserMasterFail = (error) => {
   return {
     type: actionType.DELETE_USER_MASTER_FAIL,
+    error: error,
   };
 };
 
-export const deleteUserMaster = (id) => {
+export const deleteUserMaster = (id, data) => {
   return (dispatch) => {
     if (id) {
       axios
-        .delete(`users/${id}`)
+        .delete(baseUrl + `users/${id}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + data?.token,
+          },
+        })
         .then(() => {
           console.log("swal");
-          swal("Successfully Deleted UserMaster!").then(() => {
+          swal("Successfully Deleted User!").then(() => {
             window.location.reload();
           });
         })
-        .catch((error) => dispatch(deleteUserMasterFail()));
+        .catch((error) => dispatch(deleteUserMasterFail(error)));
     }
   };
 };
@@ -56,29 +71,36 @@ export const postUserMasterDataStart = () => {
   };
 };
 
-export const postUserMasterDataFail = () => {
+export const postUserMasterDataFail = (error) => {
   return {
     type: actionType.POST_USER_MASTER_DATA_FAIL,
+    error: error,
   };
 };
 
-export const postUserMasterData = (user) => {
+export const postUserMasterData = (data, user) => {
   return (dispatch) => {
-    if (!user.name || !user.email || !user.password) return;
-
+    //if (!userMaster.name) return;
+    // console.log("data", data);
+    console.log("userMaster", user);
     dispatch(postUserMasterDataStart());
-
     axios
-      .post("users", user)
+      .post(baseUrl + "users", user, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
-        swal("Successfully Created UserMaster!").then(() => {
+        swal("Successfully Created User!").then(() => {
           window.location.reload();
         });
       })
-      .catch((error) => dispatch(postUserMasterDataFail()));
-    // props.addUser(user);
-    // setUser(initialFormState);
+      .catch((error) => dispatch(postUserMasterDataFail(error)));
+    // props.addUserMasterMaster(userMaster);
+    // setUserMaster(initialUserMasterState);
   };
 };
 
@@ -88,13 +110,15 @@ export const editUserMasterRowStart = () => {
   };
 };
 
-export const failEditUserMaster = () => {
+export const failEditUserMaster = (error) => {
   return {
     type: actionType.FAIL_EDIT_USER_MASTER,
+    error: error,
   };
 };
 
 export const editUserMasterRow = (
+  data,
   id,
   editing,
   setEditing,
@@ -105,7 +129,13 @@ export const editUserMasterRow = (
     dispatch(editUserMasterRowStart());
     setEditing(true);
     axios
-      .get(`users/${id}`)
+      .get(baseUrl + `users/${id}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
         console.log(res.data, "editing data res");
         setEditing(res.data);
@@ -121,7 +151,7 @@ export const editUserMasterRow = (
           pincode: res.data.pincode,
         });
       })
-      .catch((error) => dispatch(failEditUserMaster()));
+      .catch((error) => dispatch(failEditUserMaster(error)));
   };
 };
 
@@ -132,6 +162,7 @@ export const updateUserMasterDataStart = () => {
 };
 
 export const updateUserMasterData = (
+  data,
   id,
   editing,
   setEditing,
@@ -143,10 +174,16 @@ export const updateUserMasterData = (
     setEditing(false);
 
     axios
-      .put(`users/${id}`, currentUser)
+      .put(baseUrl + `users/${id}`, currentUser, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
-        swal("Successfully Updated UserMaster!").then(() => {
+        swal("Successfully Updated user!").then(() => {
           window.location.reload();
         });
       })

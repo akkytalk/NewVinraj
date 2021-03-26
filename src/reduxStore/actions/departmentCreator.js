@@ -1,6 +1,7 @@
 import * as actionType from "./actionType";
 import axios from "../../axios";
 import swal from "sweetalert";
+import { baseUrl } from "../../shared/baseUrl";
 
 export const departmentSetData = (department) => {
   return {
@@ -9,43 +10,58 @@ export const departmentSetData = (department) => {
   };
 };
 
-export const departmentFailData = () => {
+export const departmentFailData = (error) => {
   return {
     type: actionType.DEPARTMENT_FAIL_DATA,
+    error: error,
   };
 };
 
-export const departmentGetData = () => {
+export const departmentGetData = (data) => {
   return (dispatch) => {
+    dispatch(departmentLoading(true));
     axios
-      .get("departments")
+      .get(baseUrl + "departments", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
         console.log(res.data, "res");
         dispatch(departmentSetData(res.data));
       })
 
-      .catch((error) => dispatch(departmentFailData()));
+      .catch((error) => dispatch(departmentFailData(error)));
   };
 };
 
-export const deleteDepartmentFail = () => {
+export const deleteDepartmentFail = (error) => {
   return {
     type: actionType.DELETE_DEPARTMENT_FAIL,
+    error: error,
   };
 };
 
-export const deleteDepartment = (id) => {
+export const deleteDepartment = (id, data) => {
   return (dispatch) => {
     if (id) {
       axios
-        .delete(`departments/${id}`)
+        .delete(baseUrl + `departments/${id}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + data?.token,
+          },
+        })
         .then(() => {
           console.log("swal");
           swal("Successfully Deleted Department!").then(() => {
             window.location.reload();
           });
         })
-        .catch((error) => dispatch(deleteDepartmentFail()));
+        .catch((error) => dispatch(deleteDepartmentFail(error)));
     }
   };
 };
@@ -56,26 +72,37 @@ export const postDepartmentDataStart = () => {
   };
 };
 
-export const postDepartmentDataFail = () => {
+export const postDepartmentDataFail = (error) => {
   return {
     type: actionType.POST_DEPARTMENT_DATA_FAIL,
+    error: error,
   };
 };
 
-export const postDepartmentData = (user) => {
+export const departmentLoading = () => ({
+  type: actionType.DEPARTMENT_LOADING,
+});
+
+export const postDepartmentData = (data, user) => {
   return (dispatch) => {
     if (!user.name) return;
-
+    console.log("data department", data);
     dispatch(postDepartmentDataStart());
     axios
-      .post("departments", user)
+      .post(baseUrl + "departments", user, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
         swal("Successfully Created Department!").then(() => {
           window.location.reload();
         });
       })
-      .catch((error) => dispatch(postDepartmentDataFail()));
+      .catch((error) => dispatch(postDepartmentDataFail(error)));
     // props.addUser(user);
     // setUser(initialFormState);
   };
@@ -87,13 +114,15 @@ export const editDepartmentRowStart = () => {
   };
 };
 
-export const failEditDepartment = () => {
+export const failEditDepartment = (error) => {
   return {
     type: actionType.FAIL_EDIT_DEPARTMENT,
+    error: error,
   };
 };
 
 export const editDepartmentRow = (
+  data,
   id,
   editing,
   setEditing,
@@ -104,7 +133,13 @@ export const editDepartmentRow = (
     dispatch(editDepartmentRowStart());
     setEditing(true);
     axios
-      .get(`departments/${id}`)
+      .get(baseUrl + `departments/${id}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
         console.log(res.data, "editing data res");
         setEditing(res.data);
@@ -124,6 +159,7 @@ export const updateDepartmentDataStart = () => {
 };
 
 export const updateDepartmentData = (
+  data,
   id,
   editing,
   setEditing,
@@ -135,7 +171,13 @@ export const updateDepartmentData = (
     setEditing(false);
 
     axios
-      .put(`departments/${id}`, currentUser)
+      .put(baseUrl + `departments/${id}`, currentUser, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
         swal("Successfully Updated department!").then(() => {

@@ -1,6 +1,7 @@
 import * as actionType from "./actionType";
 import axios from "../../axios";
 import swal from "sweetalert";
+import { baseUrl } from "../../shared/baseUrl";
 
 export const itemNameSetData = (itemName) => {
   return {
@@ -9,39 +10,53 @@ export const itemNameSetData = (itemName) => {
   };
 };
 
-export const itemNameFailData = () => {
+export const itemNameFailData = (error) => {
   return {
     type: actionType.ITEM_NAME_FAIL_DATA,
+    error: error,
   };
 };
 
-export const itemNameGetData = () => {
+export const itemNameGetData = (data) => {
   return (dispatch) => {
     axios
-      .get("items")
+      .get(baseUrl + "items", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
         console.log(res.data, "res");
         dispatch(itemNameSetData(res.data));
       })
 
-      .catch((error) => dispatch(itemNameFailData()));
+      .catch((error) => dispatch(itemNameFailData(error)));
   };
 };
 
-export const deleteItemNameFail = () => {
+export const deleteItemNameFail = (error) => {
   return {
     type: actionType.DELETE_ITEM_NAME_FAIL,
+    error: error,
   };
 };
 
-export const deleteItemName = (id) => {
+export const deleteItemName = (id, data) => {
   return (dispatch) => {
     if (id) {
       axios
-        .delete(`items/${id}`)
+        .delete(baseUrl + `items/${id}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + data?.token,
+          },
+        })
         .then(() => {
           console.log("swal");
-          swal("Successfully Deleted Item Name!").then(() => {
+          swal("Successfully Deleted ItemName!").then(() => {
             window.location.reload();
           });
         })
@@ -56,28 +71,36 @@ export const postItemNameDataStart = () => {
   };
 };
 
-export const postItemNameDataFail = () => {
+export const postItemNameDataFail = (error) => {
   return {
     type: actionType.POST_ITEM_NAME_DATA_FAIL,
+    error: error,
   };
 };
 
-export const postItemNameData = (user) => {
+export const postItemNameData = (data, user) => {
   return (dispatch) => {
-    if (!user.name) return;
-
+    //if (!user.name) return;
+    // console.log("data", data);
+    console.log("user", user);
     dispatch(postItemNameDataStart());
     axios
-      .post("items", user)
+      .post(baseUrl + "items", user, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
-        swal("Successfully Created Item Name!").then(() => {
+        swal("Successfully Created ItemName!").then(() => {
           window.location.reload();
         });
       })
-      .catch((error) => dispatch(postItemNameDataFail()));
+      .catch((error) => dispatch(postItemNameDataFail(error)));
     // props.addUser(user);
-    // setUser(initialFormState);
+    // setUser(initialItemNameState);
   };
 };
 
@@ -87,13 +110,15 @@ export const editItemNameRowStart = () => {
   };
 };
 
-export const failEditItemName = () => {
+export const failEditItemName = (error) => {
   return {
     type: actionType.FAIL_EDIT_ITEM_NAME,
+    error: error,
   };
 };
 
 export const editItemNameRow = (
+  data,
   id,
   editing,
   setEditing,
@@ -104,9 +129,15 @@ export const editItemNameRow = (
     dispatch(editItemNameRowStart());
     setEditing(true);
     axios
-      .get(`items/${id}`)
+      .get(baseUrl + `items/${id}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
-        // console.log(res.data, "editing data res");
+        console.log(res.data, "editing data res");
         setEditing(res.data);
         setCurrentUser({
           id: res.data.id,
@@ -117,7 +148,7 @@ export const editItemNameRow = (
           unit_name: res.data.unit.unit_name,
         });
       })
-      .catch((error) => dispatch(failEditItemName()));
+      .catch((error) => dispatch(failEditItemName(error)));
   };
 };
 
@@ -128,6 +159,7 @@ export const updateItemNameDataStart = () => {
 };
 
 export const updateItemNameData = (
+  data,
   id,
   editing,
   setEditing,
@@ -139,10 +171,16 @@ export const updateItemNameData = (
     setEditing(false);
 
     axios
-      .put(`items/${id}`, currentUser)
+      .put(baseUrl + `items/${id}`, currentUser, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
-        swal("Successfully Updated Item Name!").then(() => {
+        swal("Successfully Updated itemName!").then(() => {
           window.location.reload();
         });
       })

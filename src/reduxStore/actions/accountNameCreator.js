@@ -1,6 +1,7 @@
 import * as actionType from "./actionType";
 import axios from "../../axios";
 import swal from "sweetalert";
+import { baseUrl } from "../../shared/baseUrl";
 
 export const accountNameSetData = (accountName) => {
   return {
@@ -9,39 +10,53 @@ export const accountNameSetData = (accountName) => {
   };
 };
 
-export const accountNameFailData = () => {
+export const accountNameFailData = (error) => {
   return {
     type: actionType.ACCOUNT_NAME_FAIL_DATA,
+    error: error,
   };
 };
 
-export const accountNameGetData = () => {
+export const accountNameGetData = (data) => {
   return (dispatch) => {
     axios
-      .get("accounts")
+      .get(baseUrl + "accounts", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
         console.log(res.data, "res");
         dispatch(accountNameSetData(res.data));
       })
 
-      .catch((error) => dispatch(accountNameFailData()));
+      .catch((error) => dispatch(accountNameFailData(error)));
   };
 };
 
-export const deleteAccountNameFail = () => {
+export const deleteAccountNameFail = (error) => {
   return {
     type: actionType.DELETE_ACCOUNT_NAME_FAIL,
+    error: error,
   };
 };
 
-export const deleteAccountName = (id) => {
+export const deleteAccountName = (id, data) => {
   return (dispatch) => {
     if (id) {
       axios
-        .delete(`accounts/${id}`)
+        .delete(baseUrl + `accounts/${id}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + data?.token,
+          },
+        })
         .then(() => {
           console.log("swal");
-          swal("Successfully Deleted Account Name!").then(() => {
+          swal("Successfully Deleted AccountName!").then(() => {
             window.location.reload();
           });
         })
@@ -56,28 +71,36 @@ export const postAccountNameDataStart = () => {
   };
 };
 
-export const postAccountNameDataFail = () => {
+export const postAccountNameDataFail = (error) => {
   return {
     type: actionType.POST_ACCOUNT_NAME_DATA_FAIL,
+    error: error,
   };
 };
 
-export const postAccountNameData = (user) => {
+export const postAccountNameData = (data, user) => {
   return (dispatch) => {
-    if (!user.name) return;
-
+    //if (!user.name) return;
+    // console.log("data", data);
+    console.log("user", user);
     dispatch(postAccountNameDataStart());
     axios
-      .post("accounts", user)
+      .post(baseUrl + "accounts", user, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
-        swal("Successfully Created Account Name!").then(() => {
+        swal("Successfully Created AccountName!").then(() => {
           window.location.reload();
         });
       })
-      .catch((error) => dispatch(postAccountNameDataFail()));
+      .catch((error) => dispatch(postAccountNameDataFail(error)));
     // props.addUser(user);
-    // setUser(initialFormState);
+    // setUser(initialAccountNameState);
   };
 };
 
@@ -87,13 +110,15 @@ export const editAccountNameRowStart = () => {
   };
 };
 
-export const failEditAccountName = () => {
+export const failEditAccountName = (error) => {
   return {
     type: actionType.FAIL_EDIT_ACCOUNT_NAME,
+    error: error,
   };
 };
 
 export const editAccountNameRow = (
+  data,
   id,
   editing,
   setEditing,
@@ -104,9 +129,15 @@ export const editAccountNameRow = (
     dispatch(editAccountNameRowStart());
     setEditing(true);
     axios
-      .get(`accounts/${id}`)
+      .get(baseUrl + `accounts/${id}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
-        // console.log(res.data, "editing data res");
+        console.log(res.data, "editing data res");
         setEditing(res.data);
         setCurrentUser({
           id: res.data.id,
@@ -115,7 +146,7 @@ export const editAccountNameRow = (
           group_name: res.data.account_group.name,
         });
       })
-      .catch((error) => dispatch(failEditAccountName()));
+      .catch((error) => dispatch(failEditAccountName(error)));
   };
 };
 
@@ -126,6 +157,7 @@ export const updateAccountNameDataStart = () => {
 };
 
 export const updateAccountNameData = (
+  data,
   id,
   editing,
   setEditing,
@@ -137,10 +169,16 @@ export const updateAccountNameData = (
     setEditing(false);
 
     axios
-      .put(`accounts/${id}`, currentUser)
+      .put(baseUrl + `accounts/${id}`, currentUser, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
-        swal("Successfully Updated Account Name!").then(() => {
+        swal("Successfully Updated accountName!").then(() => {
           window.location.reload();
         });
       })

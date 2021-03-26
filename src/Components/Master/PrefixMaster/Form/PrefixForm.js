@@ -9,11 +9,18 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import Link from "@material-ui/core/Link";
 
 function PrefixForm(props) {
+  let data = {
+    token: props.login?.login?.success?.token,
+  };
+
+  //  console.log("data", data);
+  //  console.log("login", props.login?.login);
+
   useEffect(() => {
     console.log("department data from redux ", props.department);
-    props.onDepartmentGetData();
-    props.onFormGetData();
-    props.onDeleteForm();
+    props.onDepartmentGetData(data);
+    props.onFormGetData(data);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -43,8 +50,8 @@ function PrefixForm(props) {
     setUser({ ...user, [name]: value });
   };
 
-
   console.log("User data from redux and prefix Form ", currentUser);
+  //console.log("User data ", user);
 
   return (
     <Fragment>
@@ -52,7 +59,7 @@ function PrefixForm(props) {
         {/* Navbar */}
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
           {/* Left navbar links */}
-          <ul  className="navbar-nav d-flex align-items-center">
+          <ul className="navbar-nav d-flex align-items-center">
             <li className="nav-item">
               <a
                 className="nav-link"
@@ -68,16 +75,10 @@ function PrefixForm(props) {
                 separator={<NavigateNextIcon fontSize="small" />}
                 aria-label="breadcrumb"
               >
-                <Link color="inherit" href="/" >
+                <Link color="inherit" href="/">
                   Home
                 </Link>
-                <Link
-                  color="inherit"
-                  
-                  
-                >
-                  Master
-                </Link>
+                <Link color="inherit">Master</Link>
                 <Typography color="textPrimary">Form Name Master</Typography>
               </Breadcrumbs>
             </li>
@@ -97,7 +98,7 @@ function PrefixForm(props) {
                     <form
                       onSubmit={(event) => {
                         event.preventDefault();
-                        props.onPostFormData(user);
+                        props.onPostFormData(data, user);
                       }}
                     >
                       <div className="form-row" style={{ fontSize: "12px" }}>
@@ -175,6 +176,7 @@ function PrefixForm(props) {
                                 type="button"
                                 onClick={() =>
                                   props.onUpdateFormData(
+                                    data,
                                     currentUser.id,
                                     editing,
                                     setEditing,
@@ -223,6 +225,7 @@ function PrefixForm(props) {
                                 <button
                                   onClick={() =>
                                     props.onEditFormRow(
+                                      data,
                                       user.id,
                                       editing,
                                       setEditing,
@@ -245,7 +248,7 @@ function PrefixForm(props) {
                                         "Are you sure you wish to delete this Form Name?"
                                       )
                                     )
-                                      props.onDeleteForm(user.id);
+                                      props.onDeleteForm(user.id, data);
                                   }}
                                 >
                                   <i
@@ -279,18 +282,27 @@ const mapStateToProps = (state) => {
   return {
     department: state.department.department,
     form: state.form.form,
+    login: state.login,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onDepartmentGetData: () => dispatch(actions.departmentGetData()),
-    onFormGetData: () => dispatch(actions.formGetData()),
-    onDeleteForm: (id) => dispatch(actions.deleteForm(id)),
-    onPostFormData: (user) => dispatch(actions.postFormData(user)),
-    onUpdateFormData: (id, editing, setEditing, currentUser, setCurrentUser) =>
+    onDepartmentGetData: (data) => dispatch(actions.departmentGetData(data)),
+    onFormGetData: (data) => dispatch(actions.formGetData(data)),
+    onDeleteForm: (id, data) => dispatch(actions.deleteForm(id, data)),
+    onPostFormData: (data, user) => dispatch(actions.postFormData(data, user)),
+    onUpdateFormData: (
+      data,
+      id,
+      editing,
+      setEditing,
+      currentUser,
+      setCurrentUser
+    ) =>
       dispatch(
         actions.updateFormData(
+          data,
           id,
           editing,
           setEditing,
@@ -298,9 +310,17 @@ const mapDispatchToProps = (dispatch) => {
           setCurrentUser
         )
       ),
-    onEditFormRow: (id, editing, setEditing, currentUser, setCurrentUser) =>
+    onEditFormRow: (
+      data,
+      id,
+      editing,
+      setEditing,
+      currentUser,
+      setCurrentUser
+    ) =>
       dispatch(
         actions.editFormRow(
+          data,
           id,
           editing,
           setEditing,

@@ -18,13 +18,13 @@ const reducer = (state = initialState, action) => {
     case actionType.FORM_FAIL_DATA:
       return {
         ...state,
-        error: true,
+        error: action.error,
       };
 
     case actionType.POST_FORM_DATA_FAIL:
       return {
         ...state,
-        error: true,
+        error: action.error,
       };
 
     case actionType.EDIT_FORM_ROW_START:

@@ -1,6 +1,7 @@
 import * as actionType from "./actionType";
 import axios from "../../axios";
 import swal from "sweetalert";
+import { baseUrl } from "../../shared/baseUrl";
 
 export const itemUnitsSetData = (itemUnits) => {
   return {
@@ -9,39 +10,53 @@ export const itemUnitsSetData = (itemUnits) => {
   };
 };
 
-export const itemUnitsFailData = () => {
+export const itemUnitsFailData = (error) => {
   return {
     type: actionType.ITEM_UNITS_FAIL_DATA,
+    error: error,
   };
 };
 
-export const itemUnitsGetData = () => {
+export const itemUnitsGetData = (data) => {
   return (dispatch) => {
     axios
-      .get("units")
+      .get(baseUrl + "units", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
         console.log(res.data, "res");
         dispatch(itemUnitsSetData(res.data));
       })
 
-      .catch((error) => dispatch(itemUnitsFailData()));
+      .catch((error) => dispatch(itemUnitsFailData(error)));
   };
 };
 
-export const deleteItemUnitsFail = () => {
+export const deleteItemUnitsFail = (error) => {
   return {
     type: actionType.DELETE_ITEM_UNITS_FAIL,
+    error: error,
   };
 };
 
-export const deleteItemUnits = (id) => {
+export const deleteItemUnits = (id, data) => {
   return (dispatch) => {
     if (id) {
       axios
-        .delete(`units/${id}`)
+        .delete(baseUrl + `units/${id}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + data?.token,
+          },
+        })
         .then(() => {
           console.log("swal");
-          swal("Successfully Deleted Item Units!").then(() => {
+          swal("Successfully Deleted ItemUnits!").then(() => {
             window.location.reload();
           });
         })
@@ -56,28 +71,36 @@ export const postItemUnitsDataStart = () => {
   };
 };
 
-export const postItemUnitsDataFail = () => {
+export const postItemUnitsDataFail = (error) => {
   return {
     type: actionType.POST_ITEM_UNITS_DATA_FAIL,
+    error: error,
   };
 };
 
-export const postItemUnitsData = (user) => {
+export const postItemUnitsData = (data, user) => {
   return (dispatch) => {
-    if (!user.unit_name) return;
-
+    //if (!user.name) return;
+    // console.log("data", data);
+    console.log("user", user);
     dispatch(postItemUnitsDataStart());
     axios
-      .post("units", user)
+      .post(baseUrl + "units", user, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
-        swal("Successfully Created Item Units!").then(() => {
+        swal("Successfully Created ItemUnits!").then(() => {
           window.location.reload();
         });
       })
-      .catch((error) => dispatch(postItemUnitsDataFail()));
+      .catch((error) => dispatch(postItemUnitsDataFail(error)));
     // props.addUser(user);
-    // setUser(initialFormState);
+    // setUser(initialItemUnitsState);
   };
 };
 
@@ -87,13 +110,15 @@ export const editItemUnitsRowStart = () => {
   };
 };
 
-export const failEditItemUnits = () => {
+export const failEditItemUnits = (error) => {
   return {
     type: actionType.FAIL_EDIT_ITEM_UNITS,
+    error: error,
   };
 };
 
 export const editItemUnitsRow = (
+  data,
   id,
   editing,
   setEditing,
@@ -104,16 +129,22 @@ export const editItemUnitsRow = (
     dispatch(editItemUnitsRowStart());
     setEditing(true);
     axios
-      .get(`units/${id}`)
+      .get(baseUrl + `units/${id}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then((res) => {
-        // console.log(res.data, "editing data res");
+        console.log(res.data, "editing data res");
         setEditing(res.data);
         setCurrentUser({
           id: res.data.id,
           unit_name: res.data.unit_name,
         });
       })
-      .catch((error) => dispatch(failEditItemUnits()));
+      .catch((error) => dispatch(failEditItemUnits(error)));
   };
 };
 
@@ -124,6 +155,7 @@ export const updateItemUnitsDataStart = () => {
 };
 
 export const updateItemUnitsData = (
+  data,
   id,
   editing,
   setEditing,
@@ -135,10 +167,16 @@ export const updateItemUnitsData = (
     setEditing(false);
 
     axios
-      .put(`units/${id}`, currentUser)
+      .put(baseUrl + `units/${id}`, currentUser, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + data.token,
+        },
+      })
       .then(() => {
         console.log("swal");
-        swal("Successfully Updated Item Units!").then(() => {
+        swal("Successfully Updated itemUnits!").then(() => {
           window.location.reload();
         });
       })

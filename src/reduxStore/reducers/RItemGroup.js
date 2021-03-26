@@ -17,13 +17,13 @@ const reducer = (state = initialState, action) => {
     case actionType.ITEM_GROUP_FAIL_DATA:
       return {
         ...state,
-        error: true,
+        error: action.error,
       };
 
     case actionType.POST_ITEM_GROUP_DATA_FAIL:
       return {
         ...state,
-        error: true,
+        error: action.error,
       };
 
     case actionType.EDIT_ITEM_GROUP_ROW_START:
