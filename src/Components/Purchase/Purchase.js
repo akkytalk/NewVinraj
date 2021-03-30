@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
 import Sidebar from "../Home/Sidebar";
+import PurchaseOrder from "./PurchaseOrder";
 // import Aside from '../Home/Aside'
 // import Header from '../Home/Header'
 
@@ -39,7 +40,7 @@ const Purchase = () => {
                     {/* /.box-header */}
                     <div className="box-body">
                       <div className="col-md-9">
-                        <Req2 />
+                        <PurchaseOrder />
                         {/* <Req /> */}
                       </div>
                     </div>
