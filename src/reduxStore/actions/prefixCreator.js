@@ -17,8 +17,15 @@ export const prefixFailData = (error) => {
   };
 };
 
+export const prefixLoading = () => {
+  return {
+    type: actionType.PREFIX_LOADING,
+  };
+};
+
 export const prefixGetData = (data) => {
   return (dispatch) => {
+    dispatch(prefixLoading());
     axios
       .get(baseUrl + "prefixs", {
         headers: {
@@ -57,7 +64,7 @@ export const deletePrefix = (id, data) => {
         .then(() => {
           console.log("swal");
           swal("Successfully Deleted Prefix!").then(() => {
-            window.location.reload();
+            dispatch(prefixGetData(data));
           });
         })
         .catch((error) => dispatch(deletePrefixFail()));
@@ -78,12 +85,19 @@ export const postPrefixDataFail = (error) => {
   };
 };
 
-export const postPrefixData = (data, user) => {
+export const prefixPostLoading = () => {
+  return {
+    type: actionType.PREFIX_POST_LOADING,
+  };
+};
+
+export const postPrefixData = (data, user, toggle) => {
   return (dispatch) => {
     //if (!user.name) return;
     // console.log("data", data);
     console.log("user", user);
     dispatch(postPrefixDataStart());
+    dispatch(prefixPostLoading());
     axios
       .post(baseUrl + "prefixs", user, {
         headers: {
@@ -95,7 +109,10 @@ export const postPrefixData = (data, user) => {
       .then(() => {
         console.log("swal");
         swal("Successfully Created Prefix!").then(() => {
-          window.location.reload();
+          dispatch(prefixGetData(data));
+          if (toggle) {
+            toggle();
+          }
         });
       })
       .catch((error) => dispatch(postPrefixDataFail(error)));
@@ -169,9 +186,39 @@ export const updatePrefixData = (
   return (dispatch) => {
     dispatch(updatePrefixDataStart());
     setEditing(false);
+    if (currentUser) {
+      axios
+        .put(baseUrl + `prefixs/${id}`, currentUser, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + data.token,
+          },
+        })
+        .then(() => {
+          console.log("swal");
+          swal("Successfully Updated prefix!").then(() => {
+            dispatch(prefixGetData(data));
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+};
+export const prefixUpdateLoading = () => {
+  return {
+    type: actionType.PREFIX_UPDATE_LOADING,
+  };
+};
+export const updatePrefixDataToggle = (data, user, toggle) => {
+  return (dispatch) => {
+    dispatch(updatePrefixDataStart());
+    dispatch(prefixUpdateLoading());
 
     axios
-      .put(baseUrl + `prefixs/${id}`, currentUser, {
+      .put(baseUrl + `prefixs/${data.id}`, user, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -181,7 +228,10 @@ export const updatePrefixData = (
       .then(() => {
         console.log("swal");
         swal("Successfully Updated prefix!").then(() => {
-          window.location.reload();
+          dispatch(prefixGetData(data));
+          if (toggle) {
+            toggle();
+          }
         });
       })
       .catch((error) => {

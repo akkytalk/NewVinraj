@@ -166,3 +166,31 @@
   left: 30px;
   justify-self: flex-end;
 }
+
+.test {
+  border: 1px solid black;
+}
+
+.test-r {
+  border-right: 1px solid black;
+}
+
+.test-b {
+  border-bottom: 1px solid black;
+}
+
+.test-l {
+  border-left: 1px solid black;
+}
+
+.w-20 {
+  width: 20%;
+}
+
+.h-40p {
+  height: 40px;
+}
+
+.mt-100 {
+  margin-top: 100px;
+}

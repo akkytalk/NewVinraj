@@ -57,7 +57,7 @@ export const deleteAccountName = (id, data) => {
         .then(() => {
           console.log("swal");
           swal("Successfully Deleted AccountName!").then(() => {
-            window.location.reload();
+            dispatch(accountNameGetData(data));
           });
         })
         .catch((error) => dispatch(deleteAccountNameFail()));
@@ -95,7 +95,7 @@ export const postAccountNameData = (data, user) => {
       .then(() => {
         console.log("swal");
         swal("Successfully Created AccountName!").then(() => {
-          window.location.reload();
+          dispatch(accountNameGetData(data));
         });
       })
       .catch((error) => dispatch(postAccountNameDataFail(error)));
@@ -179,7 +179,7 @@ export const updateAccountNameData = (
       .then(() => {
         console.log("swal");
         swal("Successfully Updated accountName!").then(() => {
-          window.location.reload();
+          dispatch(accountNameGetData(data));
         });
       })
       .catch((error) => {

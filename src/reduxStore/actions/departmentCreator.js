@@ -58,7 +58,7 @@ export const deleteDepartment = (id, data) => {
         .then(() => {
           console.log("swal");
           swal("Successfully Deleted Department!").then(() => {
-            window.location.reload();
+            dispatch(departmentGetData(data));
           });
         })
         .catch((error) => dispatch(deleteDepartmentFail(error)));
@@ -83,7 +83,7 @@ export const departmentLoading = () => ({
   type: actionType.DEPARTMENT_LOADING,
 });
 
-export const postDepartmentData = (data, user) => {
+export const postDepartmentData = (data, user, setSubmit) => {
   return (dispatch) => {
     if (!user.name) return;
     console.log("data department", data);
@@ -99,10 +99,18 @@ export const postDepartmentData = (data, user) => {
       .then(() => {
         console.log("swal");
         swal("Successfully Created Department!").then(() => {
-          window.location.reload();
+          dispatch(departmentGetData(data));
+          if (setSubmit) {
+            setSubmit(false);
+          }
         });
       })
-      .catch((error) => dispatch(postDepartmentDataFail(error)));
+      .catch((error) => {
+        dispatch(postDepartmentDataFail(error));
+        if (setSubmit) {
+          setSubmit(false);
+        }
+      });
     // props.addUser(user);
     // setUser(initialFormState);
   };
@@ -181,7 +189,7 @@ export const updateDepartmentData = (
       .then(() => {
         console.log("swal");
         swal("Successfully Updated department!").then(() => {
-          window.location.reload();
+          dispatch(departmentGetData(data));
         });
       })
       .catch((error) => {

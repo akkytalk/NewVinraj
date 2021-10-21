@@ -12,7 +12,7 @@ function Home(props) {
 
   if (props.login?.login.length === 0) {
     return <Redirect to={"/login"} />;
-  } else if (props.login?.login?.success?.token) {
+  } else if (props.login?.login?.token) {
     return (
       <Fragment>
         <div className="wrapper">

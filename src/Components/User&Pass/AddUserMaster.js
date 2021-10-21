@@ -44,7 +44,7 @@ function AddUserMaster(props) {
   // };
 
   let data = {
-    token: props.login?.login?.success?.token,
+    token: props.login?.login?.token,
   };
 
   //  console.log("data", data);
@@ -66,6 +66,7 @@ function AddUserMaster(props) {
     city: "",
     state: "",
     pincode: "",
+    role: "user",
   });
 
   const [editing, setEditing] = useState(false);
@@ -80,6 +81,7 @@ function AddUserMaster(props) {
     city: "",
     state: "",
     pincode: "",
+    role: "user",
   };
 
   const [currentUser, setCurrentUser] = useState(initialFormState);

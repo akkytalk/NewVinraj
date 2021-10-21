@@ -57,7 +57,7 @@ export const deleteItemUnits = (id, data) => {
         .then(() => {
           console.log("swal");
           swal("Successfully Deleted ItemUnits!").then(() => {
-            window.location.reload();
+            dispatch(itemUnitsGetData(data));
           });
         })
         .catch((error) => dispatch(deleteItemUnitsFail()));
@@ -95,7 +95,7 @@ export const postItemUnitsData = (data, user) => {
       .then(() => {
         console.log("swal");
         swal("Successfully Created ItemUnits!").then(() => {
-          window.location.reload();
+          dispatch(itemUnitsGetData(data));
         });
       })
       .catch((error) => dispatch(postItemUnitsDataFail(error)));
@@ -177,7 +177,7 @@ export const updateItemUnitsData = (
       .then(() => {
         console.log("swal");
         swal("Successfully Updated itemUnits!").then(() => {
-          window.location.reload();
+          dispatch(itemUnitsGetData(data));
         });
       })
       .catch((error) => {

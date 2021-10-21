@@ -57,7 +57,7 @@ export const deleteForm = (id, data) => {
         .then(() => {
           console.log("swal");
           swal("Successfully Deleted Form!").then(() => {
-            window.location.reload();
+            dispatch(formGetData(data));
           });
         })
         .catch((error) => dispatch(deleteFormFail()));
@@ -78,7 +78,7 @@ export const postFormDataFail = (error) => {
   };
 };
 
-export const postFormData = (data, user) => {
+export const postFormData = (data, user, setSubmit) => {
   return (dispatch) => {
     //if (!user.name) return;
     // console.log("data", data);
@@ -95,10 +95,18 @@ export const postFormData = (data, user) => {
       .then(() => {
         console.log("swal");
         swal("Successfully Created Form!").then(() => {
-          window.location.reload();
+          dispatch(formGetData(data));
+          if (setSubmit) {
+            setSubmit(false);
+          }
         });
       })
-      .catch((error) => dispatch(postFormDataFail(error)));
+      .catch((error) => {
+        dispatch(postFormDataFail(error));
+        if (setSubmit) {
+          setSubmit(false);
+        }
+      });
     // props.addUser(user);
     // setUser(initialFormState);
   };
@@ -143,6 +151,7 @@ export const editFormRow = (
           id: res.data.id,
           name: res.data.name,
           department_id: res.data.department_id,
+          url: res.data.url,
         });
       })
       .catch((error) => dispatch(failEditForm(error)));
@@ -178,7 +187,7 @@ export const updateFormData = (
       .then(() => {
         console.log("swal");
         swal("Successfully Updated form!").then(() => {
-          window.location.reload();
+          dispatch(formGetData(data));
         });
       })
       .catch((error) => {

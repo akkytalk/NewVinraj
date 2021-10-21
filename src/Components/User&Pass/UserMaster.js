@@ -61,10 +61,10 @@ function UserMaster(props) {
 
   return (
     <Fragment>
-      <div className="wrapper">
-        {/* Navbar */}
+      {/* <div className="wrapper">
+        
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
-          {/* Left navbar links */}
+        
           <ul className="navbar-nav">
             <li className="nav-item">
               <a
@@ -76,43 +76,42 @@ function UserMaster(props) {
                 <i className="fas fa-bars"> </i>
               </a>
             </li>
-            {/* <li className="nav-item d-none d-sm-inline-block">
+            <li className="nav-item d-none d-sm-inline-block">
               <a href="/" className="nav-link">
                 Home
               </a>
-            </li> */}
+            </li>
           </ul>
-          {/* SEARCH FORM */}
+       
         </nav>
-        {/* /.navbar */}
-        {/*  */}
+     
 
         <Sidebar />
         <div class="content-wrapper">
           <section className="content">
-            <div className="container-fluid">
-              <div className={classes.root}>
-                <AppBar position="static">
-                  <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    aria-label="simple tabs example"
-                  >
-                    <Tab label="Add User" {...a11yProps(0)} />
-                    <Tab label="Rights" {...a11yProps(1)} />
-                  </Tabs>
-                </AppBar>
-                <TabPanel value={value} index={0}>
-                  <AddUserMaster />
-                </TabPanel>
-                <TabPanel value={value} index={1}>
-                  <RightsUserMaster />
-                </TabPanel>
-              </div>
-            </div>
+            <div className="container-fluid"> */}
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="simple tabs example"
+          >
+            <Tab label="Add User" {...a11yProps(0)} />
+            <Tab label="Rights" {...a11yProps(1)} />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={value} index={0}>
+          <AddUserMaster />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <RightsUserMaster />
+        </TabPanel>
+      </div>
+      {/* </div>
           </section>
         </div>
-      </div>
+      </div> */}
     </Fragment>
   );
 }

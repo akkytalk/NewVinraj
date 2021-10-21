@@ -64,7 +64,7 @@ function ItemGroup(props) {
   };
 
   let data = {
-    token: props.login?.login?.success?.token,
+    token: props.login?.login?.token,
   };
 
   //  console.log("data", data);
@@ -106,10 +106,8 @@ function ItemGroup(props) {
 
   return (
     <Fragment>
-      <div className="wrapper">
-        {/* Navbar */}
+      {/* <div className="wrapper">
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
-          {/* Left navbar links */}
           <ul className="navbar-nav d-flex align-items-center">
             <li className="nav-item">
               <a
@@ -135,219 +133,188 @@ function ItemGroup(props) {
               </Breadcrumbs>
             </li>
           </ul>
-          {/* SEARCH FORM */}
         </nav>
-        {/* /.navbar */}
-        {/*  */}
 
-        <Sidebar />
         <div class="content-wrapper">
           <section className="content">
-            <div className="container-fluid">
-              <div className={classes.root}>
-                <AppBar position="static">
-                  <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    aria-label="simple tabs example"
-                  >
-                    <Tab label="Item Group" {...a11yProps(0)} />
-                  </Tabs>
-                </AppBar>
-                <TabPanel value={value} index={0}>
-                  <div className="container">
-                    <div className="flex-row">
-                      <div className="flex-large">
-                        <form
-                          onSubmit={(event) => {
-                            event.preventDefault();
-                            props.onPostItemGroupData(data, user);
-                          }}
-                        >
-                          <div
-                            className="form-row"
-                            style={{ fontSize: "12px" }}
+            <div className="container-fluid"> */}
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="simple tabs example"
+          >
+            <Tab label="Item Group" {...a11yProps(0)} />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={value} index={0}>
+          <div className="container">
+            <div className="flex-row">
+              <div className="flex-large">
+                <form
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    props.onPostItemGroupData(data, user);
+                  }}
+                >
+                  <div className="form-row" style={{ fontSize: "12px" }}>
+                    <div className="form-group col-md-3">
+                      <label htmlFor="inputPassword4"> Item Group </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="inputPassword4"
+                        placeholder=""
+                        value={!editing ? user.name : currentUser.name}
+                        name="name"
+                        onChange={
+                          editing ? currentUserInputChange : handleInputChange
+                        }
+                      />
+                    </div>
+                    <div className="form-group col-md-3">
+                      <label htmlFor="inputPassword4">Under Item Group</label>
+                      <select
+                        type="text"
+                        className="form-control"
+                        id="inputPassword4"
+                        name="under_group_name"
+                        value={
+                          editing
+                            ? currentUser.under_group_name
+                            : user.under_group_name
+                        }
+                        onChange={
+                          editing ? currentUserInputChange : handleInputChange
+                        }
+                      >
+                        <option>select</option> &&
+                        {!editing
+                          ? props.itemGroup?.map((accgrp) => (
+                              <option key={accgrp.id} value={accgrp.name}>
+                                {accgrp.name}
+                              </option>
+                            ))
+                          : currentUser
+                          ? // <option>{currentUser}</option>
+                            //  &&
+                            props.itemGroup?.map((accgrp) => (
+                              <option key={accgrp.id} value={accgrp.name}>
+                                {accgrp.name}
+                              </option>
+                            ))
+                          : null}
+                      </select>
+                    </div>
+
+                    <div className="form-group col-md-3 mt-4">
+                      {!editing ? (
+                        <button className="btn btn-primary " type="submit">
+                          Add
+                        </button>
+                      ) : (
+                        <div className="d-flex">
+                          <button
+                            className="btn btn-success"
+                            type="button"
+                            onClick={() =>
+                              props.onUpdateItemGroupData(
+                                data,
+                                currentUser.id,
+                                editing,
+                                setEditing,
+                                currentUser,
+                                setCurrentUser
+                              )
+                            }
                           >
-                            <div className="form-group col-md-3">
-                              <label htmlFor="inputPassword4">
-                                {" "}
-                                Item Group{" "}
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                id="inputPassword4"
-                                placeholder=""
-                                value={!editing ? user.name : currentUser.name}
-                                name="name"
-                                onChange={
-                                  editing
-                                    ? currentUserInputChange
-                                    : handleInputChange
-                                }
-                              />
-                            </div>
-                            <div className="form-group col-md-3">
-                              <label htmlFor="inputPassword4">
-                                Under Item Group
-                              </label>
-                              <select
-                                type="text"
-                                className="form-control"
-                                id="inputPassword4"
-                                name="under_group_name"
-                                value={
-                                  editing
-                                    ? currentUser.under_group_name
-                                    : user.under_group_name
-                                }
-                                onChange={
-                                  editing
-                                    ? currentUserInputChange
-                                    : handleInputChange
-                                }
-                              >
-                                <option>select</option> &&
-                                {!editing
-                                  ? props.itemGroup?.map((accgrp) => (
-                                      <option
-                                        key={accgrp.id}
-                                        value={accgrp.name}
-                                      >
-                                        {accgrp.name}
-                                      </option>
-                                    ))
-                                  : currentUser
-                                  ? // <option>{currentUser}</option>
-                                    //  &&
-                                    props.itemGroup?.map((accgrp) => (
-                                      <option
-                                        key={accgrp.id}
-                                        value={accgrp.name}
-                                      >
-                                        {accgrp.name}
-                                      </option>
-                                    ))
-                                  : null}
-                              </select>
-                            </div>
-
-                            <div className="form-group col-md-3 mt-4">
-                              {!editing ? (
-                                <button
-                                  className="btn btn-primary "
-                                  type="submit"
-                                >
-                                  Add
-                                </button>
-                              ) : (
-                                <div className="d-flex">
-                                  <button
-                                    className="btn btn-success"
-                                    type="button"
-                                    onClick={() =>
-                                      props.onUpdateItemGroupData(
-                                        data,
-                                        currentUser.id,
-                                        editing,
-                                        setEditing,
-                                        currentUser,
-                                        setCurrentUser
-                                      )
-                                    }
-                                  >
-                                    Update
-                                  </button>
-                                  <button
-                                    className="btn btn-primary ml-3"
-                                    type="button"
-                                    onClick={() => setEditing(false)}
-                                  >
-                                    Cancel
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </form>
-                      </div>
-                      <div className="flex-large">
-                        <table className="table" style={{ fontSize: "12px" }}>
-                          <thead>
-                            <tr>
-                              {/* <th>ID</th> */}
-                              <th scope="col">Item Group</th>
-                              <th scope="col">Under Item Group</th>
-
-                              <th scope="col">Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {props.itemGroup.length > 0 ? (
-                              props.itemGroup.map((user) => (
-                                <tr key={user.id}>
-                                  {/* <td>{user.id}</td> */}
-                                  <td>{user.name}</td>
-                                  <td>{user.under_group_name}</td>
-
-                                  <td className="d-flex">
-                                    <button
-                                      onClick={() =>
-                                        props.onEditItemGroupRow(
-                                          data,
-                                          user.id,
-                                          editing,
-                                          setEditing,
-                                          currentUser,
-                                          setCurrentUser
-                                        )
-                                      }
-                                    >
-                                      <i
-                                        className="fa fa-edit"
-                                        aria-hidden="true"
-                                      ></i>
-                                    </button>
-
-                                    <button
-                                      className="ml-3"
-                                      onClick={() => {
-                                        if (
-                                          window.confirm(
-                                            "Are you sure you wish to delete this Item Group?"
-                                          )
-                                        )
-                                          props.onDeleteItemGroup(
-                                            user.id,
-                                            data
-                                          );
-                                      }}
-                                    >
-                                      <i
-                                        className="fa fa-trash-alt "
-                                        value={user.id}
-                                        aria-hidden="true"
-                                      ></i>
-                                    </button>
-                                  </td>
-                                </tr>
-                              ))
-                            ) : (
-                              <tr>
-                                <td colSpan={3}>No users</td>
-                              </tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
+                            Update
+                          </button>
+                          <button
+                            className="btn btn-primary ml-3"
+                            type="button"
+                            onClick={() => setEditing(false)}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </TabPanel>
+                </form>
+              </div>
+              <div className="flex-large">
+                <table className="table" style={{ fontSize: "12px" }}>
+                  <thead>
+                    <tr>
+                      {/* <th>ID</th> */}
+                      <th scope="col">Item Group</th>
+                      <th scope="col">Under Item Group</th>
+
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {props.itemGroup.length > 0 ? (
+                      props.itemGroup.map((user) => (
+                        <tr key={user.id}>
+                          {/* <td>{user.id}</td> */}
+                          <td>{user.name}</td>
+                          <td>{user.under_group_name}</td>
+
+                          <td className="d-flex">
+                            <button
+                              onClick={() =>
+                                props.onEditItemGroupRow(
+                                  data,
+                                  user.id,
+                                  editing,
+                                  setEditing,
+                                  currentUser,
+                                  setCurrentUser
+                                )
+                              }
+                            >
+                              <i className="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+
+                            <button
+                              className="ml-3"
+                              onClick={() => {
+                                if (
+                                  window.confirm(
+                                    "Are you sure you wish to delete this Item Group?"
+                                  )
+                                )
+                                  props.onDeleteItemGroup(user.id, data);
+                              }}
+                            >
+                              <i
+                                className="fa fa-trash-alt "
+                                value={user.id}
+                                aria-hidden="true"
+                              ></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={3}>No users</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
+          </div>
+        </TabPanel>
+      </div>
+      {/* </div>
           </section>
         </div>
-      </div>
+      </div> */}
     </Fragment>
   );
 }

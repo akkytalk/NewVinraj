@@ -2,7 +2,7 @@ import React, { useState, Fragment, useEffect } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { Row, Col, Button, Modal, ModalBody, ModalHeader } from "reactstrap";
-
+import printJS from "print-js";
 const Req2 = (props) => {
   const [users, setUsers] = useState({
     dept: "",
@@ -88,19 +88,33 @@ const Req2 = (props) => {
     });
   };
 
+  const printMutliple = () => {
+    console.log("print");
+    printJS({
+      printable: "htmlToPdf2",
+      CSS: "",
+      scanStyles: "true",
+      type: "html",
+      targetStyles: "[*]",
+
+      // style: "@page { size: Letter landscape; }",
+    });
+  };
+
   console.log("users", users);
 
   return (
     <Fragment>
       <div id="xyz">
-        <button
-          className="btn btn-primary"
+        <Button
+          className="btn-success"
+          style={{ position: "absolute", top: "6px", right: "15px" }}
           data-toggle="modal"
           data-target="#extraLargeModal"
           onClick={toggle}
         >
           Add Requistion
-        </button>
+        </Button>
         {/* Modal */}
         <Modal className="modal-info modal-lg" isOpen={modal} toggle={toggle}>
           <ModalHeader toggle={toggle}></ModalHeader>
@@ -707,7 +721,7 @@ const Req2 = (props) => {
                     <button
                       type="button"
                       className="btn btn-primary"
-                      onClick={onClick}
+                      onClick={printMutliple}
                     >
                       save as pdf
                     </button>

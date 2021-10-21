@@ -57,7 +57,7 @@ export const deleteAccountGroup = (id, data) => {
         .then(() => {
           console.log("swal");
           swal("Successfully Deleted AccountGroup!").then(() => {
-            window.location.reload();
+            dispatch(accountGroupGetData(data));
           });
         })
         .catch((error) => dispatch(deleteAccountGroupFail()));
@@ -95,12 +95,10 @@ export const postAccountGroupData = (data, user) => {
       .then(() => {
         console.log("swal");
         swal("Successfully Created AccountGroup!").then(() => {
-          window.location.reload();
+          dispatch(accountGroupGetData(data));
         });
       })
       .catch((error) => dispatch(postAccountGroupDataFail(error)));
-    // props.addUser(user);
-    // setUser(initialAccountGroupState);
   };
 };
 
@@ -178,7 +176,7 @@ export const updateAccountGroupData = (
       .then(() => {
         console.log("swal");
         swal("Successfully Updated accountGroup!").then(() => {
-          window.location.reload();
+          dispatch(accountGroupGetData(data));
         });
       })
       .catch((error) => {

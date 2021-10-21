@@ -57,7 +57,7 @@ export const deleteItemGroup = (id, data) => {
         .then(() => {
           console.log("swal");
           swal("Successfully Deleted ItemGroup!").then(() => {
-            window.location.reload();
+            dispatch(itemGroupGetData(data));
           });
         })
         .catch((error) => dispatch(deleteItemGroupFail()));
@@ -95,7 +95,7 @@ export const postItemGroupData = (data, user) => {
       .then(() => {
         console.log("swal");
         swal("Successfully Created ItemGroup!").then(() => {
-          window.location.reload();
+          dispatch(itemGroupGetData(data));
         });
       })
       .catch((error) => dispatch(postItemGroupDataFail(error)));
@@ -178,7 +178,7 @@ export const updateItemGroupData = (
       .then(() => {
         console.log("swal");
         swal("Successfully Updated itemGroup!").then(() => {
-          window.location.reload();
+          dispatch(itemGroupGetData(data));
         });
       })
       .catch((error) => {

@@ -14,9 +14,15 @@ import itemGroupReducer from "./reducers/RItemGroup";
 import itemNameReducer from "./reducers/RItemName";
 import itemUnitsReducer from "./reducers/RItemUnits";
 import userMasterReducer from "./reducers/RAddUserMaster";
+import RRight from "./reducers/RRights";
+import RPage from "./reducers/RPage";
+import RDetails from "./reducers/RDetails";
+import RProcess from "./reducers/RProcess";
+import RBreakMainRecord from "./reducers/RBreakMainRecord";
+import REnquiriesForm from "./reducers/REquiriesForm";
 
 const config = {
-  key: "root",
+  key: "vinraj",
   storage,
   debug: true,
 };
@@ -34,6 +40,12 @@ export const configureStore = () => {
       itemGroup: itemGroupReducer,
       itemUnits: itemUnitsReducer,
       userMaster: userMasterReducer,
+      right: RRight,
+      page: RPage,
+      details: RDetails,
+      process: RProcess,
+      breakMainRecord: RBreakMainRecord,
+      enquiriesForm: REnquiriesForm,
     }),
     applyMiddleware(thunk, logger)
   );

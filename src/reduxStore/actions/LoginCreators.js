@@ -35,6 +35,7 @@ export const postLogin = (data) => (dispatch) => {
       } else {
         // toast.success("Login Successfull!");
         dispatch(addLogin(login));
+        window.location.reload();
       }
     })
     .catch((error) => {

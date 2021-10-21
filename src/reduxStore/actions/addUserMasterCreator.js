@@ -57,7 +57,7 @@ export const deleteUserMaster = (id, data) => {
         .then(() => {
           console.log("swal");
           swal("Successfully Deleted User!").then(() => {
-            window.location.reload();
+            dispatch(userMasterGetData(data));
           });
         })
         .catch((error) => dispatch(deleteUserMasterFail(error)));
@@ -95,7 +95,7 @@ export const postUserMasterData = (data, user) => {
       .then(() => {
         console.log("swal");
         swal("Successfully Created User!").then(() => {
-          window.location.reload();
+          dispatch(userMasterGetData(data));
         });
       })
       .catch((error) => dispatch(postUserMasterDataFail(error)));
@@ -184,7 +184,7 @@ export const updateUserMasterData = (
       .then(() => {
         console.log("swal");
         swal("Successfully Updated user!").then(() => {
-          window.location.reload();
+          dispatch(userMasterGetData(data));
         });
       })
       .catch((error) => {

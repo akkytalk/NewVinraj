@@ -57,7 +57,7 @@ export const deleteItemName = (id, data) => {
         .then(() => {
           console.log("swal");
           swal("Successfully Deleted ItemName!").then(() => {
-            window.location.reload();
+            dispatch(itemNameGetData(data));
           });
         })
         .catch((error) => dispatch(deleteItemNameFail()));
@@ -95,7 +95,7 @@ export const postItemNameData = (data, user) => {
       .then(() => {
         console.log("swal");
         swal("Successfully Created ItemName!").then(() => {
-          window.location.reload();
+          dispatch(itemNameGetData(data));
         });
       })
       .catch((error) => dispatch(postItemNameDataFail(error)));
@@ -181,7 +181,7 @@ export const updateItemNameData = (
       .then(() => {
         console.log("swal");
         swal("Successfully Updated itemName!").then(() => {
-          window.location.reload();
+          dispatch(itemNameGetData(data));
         });
       })
       .catch((error) => {
