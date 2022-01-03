@@ -17,10 +17,11 @@ import {
   FormGroup,
   InputGroupAddon,
   Table,
+  ModalFooter,
 } from "reactstrap";
 // import { jsPDF } from "jspdf";
 // import html2canvas from "html2canvas";
-
+import processImg from "../../assets/img/process.png";
 import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import CustomInput from "../../views/Custom/CustomInput";
 import * as Yup from "yup";
@@ -31,6 +32,26 @@ import Loader2 from "../loader/Loader2";
 
 import printJS from "print-js";
 import "../../css/Format.css";
+
+let formArray = [
+  "hot_mixer",
+  "cool_mixer",
+  "feeder",
+  "screw",
+  "barrel",
+  "roll_no1",
+  "roll_no2",
+  "roll_no3",
+  "roll_no4",
+  "roll_no5",
+  "roll_no6",
+  "take_off1",
+  "take_off2",
+  "tempering1",
+  "tempering2",
+  "hauling",
+  "remarks",
+];
 
 function ProcessParametersCf(props) {
   let data = {
@@ -80,42 +101,25 @@ function ProcessParametersCf(props) {
     console.log("print");
     printJS({
       printable: "htmlToPdf2",
-      CSS: "../../css/Format.css",
-      scanStyles: "true",
-      maxWidth: 1500,
       type: "html",
+      scanStyles: true,
+      css: "../../css/Format.css",
       targetStyles: "[*]",
-      // style: "@page { size: Letter landscape; } @font {size: 8px}",
+      maxWidth: 1080,
+      font_size: "6pt",
+      honorMarginPadding: true,
+      honorColor: true,
+
+      // style: "@page { size: Letter landscape; }",
     });
   };
 
-  // const printMutliple = () => {
-  //   const divToDisplay = document.getElementById("htmlToPdf2");
-  //   html2canvas(divToDisplay).then(function (canvas) {
-  //     console.log(canvas);
-  //     const imgData = canvas.toDataURL("image/png");
-  //     const pdf = new jsPDF({
-  //       orientation: "Potrait",
-  //     });
-  //     const imgProps = pdf.getImageProperties(imgData);
-  //     const pdfWidth = pdf.internal.pageSize.getWidth();
-  //     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-  //     console.log(pdfHeight, pdfWidth);
-  //     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-  //     pdf.save("download.pdf");
-  //   });
-  // };
   let user;
   const handleSubmit = (values, { setSubmitting }) => {
     console.log("values in Bio Data:", values);
 
     user = {
-      form_id: values.form_id,
-      title: values.title,
-      rev_no: values.rev_no,
       details: values.details,
-      department_id: values.department_id,
-      di_no: values.di_no,
     };
     console.log("Data of User of details:", user);
     // props.onPostProcessData(data, user, toggle, setSubmitting, setShowTable);
@@ -140,11 +144,11 @@ function ProcessParametersCf(props) {
               Add Process Parameters Cf
             </Button>
           </div>
-          <Modal className="modal-info modal-lg" isOpen={modal} toggle={toggle}>
+          <Modal className="modal-info modal-xl" isOpen={modal} toggle={toggle}>
             <ModalHeader toggle={toggle}>
               Add New Process Parameters Cf
             </ModalHeader>
-
+            {props.process?.isPostLoading ? <Loader2 /> : ""}
             <ModalBody>
               <Formik
                 initialValues={{
@@ -153,10 +157,9 @@ function ProcessParametersCf(props) {
                   di_no: "",
                   title: "",
                   rev_no: "",
-                  // rev_date: "",
-                  // date: "",
-                  // ref_no: "",
+                  prefix_id: "",
                   details: [],
+                  rev_date: "",
                   row: "",
                 }}
                 onSubmit={handleSubmit}
@@ -171,6 +174,8 @@ function ProcessParametersCf(props) {
                       formProps.values.title = pre.title;
                       formProps.values.di_no = pre.prefix;
                       formProps.values.rev_no = pre.rev_no;
+                      formProps.values.prefix_id = pre.id;
+                      formProps.values.rev_date = pre.rev_date;
                     }
                   });
 
@@ -287,7 +292,33 @@ function ProcessParametersCf(props) {
                           </InputGroup>
                         </Col>
                       </Row>
+                      <Row className="form-group">
+                        <Col md={6}>
+                          <Label for="rev_date">Rev Date</Label>
+                          <InputGroup>
+                            <Field
+                              component={CustomInput}
+                              type="date"
+                              name="rev_date"
+                              id="rev_date"
+                              disabled
+                              className={
+                                "form-control" +
+                                (formProps.errors.rev_date &&
+                                formProps.touched.rev_date
+                                  ? " is-invalid"
+                                  : "")
+                              }
+                            />
 
+                            <ErrorMessage
+                              name="rev_date"
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                          </InputGroup>
+                        </Col>
+                      </Row>
                       <Row className="form-group">
                         <Col md={6}>
                           <Label for="row">Add Table Rows</Label>
@@ -335,25 +366,17 @@ function ProcessParametersCf(props) {
                                                 i <= formProps.values.row;
                                                 i++
                                               ) {
-                                                console.log(
-                                                  `formProps.values
-                                                .details[i]?.date`,
-                                                  formProps.values.details[i]
-                                                    ?.date
-                                                );
                                                 arrayHelpers.push({
-                                                  date: "",
                                                   hot_mixer: {
                                                     speed: "",
                                                     temp: "",
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   cool_mixer: {
                                                     speed: "",
@@ -361,11 +384,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
 
                                                   feeder: {
@@ -374,11 +396,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   screw: {
                                                     speed: "",
@@ -386,11 +407,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   barrel: {
                                                     speed: "",
@@ -398,11 +418,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   roll_no1: {
                                                     speed: "",
@@ -410,11 +429,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   roll_no2: {
                                                     speed: "",
@@ -422,11 +440,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   roll_no3: {
                                                     speed: "",
@@ -434,11 +451,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   roll_no4: {
                                                     speed: "",
@@ -446,11 +462,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   roll_no5: {
                                                     speed: "",
@@ -458,11 +473,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   roll_no6: {
                                                     speed: "",
@@ -470,11 +484,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   take_off1: {
                                                     speed: "",
@@ -482,11 +495,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   take_off2: {
                                                     speed: "",
@@ -494,11 +506,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   tempering1: {
                                                     speed: "",
@@ -506,11 +517,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   tempering2: {
                                                     speed: "",
@@ -518,11 +528,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   hauling: {
                                                     speed: "",
@@ -530,11 +539,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                   remarks: {
                                                     speed: "",
@@ -542,11 +550,10 @@ function ProcessParametersCf(props) {
                                                     current: "",
                                                     form_id:
                                                       formProps.values.form_id,
-                                                    date: formProps.values
-                                                      .details[i]?.date
-                                                      ? formProps.values
-                                                          .details[i].date
-                                                      : "",
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
                                                   },
                                                 });
                                               }
@@ -605,9 +612,24 @@ function ProcessParametersCf(props) {
                                                     <Field
                                                       component={CustomInput}
                                                       type="date"
-                                                      name={`details.${index}.date`}
-                                                      id={`details.${index}.date`}
+                                                      name={`details.${index}.hot_mixer.date`}
+                                                      id={`details.${index}.hot_mixer.date`}
                                                       style={{ width: "150px" }}
+                                                      onChange={(event) => {
+                                                        formArray?.map(
+                                                          (form) => {
+                                                            formProps.setFieldValue(
+                                                              `details.${index}.${form}.date`,
+                                                              event.target.value
+                                                            );
+                                                          }
+                                                        );
+
+                                                        // formProps.setFieldValue(
+                                                        //   `details.${index}.date`,
+                                                        //   event.target.value
+                                                        // );
+                                                      }}
                                                     />
                                                   </td>
                                                 </td>
@@ -1205,21 +1227,26 @@ function ProcessParametersCf(props) {
                     <>
                       <div
                         id="htmlToPdf2"
-                        className="d-flex flex-column flex-wrap f-10 w-100"
+                        className="d-flex flex-column f-8 w-100"
                       >
-                        {/* <div className="d-flex test">
-                          <div className="w-25 test-r p-1 text-center">
+                        <div
+                          className="d-flex test z-index-1"
+                          style={{ width: "1080px" }}
+                        >
+                          <div className="w-25 test-r p-1 text-center z-index-1">
                             <img
                               src="https://uditsolutions.in/vinraj.png"
                               alt=""
                             />
                           </div>
                           <div className="w-50 test-r d-flex justify-content-center align-items-center">
-                            <h5 className="font-weight-bold text-underline">
-                              DAILY PRODUCTION PLANNING SHEET.
-                            </h5>
+                            <img
+                              src={processImg}
+                              alt="PROCESS PARAMETER RECORD"
+                              className="process-img"
+                            />
                           </div>
-                          <div className="w-25 f-12 p-0 text-center d-flex flex-column justify-content-between">
+                          <div className="w-25 f-12 p-1 text-center d-flex flex-column justify-content-between z-index-1">
                             <div className="d-flex">
                               <th className="w-40">Di.No: </th>
                               <td className="w-60">
@@ -1239,66 +1266,305 @@ function ProcessParametersCf(props) {
                               </td>
                             </div>
                           </div>
-                        </div> */}
-
-                        <div className="test w-100">
-                          <div className="d-flex mb-1 w-100">
-                            <div className="ml-3 w-50">
-                              <span className="">Date: </span>
-                              <span>{props.details?.postDetails?.date}</span>
-                            </div>
-                            <div className="ml-3 w-50">
-                              <span className="">Ref No: </span>
-                              <span>{props.details?.postDetails?.ref_no}</span>
-                            </div>
-                          </div>
                         </div>
-                        <div className="w-100">
-                          <table className="table-sm w-100">
-                            <thead className="w-50">
-                              <tr className="w-100">
-                                <th className="test">Sr No.</th>
-                                <th className="test">Customer Name</th>
-                                <th className="test">SO NO</th>
-                                <th className="test">GRADE</th>
-                                <th className="test">COLOUR</th>
-                                <th className="test">WIDTH (MM)</th>
-                                <th className="test">THICKNESS (MM)</th>
-                                <th className="test">LENGTH (METRE)</th>
-                                <th className="test">NO. OF ROLLS</th>
 
-                                <th className="test">QUANTITY (KG)</th>
-                                <th className="test">SLITT SIZE (MM)</th>
-                                <th className="test">ACTUAL PRODUCTION</th>
-                                <th className="test">BALANCE</th>
-                                <th className="test">C/F</th>
-                                <th className="test">REMARKS</th>
+                        <div className="" style={{ width: "1080px" }}>
+                          <table
+                            className="table-sm"
+                            style={{ width: "1080px" }}
+                          >
+                            <thead className="">
+                              <tr>
+                                <th className="test th-color w-15"></th>
+                                <th className="test">Hot Mixer</th>
+                                <th className="test">Cool Mixer</th>
+                                <th className="test">Feeder</th>
+                                <th className="test">Screw</th>
+                                <th className="test">Barrel</th>
+                                <th className="test">Roll no.1</th>
+                                <th className="test">Roll no.2</th>
+                                <th className="test">Roll no.3</th>
+                                <th className="test">Roll no.4</th>
+                                <th className="test">Roll no.5</th>
+                                <th className="test">Roll no.6</th>
+                                <th className="test">Take off 1</th>
+                                <th className="test">Take off 2</th>
+                                <th className="test">Tempering 1</th>
+                                <th className="test">Tempering 2</th>
+                                <th className="test">Hauling</th>
+                                <th className="test">Remarks</th>
                               </tr>
                             </thead>
-                            <tbody className="w-50">
+                            <tbody className="">
                               {formProps.values?.details?.map((de, index) => {
                                 return (
-                                  <tr key={index} className="w-100">
-                                    <td className="test">{index + 1}</td>
-
-                                    <td className="test">{de.customer_name}</td>
-                                    <td className="test">{de.so_no}</td>
-                                    <td className="test"> {de.grade}</td>
-                                    <td className="test">{de.colour} </td>
-
-                                    <td className="test">{de.width}</td>
-                                    <td className="test">{de.thickness}</td>
-                                    <td className="test">{de.length}</td>
-                                    <td className="test">{de.no_rolls}</td>
-                                    <td className="test">{de.qty}</td>
-                                    <td className="test">{de.slitt_size}</td>
-                                    <td className="test">
-                                      {de.actual_production}
+                                  <tr className="w-100">
+                                    <td className="d-flex p-0">
+                                      <th className="d-flex flex-column test p-0 w-100">
+                                        <th>Date & Product description</th>
+                                        <th>{de.hot_mixer?.date}</th>
+                                      </th>
+                                      <th className="d-flex flex-column test p-0">
+                                        <th className="test-b h-40p">Speed</th>
+                                        <th className="test-b h-40p">Temp</th>
+                                        <th className="test-b h-40p">
+                                          Current
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </th>
                                     </td>
-                                    <td className="test">{de.balance}</td>
-                                    <td className="test">{de.cf}</td>
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.hot_mixer?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.hot_mixer?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.hot_mixer?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.cool_mixer?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.cool_mixer?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.cool_mixer?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.feeder?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.feeder?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.feeder?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
 
-                                    <td className="test">{de.remarks}</td>
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.screw?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.screw?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.screw?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.barrel?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.barrel?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.barrel?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.roll_no1?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no1?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no1?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.roll_no2?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no2?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no2?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.roll_no3?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no3?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no3?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.roll_no4?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no4?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no4?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.roll_no5?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no5?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no5?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.roll_no6?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no6?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no6?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.take_off1?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.take_off1?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.take_off1?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.take_off2?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.take_off2?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.take_off2?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.tempering1?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.tempering1?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.tempering1?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.tempering2?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.tempering2?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.tempering2?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.hauling?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.hauling?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.hauling?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 ">
+                                        <th className="test-b h-40p">
+                                          {de.remarks?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.remarks?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.remarks?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
                                   </tr>
                                 );
                               })}
@@ -1331,6 +1597,9 @@ function ProcessParametersCf(props) {
                 }}
               </Formik>
             </ModalBody>
+            <ModalFooter>
+              {props.process?.isPostLoading ? <Loader2 /> : ""}
+            </ModalFooter>
           </Modal>
         </CardHeader>
         <CardBody style={{ overflow: "scroll" }}>
@@ -1449,19 +1718,18 @@ function ProcessParametersCf(props) {
             <ModalHeader toggle={toggle}>
               Add New Process Parameters Cf
             </ModalHeader>
-
+            {props.process?.isPostLoading ? <Loader2 /> : ""}
             <ModalBody>
               <Formik
                 initialValues={{
-                  form_id: 19,
+                  form_id: 22,
                   department_id: 7,
                   di_no: "",
                   title: "",
                   rev_no: "",
-                  // rev_date: "",
-                  // date: "",
-                  // ref_no: "",
+                  prefix_id: "",
                   details: [],
+                  rev_date: "",
                   row: "",
                 }}
                 onSubmit={handleSubmit}
@@ -1476,6 +1744,8 @@ function ProcessParametersCf(props) {
                       formProps.values.title = pre.title;
                       formProps.values.di_no = pre.prefix;
                       formProps.values.rev_no = pre.rev_no;
+                      formProps.values.prefix_id = pre.id;
+                      formProps.values.rev_date = pre.rev_date;
                     }
                   });
 
@@ -1592,7 +1862,33 @@ function ProcessParametersCf(props) {
                           </InputGroup>
                         </Col>
                       </Row>
+                      <Row className="form-group">
+                        <Col md={6}>
+                          <Label for="rev_date">Rev Date</Label>
+                          <InputGroup>
+                            <Field
+                              component={CustomInput}
+                              type="date"
+                              name="rev_date"
+                              id="rev_date"
+                              disabled
+                              className={
+                                "form-control" +
+                                (formProps.errors.rev_date &&
+                                formProps.touched.rev_date
+                                  ? " is-invalid"
+                                  : "")
+                              }
+                            />
 
+                            <ErrorMessage
+                              name="rev_date"
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                          </InputGroup>
+                        </Col>
+                      </Row>
                       <Row className="form-group">
                         <Col md={6}>
                           <Label for="row">Add Table Rows</Label>
@@ -1641,22 +1937,194 @@ function ProcessParametersCf(props) {
                                                 i++
                                               ) {
                                                 arrayHelpers.push({
-                                                  form_id:
-                                                    formProps.values.form_id,
-                                                  customer_name: "",
-                                                  so_no: "",
-                                                  grade: "",
-                                                  colour: "",
-                                                  width: "",
-                                                  thickness: "",
-                                                  length: "",
-                                                  slitt_size: "",
-                                                  no_rolls: "",
-                                                  qty: "",
-                                                  actual_production: "",
-                                                  balance: "",
-                                                  cf: "",
-                                                  remarks: "",
+                                                  hot_mixer: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  cool_mixer: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+
+                                                  feeder: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  screw: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  barrel: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  roll_no1: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  roll_no2: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  roll_no3: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  roll_no4: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  roll_no5: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  roll_no6: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  take_off1: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  take_off2: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  tempering1: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  tempering2: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  hauling: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
+                                                  remarks: {
+                                                    speed: "",
+                                                    temp: "",
+                                                    current: "",
+                                                    form_id:
+                                                      formProps.values.form_id,
+                                                    date: "",
+                                                    prefix_id:
+                                                      formProps.values
+                                                        .prefix_id,
+                                                  },
                                                 });
                                               }
                                             }}
@@ -1672,19 +2140,24 @@ function ProcessParametersCf(props) {
                                   <Table size="sm" className="text-center">
                                     <thead>
                                       <tr>
-                                        <th>Customer Name</th>
-                                        <th>SO.NO</th>
-                                        <th>Grade</th>
-                                        <th>Colour</th>
-                                        <th>Width (MM)</th>
-                                        <th>Thickness (MM)</th>
-                                        <th>Length (Metre)</th>
-                                        <th>No. of Rolls</th>
-                                        <th>Quantity (kG)</th>
-                                        <th>Slitt Size (MM)</th>
-                                        <th>Actual Production</th>
-                                        <th>Balance</th>
-                                        <th>C/F</th>
+                                        <th>Sr No</th>
+                                        <th></th>
+                                        <th>Hot Mixer</th>
+                                        <th>Cool Mixer</th>
+                                        <th>Feeder</th>
+                                        <th>Screw</th>
+                                        <th>Barrel</th>
+                                        <th>Roll no.1</th>
+                                        <th>Roll no.2</th>
+                                        <th>Roll no.3</th>
+                                        <th>Roll no.4</th>
+                                        <th>Roll no.5</th>
+                                        <th>Roll no.6</th>
+                                        <th>Take off 1</th>
+                                        <th>Take off 2</th>
+                                        <th>Tempering 1</th>
+                                        <th>Tempering 2</th>
+                                        <th>Hauling</th>
                                         <th>Remarks</th>
                                       </tr>
                                     </thead>
@@ -1700,129 +2173,592 @@ function ProcessParametersCf(props) {
                                               key={index}
                                               className="text-center"
                                             >
+                                              <td>{index + 1}</td>
+                                              <td className="d-flex test">
+                                                <td className="test">
+                                                  Date & Product description
+                                                  <td>
+                                                    {" "}
+                                                    <Field
+                                                      component={CustomInput}
+                                                      type="date"
+                                                      name={`details.${index}.hot_mixer.date`}
+                                                      id={`details.${index}.hot_mixer.date`}
+                                                      style={{ width: "150px" }}
+                                                      onChange={(event) => {
+                                                        formArray?.map(
+                                                          (form) => {
+                                                            formProps.setFieldValue(
+                                                              `details.${index}.${form}.date`,
+                                                              event.target.value
+                                                            );
+                                                          }
+                                                        );
+
+                                                        // formProps.setFieldValue(
+                                                        //   `details.${index}.date`,
+                                                        //   event.target.value
+                                                        // );
+                                                      }}
+                                                    />
+                                                  </td>
+                                                </td>
+                                                <td className="test d-flex flex-column">
+                                                  <td className="test">
+                                                    Speed
+                                                  </td>
+                                                  <td className="test">
+                                                    Temp.
+                                                  </td>
+                                                  <td className="test">
+                                                    Current
+                                                  </td>
+                                                  <td className="test h-30p">
+                                                    {" "}
+                                                  </td>
+                                                </td>
+                                              </td>
+
                                               <td>
                                                 <Field
                                                   component={CustomInput}
                                                   type="text"
-                                                  name={`details.${index}.customer_name`}
-                                                  id="customer_name"
+                                                  name={`details.${index}.hot_mixer.speed`}
+                                                  id={`details.${index}.hot_mixer.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.hot_mixer.temp`}
+                                                  id={`details.${index}.hot_mixer.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.hot_mixer.current`}
+                                                  id="hot_mixer.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.hot_mixer[3]`}
+                                                  id={`details.${index}.hot_mixer[3]`}
                                                   style={{ width: "150px" }}
                                                 />
                                               </td>
+
                                               <td>
                                                 <Field
                                                   component={CustomInput}
                                                   type="text"
-                                                  name={`details.${index}.so_no`}
-                                                  id={`details.${index}.so_no`}
-                                                  style={{ width: "50px" }}
+                                                  name={`details.${index}.cool_mixer.speed`}
+                                                  id={`details.${index}.cool_mixer.speed`}
+                                                  style={{ width: "150px" }}
                                                 />
-                                              </td>
-                                              <td>
+
                                                 <Field
                                                   component={CustomInput}
                                                   type="text"
-                                                  name={`details.${index}.grade`}
-                                                  id={`details.${index}.grade`}
-                                                  style={{ width: "100px" }}
+                                                  name={`details.${index}.cool_mixer.temp`}
+                                                  id={`details.${index}.cool_mixer.temp`}
+                                                  style={{ width: "150px" }}
                                                 />
-                                              </td>
-                                              <td>
                                                 <Field
                                                   component={CustomInput}
                                                   type="text"
-                                                  name={`details.${index}.colour`}
-                                                  id={`details.${index}.colour`}
-                                                  style={{ width: "100px" }}
+                                                  name={`details.${index}.cool_mixer.current`}
+                                                  id="cool_mixer.current"
+                                                  style={{ width: "150px" }}
                                                 />
-                                              </td>
-                                              <td>
                                                 <Field
                                                   component={CustomInput}
                                                   type="text"
-                                                  name={`details.${index}.width`}
-                                                  id={`details.${index}.width`}
-                                                  style={{ width: "50px" }}
-                                                />
-                                              </td>
-                                              <td>
-                                                <Field
-                                                  component={CustomInput}
-                                                  type="text"
-                                                  name={`details.${index}.thickness`}
-                                                  id={`details.${index}.thickness`}
-                                                  style={{ width: "50px" }}
-                                                />
-                                              </td>
-                                              <td>
-                                                <Field
-                                                  component={CustomInput}
-                                                  type="text"
-                                                  name={`details.${index}.length`}
-                                                  id={`details.${index}.length`}
-                                                  style={{ width: "50px" }}
-                                                />
-                                              </td>
-                                              <td>
-                                                <Field
-                                                  component={CustomInput}
-                                                  type="text"
-                                                  name={`details.${index}.slitt_size`}
-                                                  id={`details.${index}.slitt_size`}
-                                                  style={{ width: "50px" }}
-                                                />
-                                              </td>
-                                              <td>
-                                                <Field
-                                                  component={CustomInput}
-                                                  type="text"
-                                                  name={`details.${index}.no_rolls`}
-                                                  id={`details.${index}.no_rolls`}
-                                                  style={{ width: "100px" }}
-                                                />
-                                              </td>
-                                              <td>
-                                                <Field
-                                                  component={CustomInput}
-                                                  type="number"
-                                                  name={`details.${index}.qty`}
-                                                  id={`details.${index}.qty`}
-                                                  style={{ width: "100px" }}
-                                                />
-                                              </td>
-                                              <td>
-                                                <Field
-                                                  component={CustomInput}
-                                                  type="text"
-                                                  name={`details.${index}.actual_production`}
-                                                  id={`details.${index}.actual_production`}
+                                                  name={`details.${index}.cool_mixer[3]`}
+                                                  id={`details.${index}.cool_mixer[3]`}
                                                   style={{ width: "150px" }}
                                                 />
                                               </td>
+
                                               <td>
                                                 <Field
                                                   component={CustomInput}
                                                   type="text"
-                                                  name={`details.${index}.balance`}
-                                                  id={`details.${index}.balance`}
+                                                  name={`details.${index}.feeder.speed`}
+                                                  id={`details.${index}.feeder.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.feeder.temp`}
+                                                  id={`details.${index}.feeder.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.feeder.current`}
+                                                  id="feeder.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.feeder[3]`}
+                                                  id={`details.${index}.feeder[3]`}
                                                   style={{ width: "150px" }}
                                                 />
                                               </td>
+
                                               <td>
                                                 <Field
                                                   component={CustomInput}
                                                   type="text"
-                                                  name={`details.${index}.cf`}
-                                                  id={`details.${index}.cf`}
+                                                  name={`details.${index}.screw.speed`}
+                                                  id={`details.${index}.screw.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.screw.temp`}
+                                                  id={`details.${index}.screw.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.screw.current`}
+                                                  id="screw.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.screw[3]`}
+                                                  id={`details.${index}.screw[3]`}
                                                   style={{ width: "150px" }}
                                                 />
                                               </td>
+
                                               <td>
                                                 <Field
                                                   component={CustomInput}
                                                   type="text"
-                                                  name={`details.${index}.remarks`}
-                                                  id={`details.${index}.remarks`}
+                                                  name={`details.${index}.barrel.speed`}
+                                                  id={`details.${index}.barrel.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.barrel.temp`}
+                                                  id={`details.${index}.barrel.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.barrel.current`}
+                                                  id="barrel.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.barrel[3]`}
+                                                  id={`details.${index}.barrel[3]`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                              </td>
+
+                                              <td>
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no1.speed`}
+                                                  id={`details.${index}.roll_no1.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no1.temp`}
+                                                  id={`details.${index}.roll_no1.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no1.current`}
+                                                  id="roll_no1.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no1[3]`}
+                                                  id={`details.${index}.roll_no1[3]`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                              </td>
+
+                                              <td>
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no2.speed`}
+                                                  id={`details.${index}.roll_no2.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no2.temp`}
+                                                  id={`details.${index}.roll_no2.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no2.current`}
+                                                  id="roll_no2.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no2[3]`}
+                                                  id={`details.${index}.roll_no2[3]`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                              </td>
+
+                                              <td>
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no3.speed`}
+                                                  id={`details.${index}.roll_no3.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no3.temp`}
+                                                  id={`details.${index}.roll_no3.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no3.current`}
+                                                  id="roll_no3.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no3[3]`}
+                                                  id={`details.${index}.roll_no3[3]`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                              </td>
+
+                                              <td>
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no4.speed`}
+                                                  id={`details.${index}.roll_no4.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no4.temp`}
+                                                  id={`details.${index}.roll_no4.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no4.current`}
+                                                  id="roll_no4.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no4[3]`}
+                                                  id={`details.${index}.roll_no4[3]`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                              </td>
+
+                                              <td>
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no5.speed`}
+                                                  id={`details.${index}.roll_no5.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no5.temp`}
+                                                  id={`details.${index}.roll_no5.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no5.current`}
+                                                  id="roll_no5.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no5[3]`}
+                                                  id={`details.${index}.roll_no5[3]`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                              </td>
+
+                                              <td>
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no6.speed`}
+                                                  id={`details.${index}.roll_no6.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no6.temp`}
+                                                  id={`details.${index}.roll_no6.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no6.current`}
+                                                  id="roll_no6.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.roll_no6[3]`}
+                                                  id={`details.${index}.roll_no6[3]`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                              </td>
+
+                                              <td>
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.take_off1.speed`}
+                                                  id={`details.${index}.take_off1.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.take_off1.temp`}
+                                                  id={`details.${index}.take_off1.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.take_off1.current`}
+                                                  id="take_off1.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.take_off1[3]`}
+                                                  id={`details.${index}.take_off1[3]`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                              </td>
+
+                                              <td>
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.take_off2.speed`}
+                                                  id={`details.${index}.take_off2.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.take_off2.temp`}
+                                                  id={`details.${index}.take_off2.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.take_off2.current`}
+                                                  id="take_off2.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.take_off2[3]`}
+                                                  id={`details.${index}.take_off2[3]`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                              </td>
+
+                                              <td>
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.tempering1.speed`}
+                                                  id={`details.${index}.tempering1.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.tempering1.temp`}
+                                                  id={`details.${index}.tempering1.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.tempering1.current`}
+                                                  id="tempering1.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.tempering1[3]`}
+                                                  id={`details.${index}.tempering1[3]`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                              </td>
+
+                                              <td>
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.tempering2.speed`}
+                                                  id={`details.${index}.tempering2.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.tempering2.temp`}
+                                                  id={`details.${index}.tempering2.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.tempering2.current`}
+                                                  id="tempering2.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.tempering2[3]`}
+                                                  id={`details.${index}.tempering2[3]`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                              </td>
+
+                                              <td>
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.hauling.speed`}
+                                                  id={`details.${index}.hauling.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.hauling.temp`}
+                                                  id={`details.${index}.hauling.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.hauling.current`}
+                                                  id="hauling.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.hauling[3]`}
+                                                  id={`details.${index}.hauling[3]`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                              </td>
+
+                                              <td>
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.remarks.speed`}
+                                                  id={`details.${index}.remarks.speed`}
+                                                  style={{ width: "150px" }}
+                                                />
+
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.remarks.temp`}
+                                                  id={`details.${index}.remarks.temp`}
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.remarks.current`}
+                                                  id="remarks.current"
+                                                  style={{ width: "150px" }}
+                                                />
+                                                <Field
+                                                  component={CustomInput}
+                                                  type="text"
+                                                  name={`details.${index}.remarks[3]`}
+                                                  id={`details.${index}.remarks[3]`}
                                                   style={{ width: "150px" }}
                                                 />
                                               </td>
@@ -1861,7 +2797,7 @@ function ProcessParametersCf(props) {
                     <>
                       <div
                         id="htmlToPdf2"
-                        className="d-flex flex-column flex-wrap f-10 w-100"
+                        className="d-flex flex-column flex-wrap f-8 w-100"
                       >
                         <div className="d-flex test">
                           <div className="w-25 test-r p-1 text-center">
@@ -1872,7 +2808,7 @@ function ProcessParametersCf(props) {
                           </div>
                           <div className="w-50 test-r d-flex justify-content-center align-items-center">
                             <h5 className="font-weight-bold text-underline">
-                              DAILY PRODUCTION PLANNING SHEET.
+                              PROCESS PARAMETER RECORD.
                             </h5>
                           </div>
                           <div className="w-25 f-12 p-0 text-center d-flex flex-column justify-content-between">
@@ -1897,7 +2833,7 @@ function ProcessParametersCf(props) {
                           </div>
                         </div>
 
-                        <div className="test w-100">
+                        {/* <div className="test w-100">
                           <div className="d-flex mb-1 w-100">
                             <div className="ml-3 w-50">
                               <span className="">Date: </span>
@@ -1908,53 +2844,301 @@ function ProcessParametersCf(props) {
                               <span>{props.details?.postDetails?.ref_no}</span>
                             </div>
                           </div>
-                        </div>
-                        <div className="w-100">
-                          <table className="table-sm w-100">
-                            <thead className="w-50">
-                              <tr className="w-100">
-                                <th className="test">Sr No.</th>
-                                <th className="test">Customer Name</th>
-                                <th className="test">SO NO</th>
-                                <th className="test">GRADE</th>
-                                <th className="test">COLOUR</th>
-                                <th className="test">WIDTH (MM)</th>
-                                <th className="test">THICKNESS (MM)</th>
-                                <th className="test">LENGTH (METRE)</th>
-                                <th className="test">NO. OF ROLLS</th>
-
-                                <th className="test">QUANTITY (KG)</th>
-                                <th className="test">SLITT SIZE (MM)</th>
-                                <th className="test">ACTUAL PRODUCTION</th>
-                                <th className="test">BALANCE</th>
-                                <th className="test">C/F</th>
-                                <th className="test">REMARKS</th>
+                        </div> */}
+                        <div className="">
+                          <table className="table-sm ">
+                            <thead className="">
+                              <tr>
+                                <th className="test  bg-gray"></th>
+                                <th className="test">Hot Mixer</th>
+                                <th className="test">Cool Mixer</th>
+                                <th className="test">Feeder</th>
+                                <th className="test">Screw</th>
+                                <th className="test">Barrel</th>
+                                <th className="test">Roll no.1</th>
+                                <th className="test">Roll no.2</th>
+                                <th className="test">Roll no.3</th>
+                                <th className="test">Roll no.4</th>
+                                <th className="test">Roll no.5</th>
+                                <th className="test">Roll no.6</th>
+                                <th className="test">Take off 1</th>
+                                <th className="test">Take off 2</th>
+                                <th className="test">Tempering 1</th>
+                                <th className="test">Tempering 2</th>
+                                <th className="test">Hauling</th>
+                                <th className="test">Remarks</th>
                               </tr>
                             </thead>
-                            <tbody className="w-50">
+                            <tbody className="">
                               {formProps.values?.details?.map((de, index) => {
                                 return (
-                                  <tr key={index} className="w-100">
-                                    <td className="test">{index + 1}</td>
-
-                                    <td className="test">{de.customer_name}</td>
-                                    <td className="test">{de.so_no}</td>
-                                    <td className="test"> {de.grade}</td>
-                                    <td className="test">{de.colour} </td>
-
-                                    <td className="test">{de.width}</td>
-                                    <td className="test">{de.thickness}</td>
-                                    <td className="test">{de.length}</td>
-                                    <td className="test">{de.no_rolls}</td>
-                                    <td className="test">{de.qty}</td>
-                                    <td className="test">{de.slitt_size}</td>
-                                    <td className="test">
-                                      {de.actual_production}
+                                  <tr>
+                                    <td className="d-flex p-0">
+                                      <th className="d-flex flex-column test -100 p-0">
+                                        <th>Date & Product description</th>
+                                        <th>{de.date}</th>
+                                      </th>
+                                      <th className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">Speed</th>
+                                        <th className="test-b h-40p">Temp</th>
+                                        <th className="test-b h-40p">
+                                          Current
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </th>
                                     </td>
-                                    <td className="test">{de.balance}</td>
-                                    <td className="test">{de.cf}</td>
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.hot_mixer?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.hot_mixer?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.hot_mixer?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.cool_mixer?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.cool_mixer?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.cool_mixer?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.feeder?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.feeder?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.feeder?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
 
-                                    <td className="test">{de.remarks}</td>
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.screw?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.screw?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.screw?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.barrel?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.barrel?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.barrel?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.roll_no1?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no1?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no1?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.roll_no2?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no2?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no2?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.roll_no3?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no3?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no3?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.roll_no4?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no4?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no4?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.roll_no5?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no5?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no5?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.roll_no6?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no6?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.roll_no6?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.take_off1?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.take_off1?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.take_off1?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.take_off2?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.take_off2?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.take_off2?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.tempering1?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.tempering1?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.tempering1?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.tempering2?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.tempering2?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.tempering2?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.hauling?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.hauling?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.hauling?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
+
+                                    <td className="p-0">
+                                      <td className="d-flex flex-column test p-0 w-100">
+                                        <th className="test-b h-40p">
+                                          {de.remarks?.speed}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.remarks?.temp}
+                                        </th>
+                                        <th className="test-b h-40p">
+                                          {de.remarks?.current}
+                                        </th>
+                                        <th className="h-40p"></th>
+                                      </td>
+                                    </td>
                                   </tr>
                                 );
                               })}
@@ -1987,6 +3171,9 @@ function ProcessParametersCf(props) {
                 }}
               </Formik>
             </ModalBody>
+            <ModalFooter>
+              {props.process?.isPostLoading ? <Loader2 /> : ""}
+            </ModalFooter>
           </Modal>
         </CardHeader>
         <CardBody style={{ overflow: "scroll" }}>
@@ -2092,7 +3279,7 @@ const mapStateToProps = (state) => {
     prefix: state.prefix.prefix,
     department: state.department.department,
     form: state.form.form,
-    details: state.details,
+    process: state.process,
   };
 };
 

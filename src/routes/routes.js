@@ -9,6 +9,8 @@ const UserMaster = React.lazy(() =>
   import("../Components/User&Pass/UserMaster")
 );
 
+const Report = React.lazy(() => import("../Components/Report/Report"));
+
 const Department = React.lazy(() =>
   import("../Components/Master/PrefixMaster/Department/Department")
 );
@@ -180,6 +182,7 @@ const routes = [
     name: "UserMasters",
     component: UserMaster,
   },
+  { path: "/report", exact: true, name: "Report", component: Report },
   { path: "/department", exact: true, name: "Options", component: Department },
   { path: "/form", exact: true, name: "Marking", component: PrefixForm },
   { path: "/prefix", exact: true, name: "Run", component: Prefix },

@@ -73,7 +73,7 @@ function Sidebar(props) {
         {/* Main Sidebar Container */}
         <aside
           className="main-sidebar sidebar-dark-primary elevation-4"
-          style={{ overflow: "scroll", width: "250px;", height: "100vh" }}
+          style={{ overflow: "scroll", width: "200px;", height: "100vh" }}
         >
           {/* Sidebar */}
           <div

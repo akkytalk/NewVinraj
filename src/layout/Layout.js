@@ -17,7 +17,7 @@ function Layout(props) {
       <div className="wrapper">
         <Header />
         <Sidebar />
-        <div className="content-wrapper">
+        <div className="content-wrapper ">
           <section className="content">
             <div className="container-fluid">
               <React.Suspense fallback={<Loader />}>

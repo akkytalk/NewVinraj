@@ -27,7 +27,7 @@ export const prodPlanCfGetData = (data) => {
   return (dispatch) => {
     dispatch(prodPlanCfLoading());
     axios
-      .get(baseUrl + "planning", {
+      .get(baseUrl + "plannings", {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -54,7 +54,7 @@ export const deleteProdPlanCf = (id, data) => {
   return (dispatch) => {
     if (id) {
       axios
-        .delete(baseUrl + `planning/${id}`, {
+        .delete(baseUrl + `plannings/${id}`, {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -103,14 +103,15 @@ export const postProdPlanCfData = (
   user,
   toggle,
   setSubmitting,
-  setShowTable
+  setShowTable,
+  unique
 ) => {
   return (dispatch) => {
     console.log("user", user);
     dispatch(postProdPlanCfDataStart());
     dispatch(prodPlanCfPostLoading());
     axios
-      .post(baseUrl + "planning", user, {
+      .post(baseUrl + "plannings", user, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -128,6 +129,9 @@ export const postProdPlanCfData = (
           // }
           if (setShowTable) {
             setShowTable(true);
+          }
+          if (unique) {
+            unique();
           }
         });
       })
@@ -157,7 +161,7 @@ export const updateProdPlanCfData = (data, user, toggle, setSubmitting) => {
     dispatch(prodPlanCfUpdateLoading());
 
     axios
-      .put(baseUrl + `planning/${data.id}`, user, {
+      .put(baseUrl + `plannings/${data.id}`, user, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",

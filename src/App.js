@@ -32,7 +32,6 @@ import Layout from "./layout/Layout";
 // import ProductionPlanningCf from "./Components/Production/ProductionPlanningCf";
 // import ProductionReportCf from "./Components/Production/ProductionReportCf";
 // import StockReportCf from "./Components/Production/StockReportCf";
-// import ProcessParametersCf from "./Components/Production/ProcessParametersCf";
 // import ProductionPlanningVf from "./Components/Production/ProductionPlanningVf";
 // import ProductionReportVf from "./Components/Production/ProductionReportVf";
 // import StockReportVf from "./Components/Production/StockReportVf";
@@ -73,6 +72,7 @@ function App() {
             <Switch>
               <Route exact path="/login" name="Login" component={Login2} />
               <Route exact path="/signup" name="Signup" component={Signup} />
+
               <Route path="/" component={Layout} />
               {/* <Route path="/user-master" component={UserMaster} />
               <Route path="/department" exact component={Department} />

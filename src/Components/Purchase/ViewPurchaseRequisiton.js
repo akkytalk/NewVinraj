@@ -29,10 +29,12 @@ function ViewPurchaseRequisition(props) {
     });
   };
 
+  console.log(`props.formdata`, props.formdata);
   return (
     <Fragment>
       <Button
-        className="btn-info p-1"
+        className="btn-info"
+        style={{ padding: "2px", fontSize: "12px" }}
         onClick={() => {
           toggle();
           printMutliple();
@@ -40,7 +42,7 @@ function ViewPurchaseRequisition(props) {
       >
         <i className="fa fa-eye" aria-hidden="true"></i>
       </Button>
-      <Modal className="modal-info modal-lg" isOpen={modal} toggle={toggle}>
+      <Modal className="modal-info modal-xl" isOpen={modal} toggle={toggle}>
         {/* {props.details?.isPostLoading && <Loader2 />} */}
         <ModalHeader toggle={toggle}>View Purchase Requisition</ModalHeader>
         <ModalBody>
@@ -82,11 +84,11 @@ function ViewPurchaseRequisition(props) {
                 <div className="d-flex mb-4 w-100">
                   <div className="mr-3 w-50">
                     <span className="">Date: </span>
-                    <span>{props.data?.date}</span>
+                    <span>{props.date}</span>
                   </div>
                   <div className="mr-3 w-50">
                     <span className="">Ref No: </span>
-                    <span>{props.data?.ref_no}</span>
+                    <span>{props.ref_no}</span>
                   </div>
                 </div>
               </div>
@@ -101,13 +103,13 @@ function ViewPurchaseRequisition(props) {
                   </tr>
                 </thead>
                 <tbody className="">
-                  {props.data?.form_item_details?.map((detail, index) => {
+                  {props.formdata?.data?.map((detail, index) => {
                     return (
                       <tr key={index} className="">
                         <td>{detail.item_name}</td>
-                        <td>{detail.qty}</td>
+                        <td>{detail.quantity}</td>
                         <td>{detail.remarks}</td>
-                        <td>{detail.approx_price}</td>
+                        <td>{detail.price}</td>
                       </tr>
                     );
                   })}

@@ -38,6 +38,8 @@ function EditPrefix(props) {
       prefix: values.prefix,
       title: values.title,
       rev_no: values.rev_no,
+      rev_date: values.rev_date,
+      di_no: values.di_no,
     };
     console.log("Data of Vendor:", user);
     props.updatePrefixDataToggle(data, user, toggle);
@@ -65,6 +67,8 @@ function EditPrefix(props) {
               prefix: props.data?.prefix,
               title: props.data?.title,
               rev_no: props.data?.rev_no,
+              di_no: props.data?.di_no,
+              rev_date: props.data?.rev_date,
             }}
             onSubmit={handleSubmit}
           >
@@ -196,14 +200,38 @@ function EditPrefix(props) {
                 </Row>
                 <Row className="form-group">
                   <Col md={6}>
-                    <Label for="prefix">Enter Prefix/Di No</Label>
+                    <Label for="rev_date">Rev Date</Label>
+                    <InputGroup>
+                      <Field
+                        component={CustomInput}
+                        type="date"
+                        name="rev_date"
+                        id="rev_date"
+                        className={
+                          "form-control" +
+                          (formProps.errors.rev_date &&
+                          formProps.touched.rev_date
+                            ? " is-invalid"
+                            : "")
+                        }
+                      />
+
+                      <ErrorMessage
+                        name="rev_date"
+                        component="div"
+                        className="invalid-feedback"
+                      />
+                    </InputGroup>
+                  </Col>
+                  <Col md={6}>
+                    <Label for="prefix">Enter Prefix</Label>
                     <InputGroup>
                       <Field
                         component={CustomInput}
                         type="text"
                         name="prefix"
                         id="prefix"
-                        placeholder="Enter Prefix/Di No"
+                        placeholder="Enter Prefix"
                         className={
                           "form-control" +
                           (formProps.errors.prefix && formProps.touched.prefix
@@ -214,6 +242,32 @@ function EditPrefix(props) {
 
                       <ErrorMessage
                         name="prefix"
+                        component="div"
+                        className="invalid-feedback"
+                      />
+                    </InputGroup>
+                  </Col>
+                </Row>
+                <Row className="form-group">
+                  <Col md={6}>
+                    <Label for="di_no">Di No</Label>
+                    <InputGroup>
+                      <Field
+                        component={CustomInput}
+                        type="text"
+                        name="di_no"
+                        id="di_no"
+                        placeholder="Enter Di No"
+                        className={
+                          "form-control" +
+                          (formProps.errors.di_no && formProps.touched.di_no
+                            ? " is-invalid"
+                            : "")
+                        }
+                      />
+
+                      <ErrorMessage
+                        name="di_no"
                         component="div"
                         className="invalid-feedback"
                       />

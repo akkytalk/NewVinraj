@@ -2,26 +2,26 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
 
 import * as actions from "../../reduxStore/actions";
 import { FormGroup, InputGroup } from "react-bootstrap";
 
 import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
-import printJS from "print-js";
 import {
   Row,
   Col,
-  Button,
   Modal,
   ModalBody,
   ModalHeader,
   InputGroupAddon,
   Label,
   Table,
+  ModalFooter,
+  Button,
 } from "reactstrap";
-import * as Yup from "yup";
+import CustomSelect from "../../views/Custom/CustomSelect";
 
 import CustomInput from "../../views/Custom/CustomInput";
 import Loader2 from "../loader/Loader2";
@@ -29,101 +29,221 @@ import Loader2 from "../loader/Loader2";
 function EditPurchaseRequisition(props) {
   let data = {
     token: props.login?.login?.token,
+    id: props.data?.id,
   };
 
   const [modal, setModal] = useState(false);
-  const [showtable, setShowTable] = useState(false);
   const toggle = () => {
     setModal(!modal);
-    setShowTable(false);
   };
 
-  useEffect(() => {
-    // props.detailsGetData(data);
-  }, []);
-
-  const printMutliple = () => {
-    console.log("print");
-    printJS({
-      printable: "htmlToPdf2",
-      CSS: "",
-      scanStyles: "true",
-      type: "html",
-      targetStyles: "[*]",
-
-      // style: "@page { size: Letter landscape; }",
-    });
-  };
   let user;
   const handleSubmit = (values, { setSubmitting }) => {
-    console.log("values in Bio Data:", values);
+    console.log("values in purchase requisition:", values);
 
     user = {
-      form_id: values.form_id,
-      title: values.title,
-      rev_no: values.rev_no,
-      rev_date: values.rev_date,
-      date: values.date,
-      ref_no: values.ref_no,
       details: values.details,
     };
     console.log("Data of User of details:", user);
-    // props.updateDetailsData(data, user, toggle, setSubmitting, setShowTable);
+    props.updateDetailsData(data, user, toggle, setSubmitting);
     setSubmitting(true);
     // setShowTable(true);
     return;
   };
 
-  console.log("users", props.users);
+  console.log("formdata", props.formdata);
 
   return (
-    <Fragment>
+    <div>
       <Button
-        className="btn-success"
-        style={{ position: "absolute", top: "6px", right: "15px" }}
-        data-toggle="modal"
-        data-target="#extraLargeModal"
-        onClick={toggle}
+        className="btn-warning ml-2"
+        style={{ padding: "2px", fontSize: "12px" }}
+        onClick={() => {
+          toggle();
+        }}
       >
-        Add Requistion
+        <i className="fa fa-edit" aria-hidden="true"></i>
       </Button>
-      <Modal className="modal-info modal-lg" isOpen={modal} toggle={toggle}>
-        {/* {props.details?.isPostLoading && <Loader2 />} */}
+      <Modal className="modal-info modal-xl" isOpen={modal} toggle={toggle}>
+        {/* {props.details?.isUpdateLoading && <Loader2 />} */}
         <ModalHeader toggle={toggle}>Purchase Requisition</ModalHeader>
         <ModalBody>
           <Formik
             initialValues={{
               form_id: 27,
-              title: "",
-              rev_no: "",
-              rev_date: "",
-              date: "",
-              ref_no: "",
-              details: [],
-              row: "",
+              department_id: 8,
+              prefix_id: props.data.prefix_id,
+              di_no: props.data.di_no,
+              title: props.data.title,
+              rev_no: props.data.rev_no,
+              rev_date: props.data.rev_date,
+              date: props.date,
+              details: props.formdata?.data,
+              row: props.data,
             }}
             onSubmit={handleSubmit}
-            validationSchema={Yup.object().shape({
-              title: Yup.string().required("title is required"),
-              rev_no: Yup.string().required("rev_no is required"),
-              rev_date: Yup.string().required("rev_date is required"),
-              date: Yup.string().required("date is required"),
-              ref_no: Yup.string().required("ref_no is required"),
-            })}
           >
-            {(formProps) =>
-              !showtable ? (
+            {(formProps) => {
+              return (
                 <Form>
-                  <Row className="form-group">
-                    <Col md={6}>
+                  <div id="htmlToPdf2" style={{ marginLeft: "20px" }}>
+                    <div className="row">
+                      <div className="col-md-3">
+                        <img src="https://uditsolutions.in/vinraj.png" alt="" />
+                      </div>
+                      <div className="col-md-3">
+                        <div className="d-flex">
+                          <th>Dept: </th>
+                          <td className="ml-2">Purchase</td>
+                        </div>
+                        <br />
+
+                        <div className="d-flex">
+                          <th>Di.No: </th>
+                          <td className="ml-2">{formProps.values?.di_no}</td>
+                        </div>
+                      </div>
+                    </div>
+                    <hr />
+                    <div className="">
+                      <div className="d-flex mb-4 w-100">
+                        <div className="mr-3 w-25">
+                          <span className="">Title: </span>
+                          <span>{formProps.values?.title}</span>
+                        </div>
+                        <div className="mr-3 w-25">
+                          <span className="">Rev. No.: </span>
+                          <span>{formProps.values?.rev_no}</span>
+                        </div>
+                        <div className="mr-3 w-50">
+                          <span className="">Rev. Date: </span>
+                          <span>{formProps.values?.rev_date}</span>
+                        </div>
+                      </div>
+                      <div className="d-flex mb-4 w-100">
+                        <div className="mr-3 w-50 d-flex">
+                          <span className="">Date: </span>
+                          <span className="w-100">
+                            <Col md={6}>
+                              <InputGroup>
+                                <Field
+                                  component={CustomInput}
+                                  type="date"
+                                  name="date"
+                                  id="date"
+                                  placeholder="Enter date"
+                                  className={
+                                    "form-control" +
+                                    (formProps.errors.date &&
+                                    formProps.touched.date
+                                      ? " is-invalid"
+                                      : "")
+                                  }
+                                />
+
+                                <ErrorMessage
+                                  name="date"
+                                  component="div"
+                                  className="invalid-feedback"
+                                />
+                              </InputGroup>
+                            </Col>
+                          </span>
+                        </div>
+                        <div className="mr-3 w-50">
+                          <span className="">Ref No: </span>
+                          <span>It will auto-generated</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* <Table size="sm" className=" mt-4">
+                      <thead>
+                        <tr>
+                          <th>Item Name</th>
+                          <th>Required Qty</th>
+                          <th>Remarks</th>
+                          <th>Approx Price </th>
+                        </tr>
+                      </thead>
+                      <tbody className="">
+                        {formProps.values?.details?.map((detail, index) => {
+                          return (
+                            <tr key={index} className="">
+                              <td>{detail.item_id}</td>
+                              <td>{detail.quantity}</td>
+                              <td>{detail.remarks}</td>
+                              <td>{detail.price}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </Table> */}
+                  </div>
+                  {/* <Row className="form-group">
+                    <Col md={3}>
+                      <Label for="department_id">Department</Label>
+                      <InputGroup>
+                        <Field
+                          component={CustomSelect}
+                          type="select"
+                          list="userdatalist"
+                          name="department_id"
+                          id="department_id"
+                          placeholder="Enter Title"
+                          disabled
+                          className={
+                            "form-control" +
+                            (formProps.errors.department_id &&
+                            formProps.touched.department_id
+                              ? " is-invalid"
+                              : "")
+                          }
+                        >
+                          {props.department?.map((dep) => {
+                            if (dep.id == 8)
+                              return <option value={dep.id}>{dep.name}</option>;
+                          })}
+                        </Field>
+
+                      </InputGroup>
+                    </Col>
+
+                    <Col md={3}>
+                      <Label for="di_no">Di No</Label>
+                      <InputGroup>
+                        <Field
+                          component={CustomInput}
+                          type="text"
+                          name="di_no"
+                          id="di_no"
+                          placeholder="Enter di_no"
+                          disabled
+                          className={
+                            "form-control" +
+                            (formProps.errors.di_no && formProps.touched.di_no
+                              ? " is-invalid"
+                              : "")
+                          }
+                        ></Field>
+
+                        <ErrorMessage
+                          name="di_no"
+                          component="div"
+                          className="invalid-feedback"
+                        />
+                      </InputGroup>
+                    </Col>
+
+                    <Col md={3}>
                       <Label for="title">Title</Label>
                       <InputGroup>
                         <Field
                           component={CustomInput}
                           type="text"
-                          list="userdatalist"
                           name="title"
                           id="title"
+                          disabled
                           placeholder="Enter Title"
                           className={
                             "form-control" +
@@ -141,7 +261,7 @@ function EditPurchaseRequisition(props) {
                       </InputGroup>
                     </Col>
 
-                    <Col md={6}>
+                    <Col md={3}>
                       <Label for="rev_no">Rev no</Label>
                       <InputGroup>
                         <Field
@@ -150,6 +270,7 @@ function EditPurchaseRequisition(props) {
                           name="rev_no"
                           id="rev_no"
                           placeholder="Enter rev_no"
+                          disabled
                           className={
                             "form-control" +
                             (formProps.errors.rev_no && formProps.touched.rev_no
@@ -176,6 +297,7 @@ function EditPurchaseRequisition(props) {
                           type="date"
                           name="rev_date"
                           id="rev_date"
+                          disabled
                           className={
                             "form-control" +
                             (formProps.errors.rev_date &&
@@ -217,36 +339,9 @@ function EditPurchaseRequisition(props) {
                         />
                       </InputGroup>
                     </Col>
-                  </Row>
+                  </Row> */}
 
-                  <Row className="form-group">
-                    <Col md={6}>
-                      <Label for="ref_no">ref no</Label>
-                      <InputGroup>
-                        <Field
-                          component={CustomInput}
-                          type="text"
-                          name="ref_no"
-                          id="ref_no"
-                          placeholder="Enter ref_no"
-                          className={
-                            "form-control" +
-                            (formProps.errors.ref_no && formProps.touched.ref_no
-                              ? " is-invalid"
-                              : "")
-                          }
-                        />
-
-                        <ErrorMessage
-                          name="ref_no"
-                          component="div"
-                          className="invalid-feedback"
-                        />
-                      </InputGroup>
-                    </Col>
-                  </Row>
-
-                  <Row className="form-group">
+                  {/* <Row className="form-group">
                     <Col md={6}>
                       <Label for="row">Add Table Rows</Label>
                       <InputGroup>
@@ -271,7 +366,7 @@ function EditPurchaseRequisition(props) {
                         />
                       </InputGroup>
                     </Col>
-                  </Row>
+                  </Row> */}
 
                   <Row>
                     <Col md={12}>
@@ -279,7 +374,7 @@ function EditPurchaseRequisition(props) {
                         name="details"
                         render={(arrayHelpers) => (
                           <div>
-                            <Row>
+                            {/* <Row>
                               <Col md={10}>
                                 <FormGroup>
                                   <InputGroup>
@@ -298,10 +393,13 @@ function EditPurchaseRequisition(props) {
                                           ) {
                                             arrayHelpers.push({
                                               form_id: formProps.values.form_id,
-                                              item_name: "",
-                                              qty: "",
+                                              date: formProps.values.date,
+                                              prefix_id:
+                                                formProps.values.prefix_id,
+                                              item_id: "",
+                                              quantity: "",
                                               remarks: "",
-                                              approx_price: "",
+                                              price: "",
                                             });
                                           }
                                         }}
@@ -312,14 +410,15 @@ function EditPurchaseRequisition(props) {
                                   </InputGroup>
                                 </FormGroup>
                               </Col>
-                            </Row>
+                            </Row> */}
                             <Table size="sm" className="text-center">
                               <thead>
                                 <tr>
                                   <th>Item Name</th>
-                                  <th>Quantity</th>
+                                  <th>Required Qty</th>
                                   <th>Remarks</th>
-                                  <th>Approx price</th>
+                                  <th>Approx Price</th>
+                                  <th>Delete</th>
                                 </tr>
                               </thead>
                               <tbody className="text-center">
@@ -333,19 +432,31 @@ function EditPurchaseRequisition(props) {
                                       <tr key={index} className="text-center">
                                         <td>
                                           <Field
-                                            component={CustomInput}
-                                            type="text"
-                                            name={`details.${index}.item_name`}
-                                            id="item_name"
+                                            component={CustomSelect}
+                                            type="select"
+                                            name={`details.${index}.item_id`}
+                                            id="item_id"
                                             placeholder="Enter Item Name"
-                                          />
+                                          >
+                                            <option value="">
+                                              Select Item Name
+                                            </option>
+                                            {props.itemName?.map((item) => (
+                                              <option
+                                                key={item.id}
+                                                value={item.id}
+                                              >
+                                                {item.name}
+                                              </option>
+                                            ))}
+                                          </Field>
                                         </td>
                                         <td>
                                           <Field
                                             component={CustomInput}
                                             type="number"
-                                            name={`details.${index}.qty`}
-                                            id={`details.${index}.qty`}
+                                            name={`details.${index}.quantity`}
+                                            id={`details.${index}.quantity`}
                                             placeholder="Enter Quantity"
                                           />
                                         </td>
@@ -362,10 +473,21 @@ function EditPurchaseRequisition(props) {
                                           <Field
                                             component={CustomInput}
                                             type="number"
-                                            name={`details.${index}.approx_price`}
-                                            id={`details.${index}.approx_price`}
+                                            name={`details.${index}.price`}
+                                            id={`details.${index}.price`}
                                             placeholder="Enter approx price"
                                           />
+                                        </td>
+                                        <td>
+                                          <Button
+                                            color="danger p-1"
+                                            size="sm"
+                                            onClick={() =>
+                                              arrayHelpers.remove(index)
+                                            }
+                                          >
+                                            <i className="fa fa-trash" />
+                                          </Button>
                                         </td>
                                       </tr>
                                     );
@@ -378,6 +500,11 @@ function EditPurchaseRequisition(props) {
                       />
                     </Col>
                   </Row>
+                  <p className="mt-4 pr-5 mb-2">
+                    Note: In 1 PR, do not mix 2 stock groups. Make separate PR
+                    for the other stock group. Write “URGENT” in Remarks if Item
+                    is required urgently.
+                  </p>
                   <br />
                   <Row style={{ justifyContent: "center" }}>
                     <Col md={4}>
@@ -397,81 +524,15 @@ function EditPurchaseRequisition(props) {
                     </Col>
                   </Row>
                 </Form>
-              ) : (
-                <div>
-                  <div id="htmlToPdf2" style={{ marginLeft: "20px" }}>
-                    <div className="col-md-4">
-                      <img src="https://uditsolutions.in/vinraj.png" alt="" />
-                    </div>
-                    <div className="m-2">
-                      <span>Title: </span>
-                      <span>{formProps.values.title}</span>
-                    </div>
-                    <div className="m-2">
-                      <span>rev no: </span>
-                      <span>{formProps.values.rev_no}</span>
-                    </div>
-
-                    <div className="m-2">
-                      <span>rev date: </span>
-                      <span>{formProps.values.rev_date}</span>
-                    </div>
-
-                    <div className="m-2">
-                      <span>Date: </span>
-                      <span>{formProps.values.date}</span>
-                    </div>
-                    <div className="m-2">
-                      <span>Date: </span>
-                      <span>{formProps.values.date}</span>
-                    </div>
-                    <Table size="sm" className="text-center mt-4">
-                      <thead>
-                        <tr>
-                          <th>Item Name</th>
-                          <th>Quantity</th>
-                          <th>Remarks</th>
-                          <th>Approx price</th>
-                        </tr>
-                      </thead>
-                      <tbody className="text-center">
-                        {formProps.values?.details?.map((detail, index) => {
-                          return (
-                            <tr key={index} className="text-center">
-                              <td>{detail.item_name}</td>
-                              <td>{detail.qty}</td>
-                              <td>{detail.remarks}</td>
-                              <td>{detail.approx_price}</td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </Table>
-                  </div>
-                  <div className="modal-footer">
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      data-dismiss="modal"
-                      onClick={() => setModal(false)}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={printMutliple}
-                    >
-                      save as pdf
-                    </button>
-                  </div>
-                </div>
-              )
-            }
+              );
+            }}
           </Formik>
         </ModalBody>
+        <ModalFooter>
+          {props.details?.isUpdateLoading ? <Loader2 /> : ""}
+        </ModalFooter>
       </Modal>
-    </Fragment>
+    </div>
   );
 }
 
@@ -485,6 +546,7 @@ const mapStateToProps = (state) => {
     right: state.right.right,
     users: state.userMaster.userMaster,
     details: state.details,
+    itemName: state.itemName.itemName,
   };
 };
 

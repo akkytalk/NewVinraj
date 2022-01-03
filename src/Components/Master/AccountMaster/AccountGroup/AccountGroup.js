@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Fragment } from "react";
-import Sidebar from "../../../Home/Sidebar";
+import { Button } from "reactstrap";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -10,10 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import * as actions from "../../../../reduxStore/actions/index";
 import { connect } from "react-redux";
-import Breadcrumbs from "@material-ui/core/Breadcrumbs";
-
-import NavigateNextIcon from "@material-ui/icons/NavigateNext";
-import Link from "@material-ui/core/Link";
+import "../../../../css/Format.css";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -106,43 +103,6 @@ function AccountGroup(props) {
 
   return (
     <Fragment>
-      {/* <div className="wrapper"> */}
-      {/* <nav className="main-header navbar navbar-expand navbar-white navbar-light">
-         
-          <ul className="navbar-nav d-flex align-items-center">
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                data-widget="pushmenu"
-                href="n"
-                role="button"
-              >
-                <i className="fas fa-bars" />
-              </a>
-            </li>
-            <li className="nav-item d-none d-sm-inline-block ml-2">
-              <Breadcrumbs
-                separator={<NavigateNextIcon fontSize="small" />}
-                aria-label="breadcrumb"
-              >
-                <Link color="inherit" href="/">
-                  Home
-                </Link>
-                <Link color="inherit">Master</Link>
-                <Link color="inherit">Account Master</Link>
-                <Typography color="textPrimary">
-                  Account Group Master
-                </Typography>
-              </Breadcrumbs>
-            </li>
-          </ul>
-          
-        </nav> */}
-
-      {/* <Sidebar /> */}
-      {/* <div class="content-wrapper">
-          <section className="content">
-            <div className="container-fluid"> */}
       <div className={classes.root}>
         <AppBar position="static">
           <Tabs
@@ -163,7 +123,7 @@ function AccountGroup(props) {
                     props.onPostAccountGroupData(data, user);
                   }}
                 >
-                  <div className="form-row" style={{ fontSize: "12px" }}>
+                  <div className="form-row f-12">
                     <div className="form-group col-md-3">
                       <label htmlFor="inputPassword4"> Account Group </label>
                       <input
@@ -252,7 +212,7 @@ function AccountGroup(props) {
                 </form>
               </div>
               <div className="flex-large">
-                <table className="table table-sm" style={{ fontSize: "12px" }}>
+                <table className="table table-sm f-12">
                   <thead>
                     <tr>
                       {/* <th>ID</th> */}
@@ -271,7 +231,8 @@ function AccountGroup(props) {
                           <td>{user.under_group_name}</td>
 
                           <td className="d-flex">
-                            <button
+                            <Button
+                              className="btn-warning p-1"
                               onClick={() =>
                                 props.onEditAccountGroupRow(
                                   data,
@@ -284,10 +245,10 @@ function AccountGroup(props) {
                               }
                             >
                               <i className="fa fa-edit" aria-hidden="true"></i>
-                            </button>
+                            </Button>
 
-                            <button
-                              className="ml-3"
+                            <Button
+                              className="btn-danger ml-3 p-1"
                               onClick={() => {
                                 if (
                                   window.confirm(
@@ -302,7 +263,7 @@ function AccountGroup(props) {
                                 value={user.id}
                                 aria-hidden="true"
                               ></i>
-                            </button>
+                            </Button>
                           </td>
                         </tr>
                       ))

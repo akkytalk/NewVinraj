@@ -190,12 +190,7 @@ function productionplannigcfformfile({ formProps, ...props }) {
                                                     current: "",
                                                     "": "",
                                                   },
-                                                  temp: {
-                                                    speed: "",
-                                                    temp: "",
-                                                    current: "",
-                                                    "": "",
-                                                  },
+                                                  
                                                   feeder: {
                                                     speed: "",
                                                     temp: "",
@@ -289,14 +284,65 @@ function productionplannigcfformfile({ formProps, ...props }) {
                                                 });
                                               }}
 
-{
-Form_id:1,
-Name:hotmixer
-Speed:10
-Temp:24
-Current:2-
-date:
-}
+<tr key={index} className="h-100 w-100">
+                                    <td className="d-flex test-b test-r test-l p-0 h-100 ">
+                                      <td className="test-r ">
+                                        Date & Product description
+                                        <td>{de.date}</td>
+                                      </td>
+                                      <td className=" p-0 d-flex flex-column">
+                                        <td className="test-b h-30p">Speed</td>
+                                        <td className="test-b h-30p">Temp.</td>
+                                        <td className="test-b h-30p">
+                                          Current
+                                        </td>
+                                        <td className=" h-30p"> </td>
+                                      </td>
+                                    </td>
+
+                                    <td className="test-r test-b p-0 h-100 w-10">
+                                      <td className="d-flex flex-column p-0">
+                                        <td className="test-b w-100 h-30p">
+                                          {de.hot_mixer?.speed}
+                                        </td>
+                                        <td className="test-b w-100 h-30">
+                                          {de.hot_mixer?.temp}
+                                        </td>
+                                        <td className="test-b h-30p">
+                                          {de.hot_mixer?.current}
+                                        </td>
+                                        <td className=" h-30p"> </td>
+                                      </td>
+                                    </td>
+                                    <td className="test-r test-b p-0 w-10 h-100">
+                                      <td className="d-flex flex-column p-0">
+                                        <td className="test-b w-100 h-30p">
+                                          {de.cool_mixer?.speed}
+                                        </td>
+                                        <td className="test-b w-100 h-30p">
+                                          {de.cool_mixer?.temp}
+                                        </td>
+                                        <td className="test-b h-30p">
+                                          {de.cool_mixer?.current}
+                                        </td>
+                                        <td className=" h-30p"> </td>
+                                      </td>
+                                    </td>
+                                    <td className="test-r test-b p-0 w-10">
+                                      <td className="d-flex flex-column p-0">
+                                        <td className="test-b w-100">
+                                          {de.feeder?.speed}
+                                        </td>
+                                        <td className="test-b w-100">
+                                          {de.feeder?.temp}
+                                        </td>
+                                        <td className="test-b">
+                                          {de.feeder?.current}
+                                        </td>
+                                        <td className=" h-30p"> </td>
+                                      </td>
+                                    </td>
+                                  </tr>
 
             </tbody>
           </table>
@@ -307,3 +353,372 @@ date:
 }
 
 export default productionplannigcfformfile;
+
+
+
+<>
+                                    <tr className="d-flex w-100">
+                                      <th className="d-flex flex-column test -100">
+                                        <th>Date & Product description</th>
+                                        <th>{de.date}</th>
+                                      </th>
+                                      <th className="d-flex flex-column test w-100">
+                                        <th className="test-b h-30p">Speed</th>
+                                        <th className="test-b h-30p">Temp</th>
+                                        <th className="test-b h-30p">
+                                          Current
+                                        </th>
+                                        <th className="h-30p"></th>
+                                      </th>
+                                    </tr>
+
+                                    <th className=" test w-100">
+                                      <td className="test-b h-30p">Speed</td>
+                                      <td className="test-b h-30p">Temp</td>
+                                      <td className="test-b h-30p">Current</td>
+                                      <td className="h-30p"></td>
+                                    </th>
+                                  </>
+
+
+
+
+<div
+id="htmlToPdf2"
+className="d-flex flex-column flex-wrap f-8 w-100"
+>
+<div className="d-flex test">
+  <div className="w-25 test-r p-1 text-center">
+    <img
+      src="https://uditsolutions.in/vinraj.png"
+      alt=""
+    />
+  </div>
+  <div className="w-50 test-r d-flex justify-content-center align-items-center">
+    <h5 className="font-weight-bold text-underline">
+      PROCESS PARAMETER RECORD.
+    </h5>
+  </div>
+  <div className="w-25 f-12 p-0 text-center d-flex flex-column justify-content-between">
+    <div className="d-flex">
+      <th className="w-40">Di.No: </th>
+      <td className="w-60">
+        {formProps.values?.di_no}
+      </td>
+    </div>
+    <div className="d-flex">
+      <th className="w-40">Rev. No.: </th>
+      <td className="w-60">
+        {formProps.values?.rev_no}
+      </td>
+    </div>
+    <div className="d-flex">
+      <th className="w-50">Rev. Date: </th>
+      <td className="w-60">
+        {formProps.values?.rev_date}
+      </td>
+    </div>
+  </div>
+</div>
+
+<div className="">
+  <table className="table-sm ">
+    <thead className="">
+      <tr>
+        <th className="test  bg-gray"></th>
+        <th className="test">Hot Mixer</th>
+        <th className="test">Cool Mixer</th>
+        <th className="test">Feeder</th>
+        <th className="test">Screw</th>
+        <th className="test">Barrel</th>
+        <th className="test">Roll no.1</th>
+        <th className="test">Roll no.2</th>
+        <th className="test">Roll no.3</th>
+        <th className="test">Roll no.4</th>
+        <th className="test">Roll no.5</th>
+        <th className="test">Roll no.6</th>
+        <th className="test">Take off 1</th>
+        <th className="test">Take off 2</th>
+        <th className="test">Tempering 1</th>
+        <th className="test">Tempering 2</th>
+        <th className="test">Hauling</th>
+        <th className="test">Remarks</th>
+      </tr>
+    </thead>
+    <tbody className="">
+      {formProps.values?.details?.map((de, index) => {
+        return (
+          <tr>
+            <td className="d-flex p-0">
+              <th className="d-flex flex-column test -100 p-0">
+                <th>Date & Product description</th>
+                <th>{de.hot_mixer?.date}</th>
+              </th>
+              <th className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">Speed</th>
+                <th className="test-b h-40p">Temp</th>
+                <th className="test-b h-40p">
+                  Current
+                </th>
+                <th className="h-40p"></th>
+              </th>
+            </td>
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.hot_mixer?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.hot_mixer?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.hot_mixer?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.cool_mixer?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.cool_mixer?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.cool_mixer?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.feeder?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.feeder?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.feeder?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.screw?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.screw?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.screw?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.barrel?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.barrel?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.barrel?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.roll_no1?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.roll_no1?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.roll_no1?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.roll_no2?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.roll_no2?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.roll_no2?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.roll_no3?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.roll_no3?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.roll_no3?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.roll_no4?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.roll_no4?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.roll_no4?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.roll_no5?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.roll_no5?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.roll_no5?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.roll_no6?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.roll_no6?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.roll_no6?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.take_off1?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.take_off1?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.take_off1?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.take_off2?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.take_off2?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.take_off2?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.tempering1?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.tempering1?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.tempering1?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.tempering2?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.tempering2?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.tempering2?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.hauling?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.hauling?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.hauling?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+
+            <td className="p-0">
+              <td className="d-flex flex-column test p-0 w-100">
+                <th className="test-b h-40p">
+                  {de.remarks?.speed}
+                </th>
+                <th className="test-b h-40p">
+                  {de.remarks?.temp}
+                </th>
+                <th className="test-b h-40p">
+                  {de.remarks?.current}
+                </th>
+                <th className="h-40p"></th>
+              </td>
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>
+</div>

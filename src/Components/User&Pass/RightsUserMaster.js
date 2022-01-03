@@ -20,6 +20,10 @@ import * as Yup from "yup";
 import { InputGroupAddon, Label } from "reactstrap";
 import CustomInput from "../../views/Custom/CustomInput";
 
+// const FormTitle = styled(Label)`
+//   font-size: 12px;
+// `;
+
 function RightsUserMaster(props) {
   let data = {
     token: props.login?.login?.token,
@@ -161,7 +165,10 @@ function RightsUserMaster(props) {
                           </FormGroup>
                         </Col>
                       </Row>
-                      <Table size="sm" className="text-center">
+                      <table
+                        size="sm"
+                        className="table table-sm text-center f-12"
+                      >
                         <thead>
                           <tr>
                             <th>Sr No</th>
@@ -293,7 +300,7 @@ function RightsUserMaster(props) {
                             );
                           })}
                         </tbody>
-                      </Table>
+                      </table>
                     </div>
                   )}
                 />

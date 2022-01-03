@@ -59,6 +59,7 @@ function PrefixForm(props) {
                 setSubmit(true);
                 props.onPostFormData(data, user, setSubmit);
               }}
+              className="p-2"
             >
               <div className="form-row" style={{ fontSize: "12px" }}>
                 <div className="form-group col-md-3">
@@ -171,7 +172,7 @@ function PrefixForm(props) {
             </form>
           </div>
           <div className="flex-large">
-            <table className="table" style={{ fontSize: "12px" }}>
+            <table className="table table-sm" style={{ fontSize: "12px" }}>
               <thead>
                 <tr>
                   {/* <th>ID</th> */}

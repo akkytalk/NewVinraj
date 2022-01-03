@@ -107,9 +107,6 @@ function ProductionPlanningVf(props) {
       form_id: values.form_id,
       prefix: values.prefix,
     };
-    // user.append("name", values.name);
-    // user.append("department_id", values.department_id);
-    // user.append("role", values.role);
 
     console.log("Data of Prefix:", user);
     props.onPostPrefixData(data, user, toggle);

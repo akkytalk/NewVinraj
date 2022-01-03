@@ -17,9 +17,8 @@ import {
   FormGroup,
   InputGroupAddon,
   Table,
+  ModalFooter,
 } from "reactstrap";
-// import { jsPDF } from "jspdf";
-// import html2canvas from "html2canvas";
 
 import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import CustomInput from "../../views/Custom/CustomInput";
@@ -28,6 +27,8 @@ import { connect } from "react-redux";
 import * as actions from "../../reduxStore/actions";
 import CustomSelect from "../../views/Custom/CustomSelect";
 import Loader2 from "../loader/Loader2";
+import planningImg from "../../assets/img/planning.png";
+import ViewProductionPlanningCf from "./views/ViewProductionPlanningCf";
 
 import printJS from "print-js";
 import "../../css/Format.css";
@@ -44,6 +45,8 @@ function ProductionPlanningCf(props) {
     setShowTable(false);
   };
 
+  const [prefix, setPrefix] = useState([]);
+
   const [deleteStatus, setDeleteStatus] = useState(false);
   const [updateStatus, setUpdateStatus] = useState(false);
   const [createStatus, setCreateStatus] = useState(false);
@@ -52,9 +55,23 @@ function ProductionPlanningCf(props) {
   useEffect(() => {
     props.onDepartmentGetData(data);
     props.onFormGetData(data);
+    props.onProdPlanCfGetData(data);
     props.onPrefixGetData(data);
+    props.onAccountNameGetData(data);
+    props.onItemNameGetData(data);
+    settingPrefix();
     status();
   }, []);
+
+  function settingPrefix() {
+    props.prefix?.map((pre) => {
+      if (pre.form_id == 19 && pre.department_id == 7) {
+        setPrefix(pre);
+      }
+    });
+  }
+
+  console.log(`prefix`, prefix);
 
   function status() {
     props.login?.login?.user?.rights?.map((right) => {
@@ -79,47 +96,32 @@ function ProductionPlanningCf(props) {
     console.log("print");
     printJS({
       printable: "htmlToPdf2",
-      CSS: "../../css/Format.css",
-      scanStyles: "true",
-      maxWidth: 1500,
       type: "html",
+      scanStyles: true,
       targetStyles: "[*]",
-      // style: "@page { size: Letter landscape; } @font {size: 8px}",
+      honorMarginPadding: false,
+      maxWidth: 1080,
+      font_size: "8pt",
+      // style: "@page { size: Letter landscape; }",
     });
   };
 
-  // const printMutliple = () => {
-  //   const divToDisplay = document.getElementById("htmlToPdf2");
-  //   html2canvas(divToDisplay).then(function (canvas) {
-  //     console.log(canvas);
-  //     const imgData = canvas.toDataURL("image/png");
-  //     const pdf = new jsPDF({
-  //       orientation: "Potrait",
-  //     });
-  //     const imgProps = pdf.getImageProperties(imgData);
-  //     const pdfWidth = pdf.internal.pageSize.getWidth();
-  //     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-  //     console.log(pdfHeight, pdfWidth);
-  //     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-  //     pdf.save("download.pdf");
-  //   });
-  // };
   let user;
   const handleSubmit = (values, { setSubmitting }) => {
     console.log("values in Bio Data:", values);
 
     user = {
-      form_id: values.form_id,
-      title: values.title,
-      rev_no: values.rev_no,
+      // form_id: values.form_id,
+      // title: values.title,
+      // rev_no: values.rev_no,
+      // department_id: values.department_id,
+      // di_no: values.di_no,
       details: values.details,
-      department_id: values.department_id,
-      di_no: values.di_no,
     };
     console.log("Data of User of details:", user);
-    // props.postEnquiriesData(data, user, toggle, setSubmitting, setShowTable);
-    // setSubmitting(true);
-    setShowTable(true);
+    props.postProdPlanCfData(data, user, toggle, setSubmitting, setShowTable);
+    setSubmitting(true);
+    // setShowTable(true);
     return;
   };
 
@@ -139,27 +141,30 @@ function ProductionPlanningCf(props) {
               Add Production Planning Cf
             </Button>
           </div>
-          <Modal className="modal-info modal-lg" isOpen={modal} toggle={toggle}>
+          <Modal className="modal-info modal-xl" isOpen={modal} toggle={toggle}>
             <ModalHeader toggle={toggle}>
               Add New Production Planning Cf
             </ModalHeader>
-
+            {props.prodPlanCf?.isPostLoading ? <Loader2 /> : ""}
             <ModalBody>
               <Formik
                 initialValues={{
                   form_id: 19,
                   department_id: 7,
+                  prefix_id: "",
                   di_no: "",
                   title: "",
                   rev_no: "",
-                  // rev_date: "",
-                  // date: "",
+                  rev_date: "",
+                  date: "",
                   // ref_no: "",
                   details: [],
                   row: "",
                 }}
                 onSubmit={handleSubmit}
-                validationSchema={Yup.object().shape({})}
+                validationSchema={Yup.object().shape({
+                  date: Yup.string().required("Date is required"),
+                })}
               >
                 {(formProps) => {
                   props.prefix?.map((pre) => {
@@ -168,8 +173,10 @@ function ProductionPlanningCf(props) {
                       pre.department_id == formProps.values.department_id
                     ) {
                       formProps.values.title = pre.title;
-                      formProps.values.di_no = pre.prefix;
+                      formProps.values.di_no = pre.di_no;
                       formProps.values.rev_no = pre.rev_no;
+                      formProps.values.prefix_id = pre.id;
+                      formProps.values.rev_date = pre.rev_date;
                     }
                   });
 
@@ -289,6 +296,58 @@ function ProductionPlanningCf(props) {
 
                       <Row className="form-group">
                         <Col md={6}>
+                          <Label for="rev_date">Rev Date</Label>
+                          <InputGroup>
+                            <Field
+                              component={CustomInput}
+                              type="date"
+                              name="rev_date"
+                              id="rev_date"
+                              disabled
+                              className={
+                                "form-control" +
+                                (formProps.errors.rev_date &&
+                                formProps.touched.rev_date
+                                  ? " is-invalid"
+                                  : "")
+                              }
+                            />
+
+                            <ErrorMessage
+                              name="rev_date"
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                          </InputGroup>
+                        </Col>
+
+                        <Col md={6}>
+                          <Label for="date">Date</Label>
+                          <InputGroup>
+                            <Field
+                              component={CustomInput}
+                              type="date"
+                              name="date"
+                              id="date"
+                              placeholder="Enter date"
+                              className={
+                                "form-control" +
+                                (formProps.errors.date && formProps.touched.date
+                                  ? " is-invalid"
+                                  : "")
+                              }
+                            />
+
+                            <ErrorMessage
+                              name="date"
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                          </InputGroup>
+                        </Col>
+                      </Row>
+                      <Row className="form-group">
+                        <Col md={6}>
                           <Label for="row">Add Table Rows</Label>
                           <InputGroup>
                             <Field
@@ -337,6 +396,9 @@ function ProductionPlanningCf(props) {
                                                 arrayHelpers.push({
                                                   form_id:
                                                     formProps.values.form_id,
+                                                  prefix_id:
+                                                    formProps.values.prefix_id,
+                                                  date: formProps.values.date,
                                                   customer_name: "",
                                                   so_no: "",
                                                   grade: "",
@@ -345,7 +407,7 @@ function ProductionPlanningCf(props) {
                                                   thickness: "",
                                                   length: "",
                                                   slitt_size: "",
-                                                  no_rolls: "",
+                                                  no_of_rolls: "",
                                                   qty: "",
                                                   actual_production: "",
                                                   balance: "",
@@ -396,12 +458,26 @@ function ProductionPlanningCf(props) {
                                             >
                                               <td>
                                                 <Field
-                                                  component={CustomInput}
-                                                  type="text"
+                                                  component={CustomSelect}
+                                                  type="select"
                                                   name={`details.${index}.customer_name`}
                                                   id="customer_name"
                                                   style={{ width: "150px" }}
-                                                />
+                                                >
+                                                  <option value="">
+                                                    Select Customer Name
+                                                  </option>
+                                                  {props.accountName?.map(
+                                                    (acc) => (
+                                                      <option
+                                                        key={acc.id}
+                                                        value={acc.name}
+                                                      >
+                                                        {acc.name}
+                                                      </option>
+                                                    )
+                                                  )}
+                                                </Field>
                                               </td>
                                               <td>
                                                 <Field
@@ -414,12 +490,26 @@ function ProductionPlanningCf(props) {
                                               </td>
                                               <td>
                                                 <Field
-                                                  component={CustomInput}
-                                                  type="text"
+                                                  component={CustomSelect}
+                                                  type="select"
                                                   name={`details.${index}.grade`}
                                                   id={`details.${index}.grade`}
                                                   style={{ width: "100px" }}
-                                                />
+                                                >
+                                                  <option value="">
+                                                    Select Grade
+                                                  </option>
+                                                  {props.itemName?.map(
+                                                    (item) => (
+                                                      <option
+                                                        key={item.id}
+                                                        value={item.name}
+                                                      >
+                                                        {item.name}
+                                                      </option>
+                                                    )
+                                                  )}
+                                                </Field>
                                               </td>
                                               <td>
                                                 <Field
@@ -470,8 +560,8 @@ function ProductionPlanningCf(props) {
                                                 <Field
                                                   component={CustomInput}
                                                   type="text"
-                                                  name={`details.${index}.no_rolls`}
-                                                  id={`details.${index}.no_rolls`}
+                                                  name={`details.${index}.no_of_rolls`}
+                                                  id={`details.${index}.no_of_rolls`}
                                                   style={{ width: "100px" }}
                                                 />
                                               </td>
@@ -564,10 +654,18 @@ function ProductionPlanningCf(props) {
                               alt=""
                             />
                           </div>
-                          <div className="w-50 test-r d-flex justify-content-center align-items-center">
-                            <h5 className="font-weight-bold text-underline">
-                              DAILY PRODUCTION PLANNING SHEET.
-                            </h5>
+                          <div className="w-50 test-r">
+                            <img
+                              src={planningImg}
+                              alt="DAILY PRODUCTION PLANNING SHEET."
+                              style={{
+                                objectFit: "contain",
+                                maxWidth: "600px",
+                                position: "relative",
+                                top: "15px",
+                                left: "-140px",
+                              }}
+                            />
                           </div>
                           <div className="w-25 f-12 p-0 text-center d-flex flex-column justify-content-between">
                             <div className="d-flex">
@@ -595,11 +693,15 @@ function ProductionPlanningCf(props) {
                           <div className="d-flex mb-1 w-100">
                             <div className="ml-3 w-50">
                               <span className="">Date: </span>
-                              <span>{props.details?.postDetails?.date}</span>
+                              <span>
+                                {props.prodPlanCf?.postProdPlanCf?.date}
+                              </span>
                             </div>
                             <div className="ml-3 w-50">
                               <span className="">Ref No: </span>
-                              <span>{props.details?.postDetails?.ref_no}</span>
+                              <span>
+                                {props.prodPlanCf?.postProdPlanCf?.ref_no}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -681,6 +783,9 @@ function ProductionPlanningCf(props) {
                 }}
               </Formik>
             </ModalBody>
+            <ModalFooter>
+              {props.prodPlanCf?.isPostLoading ? <Loader2 /> : ""}
+            </ModalFooter>
           </Modal>
         </CardHeader>
         <CardBody style={{ overflow: "scroll" }}>
@@ -697,44 +802,41 @@ function ProductionPlanningCf(props) {
                 <th scope="col">Rev Date</th>
                 <th scope="col">Date</th>
                 <th scope="col">Ref no</th>
-                <th scope="col">Customer Name</th>
+                {/* <th scope="col">Customer Name</th>
                 <th scope="col">Contact No</th>
-                <th scope="col">Email</th>
+                <th scope="col">Email</th> */}
                 <th scope="col">View</th>
 
                 {/* <th scope="col">Actions</th> */}
               </tr>
             </thead>
             <tbody>
-              {props.form?.isLoading ? (
+              {props.prodPlanCf?.isLoading ? (
                 <tr>
                   <td colSpan={18}>
                     <Loader2 color={"primary"} />
                   </td>
                 </tr>
-              ) : props.form?.form?.length > 0 ? (
-                props.form?.form
-                  .filter((user) => user.id == 19)
-                  .map((user, index) => {
-                    return user.form_headers.map((form) => {
-                      return (
-                        <tr key={index}>
-                          <td>{form.title}</td>
-                          <td>{form.rev_no}</td>
-                          <td>{form.rev_date}</td>
-                          <td>{form.date}</td>
-                          <td>{form.ref_no}</td>
-                          <td>{form.customer_name}</td>
-                          <td>{form.contact_name}</td>
-                          <td>{form.contact_no}</td>
-                          <td>
-                            {/* <ViewSales
-                              data={form}
-                              formdata={user}
-                              printStatus={printStatus}
-                            />{" "} */}
-                          </td>
-                          {/* <td className="d-flex justify-content-center">
+              ) : props.prodPlanCf?.prodPlanCf?.length > 0 ? (
+                props.prodPlanCf?.prodPlanCf.map((user, index) => {
+                  if (user.ref_no !== null)
+                    return (
+                      <tr key={index}>
+                        <td>{prefix?.title}</td>
+                        <td>{prefix?.rev_no}</td>
+                        <td>{prefix?.rev_date}</td>
+                        <td>{user?.data[0]?.date}</td>
+                        <td>{user.ref_no}</td>
+                        <td>
+                          <ViewProductionPlanningCf
+                            data={prefix}
+                            formdata={user}
+                            printStatus={printStatus}
+                            ref_no={user.ref_no}
+                            date={user?.data[index]?.date}
+                          />{" "}
+                        </td>
+                        {/* <td className="d-flex justify-content-center">
                             {updateStatus ||
                               (props.login?.login?.user?.role == "admin" && (
                                 <EditPurchaseRequisition
@@ -764,10 +866,10 @@ function ProductionPlanningCf(props) {
                             )}
                           </td>
                          */}
-                        </tr>
-                      );
-                    });
-                  })
+                      </tr>
+                    );
+                  // });
+                })
               ) : (
                 <tr>
                   <td colSpan={3}>No Forms Data</td>
@@ -795,27 +897,30 @@ function ProductionPlanningCf(props) {
               </Button>
             )}
           </div>
-          <Modal className="modal-info modal-lg" isOpen={modal} toggle={toggle}>
+          <Modal className="modal-info modal-xl" isOpen={modal} toggle={toggle}>
             <ModalHeader toggle={toggle}>
               Add New Production Planning Cf
             </ModalHeader>
-
+            {props.prodPlanCf?.isPostLoading ? <Loader2 /> : ""}
             <ModalBody>
               <Formik
                 initialValues={{
                   form_id: 19,
                   department_id: 7,
+                  prefix_id: "",
                   di_no: "",
                   title: "",
                   rev_no: "",
-                  // rev_date: "",
-                  // date: "",
+                  rev_date: "",
+                  date: "",
                   // ref_no: "",
                   details: [],
                   row: "",
                 }}
                 onSubmit={handleSubmit}
-                validationSchema={Yup.object().shape({})}
+                validationSchema={Yup.object().shape({
+                  date: Yup.string().required("Date is required"),
+                })}
               >
                 {(formProps) => {
                   props.prefix?.map((pre) => {
@@ -824,8 +929,10 @@ function ProductionPlanningCf(props) {
                       pre.department_id == formProps.values.department_id
                     ) {
                       formProps.values.title = pre.title;
-                      formProps.values.di_no = pre.prefix;
+                      formProps.values.di_no = pre.di_no;
                       formProps.values.rev_no = pre.rev_no;
+                      formProps.values.prefix_id = pre.id;
+                      formProps.values.rev_date = pre.rev_date;
                     }
                   });
 
@@ -945,6 +1052,58 @@ function ProductionPlanningCf(props) {
 
                       <Row className="form-group">
                         <Col md={6}>
+                          <Label for="rev_date">Rev Date</Label>
+                          <InputGroup>
+                            <Field
+                              component={CustomInput}
+                              type="date"
+                              name="rev_date"
+                              id="rev_date"
+                              disabled
+                              className={
+                                "form-control" +
+                                (formProps.errors.rev_date &&
+                                formProps.touched.rev_date
+                                  ? " is-invalid"
+                                  : "")
+                              }
+                            />
+
+                            <ErrorMessage
+                              name="rev_date"
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                          </InputGroup>
+                        </Col>
+
+                        <Col md={6}>
+                          <Label for="date">Date</Label>
+                          <InputGroup>
+                            <Field
+                              component={CustomInput}
+                              type="date"
+                              name="date"
+                              id="date"
+                              placeholder="Enter date"
+                              className={
+                                "form-control" +
+                                (formProps.errors.date && formProps.touched.date
+                                  ? " is-invalid"
+                                  : "")
+                              }
+                            />
+
+                            <ErrorMessage
+                              name="date"
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                          </InputGroup>
+                        </Col>
+                      </Row>
+                      <Row className="form-group">
+                        <Col md={6}>
                           <Label for="row">Add Table Rows</Label>
                           <InputGroup>
                             <Field
@@ -993,6 +1152,9 @@ function ProductionPlanningCf(props) {
                                                 arrayHelpers.push({
                                                   form_id:
                                                     formProps.values.form_id,
+                                                  prefix_id:
+                                                    formProps.values.prefix_id,
+                                                  date: formProps.values.date,
                                                   customer_name: "",
                                                   so_no: "",
                                                   grade: "",
@@ -1001,7 +1163,7 @@ function ProductionPlanningCf(props) {
                                                   thickness: "",
                                                   length: "",
                                                   slitt_size: "",
-                                                  no_rolls: "",
+                                                  no_of_rolls: "",
                                                   qty: "",
                                                   actual_production: "",
                                                   balance: "",
@@ -1052,12 +1214,26 @@ function ProductionPlanningCf(props) {
                                             >
                                               <td>
                                                 <Field
-                                                  component={CustomInput}
-                                                  type="text"
+                                                  component={CustomSelect}
+                                                  type="select"
                                                   name={`details.${index}.customer_name`}
                                                   id="customer_name"
                                                   style={{ width: "150px" }}
-                                                />
+                                                >
+                                                  <option value="">
+                                                    Select Customer Name
+                                                  </option>
+                                                  {props.accountName?.map(
+                                                    (acc) => (
+                                                      <option
+                                                        key={acc.id}
+                                                        value={acc.name}
+                                                      >
+                                                        {acc.name}
+                                                      </option>
+                                                    )
+                                                  )}
+                                                </Field>
                                               </td>
                                               <td>
                                                 <Field
@@ -1070,12 +1246,26 @@ function ProductionPlanningCf(props) {
                                               </td>
                                               <td>
                                                 <Field
-                                                  component={CustomInput}
-                                                  type="text"
+                                                  component={CustomSelect}
+                                                  type="select"
                                                   name={`details.${index}.grade`}
                                                   id={`details.${index}.grade`}
                                                   style={{ width: "100px" }}
-                                                />
+                                                >
+                                                  <option value="">
+                                                    Select Grade
+                                                  </option>
+                                                  {props.itemName?.map(
+                                                    (item) => (
+                                                      <option
+                                                        key={item.id}
+                                                        value={item.name}
+                                                      >
+                                                        {item.name}
+                                                      </option>
+                                                    )
+                                                  )}
+                                                </Field>
                                               </td>
                                               <td>
                                                 <Field
@@ -1126,8 +1316,8 @@ function ProductionPlanningCf(props) {
                                                 <Field
                                                   component={CustomInput}
                                                   type="text"
-                                                  name={`details.${index}.no_rolls`}
-                                                  id={`details.${index}.no_rolls`}
+                                                  name={`details.${index}.no_of_rolls`}
+                                                  id={`details.${index}.no_of_rolls`}
                                                   style={{ width: "100px" }}
                                                 />
                                               </td>
@@ -1251,11 +1441,15 @@ function ProductionPlanningCf(props) {
                           <div className="d-flex mb-1 w-100">
                             <div className="ml-3 w-50">
                               <span className="">Date: </span>
-                              <span>{props.details?.postDetails?.date}</span>
+                              <span>
+                                {props.prodPlanCf?.postProdPlanCf?.date}
+                              </span>
                             </div>
                             <div className="ml-3 w-50">
                               <span className="">Ref No: </span>
-                              <span>{props.details?.postDetails?.ref_no}</span>
+                              <span>
+                                {props.prodPlanCf?.postProdPlanCf?.ref_no}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -1337,6 +1531,9 @@ function ProductionPlanningCf(props) {
                 }}
               </Formik>
             </ModalBody>
+            <ModalFooter>
+              {props.prodPlanCf?.isPostLoading ? <Loader2 /> : ""}
+            </ModalFooter>
           </Modal>
         </CardHeader>
         <CardBody style={{ overflow: "scroll" }}>
@@ -1353,44 +1550,41 @@ function ProductionPlanningCf(props) {
                 <th scope="col">Rev Date</th>
                 <th scope="col">Date</th>
                 <th scope="col">Ref no</th>
-                <th scope="col">Customer Name</th>
+                {/* <th scope="col">Customer Name</th>
                 <th scope="col">Contact No</th>
-                <th scope="col">Email</th>
+                <th scope="col">Email</th> */}
                 <th scope="col">View</th>
 
                 {/* <th scope="col">Actions</th> */}
               </tr>
             </thead>
             <tbody>
-              {props.form?.isLoading ? (
+              {props.prodPlanCf?.isLoading ? (
                 <tr>
                   <td colSpan={18}>
                     <Loader2 color={"primary"} />
                   </td>
                 </tr>
-              ) : props.form?.form?.length > 0 ? (
-                props.form?.form
-                  .filter((user) => user.id == 19)
-                  .map((user, index) => {
-                    return user.form_headers.map((form) => {
-                      return (
-                        <tr key={index}>
-                          <td>{form.title}</td>
-                          <td>{form.rev_no}</td>
-                          <td>{form.rev_date}</td>
-                          <td>{form.date}</td>
-                          <td>{form.ref_no}</td>
-                          <td>{form.customer_name}</td>
-                          <td>{form.contact_name}</td>
-                          <td>{form.contact_no}</td>
-                          <td>
-                            {/* <ViewSales
-                              data={form}
-                              formdata={user}
-                              printStatus={printStatus}
-                            />{" "} */}
-                          </td>
-                          {/* <td className="d-flex justify-content-center">
+              ) : props.prodPlanCf?.prodPlanCf?.length > 0 ? (
+                props.prodPlanCf?.prodPlanCf.map((user, index) => {
+                  if (user.ref_no !== null)
+                    return (
+                      <tr key={index}>
+                        <td>{prefix?.title}</td>
+                        <td>{prefix?.rev_no}</td>
+                        <td>{prefix?.rev_date}</td>
+                        <td>{user?.data[0]?.date}</td>
+                        <td>{user.ref_no}</td>
+                        <td>
+                          <ViewProductionPlanningCf
+                            data={prefix}
+                            formdata={user}
+                            printStatus={printStatus}
+                            ref_no={user.ref_no}
+                            date={user?.data[index]?.date}
+                          />{" "}
+                        </td>
+                        {/* <td className="d-flex justify-content-center">
                             {updateStatus ||
                               (props.login?.login?.user?.role == "admin" && (
                                 <EditPurchaseRequisition
@@ -1420,10 +1614,10 @@ function ProductionPlanningCf(props) {
                             )}
                           </td>
                          */}
-                        </tr>
-                      );
-                    });
-                  })
+                      </tr>
+                    );
+                  // });
+                })
               ) : (
                 <tr>
                   <td colSpan={3}>No Forms Data</td>
@@ -1443,22 +1637,26 @@ const mapStateToProps = (state) => {
     department: state.department.department,
     form: state.form.form,
     details: state.details,
+    prodPlanCf: state.prodPlanCf,
+    accountName: state.accountName.accountName,
+    itemName: state.itemName.itemName,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    onAccountNameGetData: (data) => dispatch(actions.accountNameGetData(data)),
+    onItemNameGetData: (data) => dispatch(actions.itemNameGetData(data)),
     onDepartmentGetData: (data) => dispatch(actions.departmentGetData(data)),
     onFormGetData: (data) => dispatch(actions.formGetData(data)),
     onPrefixGetData: (data) => dispatch(actions.prefixGetData(data)),
-    onDeletePrefix: (data, id) => dispatch(actions.deletePrefix(data, id)),
-    onPostPrefixData: (data, user, toggle) =>
-      dispatch(actions.postPrefixData(data, user, toggle)),
-    updatePrefixDataToggle: (data, user, toggle) =>
-      dispatch(actions.updatePrefixDataToggle(data, user, toggle)),
-    postEnquiriesData: (data, user, toggle, setSubmitting, setShowTable) =>
+    onProdPlanCfGetData: (data) => dispatch(actions.prodPlanCfGetData(data)),
+    onDeleteProdPlanCf: (data, id) =>
+      dispatch(actions.deleteProdPlanCf(data, id)),
+
+    postProdPlanCfData: (data, user, toggle, setSubmitting, setShowTable) =>
       dispatch(
-        actions.postEnquiriesData(
+        actions.postProdPlanCfData(
           data,
           user,
           toggle,
@@ -1466,8 +1664,8 @@ const mapDispatchToProps = (dispatch) => {
           setShowTable
         )
       ),
-    updateDetailsData: (data, user, toggle, setSubmitting) =>
-      dispatch(actions.updateDetailsData(data, user, toggle, setSubmitting)),
+    updateProdPlanCfData: (data, user, toggle, setSubmitting) =>
+      dispatch(actions.updateProdPlanCfData(data, user, toggle, setSubmitting)),
   };
 };
 export default connect(

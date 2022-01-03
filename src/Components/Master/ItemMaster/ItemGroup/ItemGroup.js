@@ -10,10 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import * as actions from "../../../../reduxStore/actions/index";
 import { connect } from "react-redux";
-import Breadcrumbs from "@material-ui/core/Breadcrumbs";
-
-import NavigateNextIcon from "@material-ui/icons/NavigateNext";
-import Link from "@material-ui/core/Link";
+import { Button } from "reactstrap";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -245,7 +242,7 @@ function ItemGroup(props) {
                 </form>
               </div>
               <div className="flex-large">
-                <table className="table" style={{ fontSize: "12px" }}>
+                <table className="table table-sm" style={{ fontSize: "12px" }}>
                   <thead>
                     <tr>
                       {/* <th>ID</th> */}
@@ -264,7 +261,8 @@ function ItemGroup(props) {
                           <td>{user.under_group_name}</td>
 
                           <td className="d-flex">
-                            <button
+                            <Button
+                              className="btn-warning p-1"
                               onClick={() =>
                                 props.onEditItemGroupRow(
                                   data,
@@ -277,10 +275,10 @@ function ItemGroup(props) {
                               }
                             >
                               <i className="fa fa-edit" aria-hidden="true"></i>
-                            </button>
+                            </Button>
 
-                            <button
-                              className="ml-3"
+                            <Button
+                              className="btn-danger ml-3 p-1"
                               onClick={() => {
                                 if (
                                   window.confirm(
@@ -295,7 +293,7 @@ function ItemGroup(props) {
                                 value={user.id}
                                 aria-hidden="true"
                               ></i>
-                            </button>
+                            </Button>
                           </td>
                         </tr>
                       ))

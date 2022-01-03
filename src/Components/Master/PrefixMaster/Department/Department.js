@@ -1,15 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-// import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Fragment } from "react";
-// import swal from "sweetalert";
-import Sidebar from "../../../Home/Sidebar";
 import * as actions from "../../../../reduxStore/actions/index";
 import { connect } from "react-redux";
-import Breadcrumbs from "@material-ui/core/Breadcrumbs";
-import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
-import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import { Button } from "react-bootstrap";
 
 function Department(props) {
@@ -50,41 +43,6 @@ function Department(props) {
 
   return (
     <Fragment>
-      {/* <div className="wrapper">
-      
-        <nav className="main-header navbar navbar-expand navbar-white navbar-light">
-                   <ul className="navbar-nav d-flex align-items-center">
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                data-widget="pushmenu"
-                href="n"
-                role="button"
-              >
-                <i className="fas fa-bars"> </i>
-              </a>
-            </li>
-            <li className="nav-item d-none d-sm-inline-block ml-2">
-              <Breadcrumbs
-                separator={<NavigateNextIcon fontSize="small" />}
-                aria-label="breadcrumb"
-              >
-                <Link color="inherit" href="/">
-                  Home
-                </Link>
-                <Link color="inherit">Master</Link>
-                <Typography color="textPrimary">Department Master</Typography>
-              </Breadcrumbs>
-            </li>
-          </ul>
-          
-        </nav>
-    
-
-        <Sidebar />
-        <div class="content-wrapper">
-          <section className="content">
-            <div className="container-fluid"> */}
       <div className="container">
         <div className="flex-row">
           <div className="flex-large">
@@ -96,8 +54,8 @@ function Department(props) {
                 props.onPostDepartmentData(data, user, setSubmit);
               }}
             >
-              <div className="form-row" style={{ fontSize: "12px" }}>
-                <div className="form-group col-md-3">
+              <div className="form-row " style={{ fontSize: "12px" }}>
+                <div className="form-group col-md-3 p-1">
                   <label htmlFor="inputPassword4">Department Name</label>
                   <input
                     type="text"
@@ -155,7 +113,7 @@ function Department(props) {
           </div>
           <div className="flex-large">
             <table
-              className="table"
+              className="table table-sm"
               style={{
                 fontSize: "12px",
               }}

@@ -31,9 +31,21 @@ export default function Header() {
         <li
           className="nav-item d-none d-sm-inline-block float-right"
           onClick={() => handleLogout()}
-          style={{ position: "absolute", top: "10px", right: "20px" }}
+          style={{
+            position: "absolute",
+            top: "15px",
+            right: "20px",
+          }}
         >
-          <Button className="btn-danger">Logout</Button>
+          <Button
+            className="btn-danger"
+            style={{
+              padding: "5px",
+              fontSize: "12px",
+            }}
+          >
+            Logout
+          </Button>
         </li>
       </ul>
       {/* SEARCH FORM */}

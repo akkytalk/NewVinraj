@@ -25,8 +25,11 @@ function ViewSales(props) {
     printJS({
       printable: "htmlToPdf2",
       type: "html",
-      scanStyles: "true",
+      scanStyles: true,
       targetStyles: "[*]",
+      honorMarginPadding: false,
+      font_size: "12pt",
+      maxWidth: 1080,
     });
   };
 
@@ -41,14 +44,14 @@ function ViewSales(props) {
       >
         <i className="fa fa-eye" aria-hidden="true"></i>
       </Button>
-      <Modal className="modal-info modal-lg" isOpen={modal} toggle={toggle}>
+      <Modal className="modal-info modal-xl" isOpen={modal} toggle={toggle}>
         {/* {props.details?.isPostLoading && <Loader2 />} */}
         <ModalHeader toggle={toggle}>View Enquiry Form </ModalHeader>
         <ModalBody>
           <div>
             <div id="htmlToPdf2" className="p-2">
               <div className="d-flex test">
-                <div className="col-md-4 test-r p-0 text-center">
+                <div className="col-md-4 test-r p-1 text-center">
                   <img src="https://uditsolutions.in/vinraj.png" alt="" />
                 </div>
                 <div className="col-md-3 test-r"></div>
@@ -113,7 +116,7 @@ function ViewSales(props) {
                   <span className="pl-1 ">Email Id: </span>
                   <span>{props.data?.email}</span>
                 </div>
-                <div className="text-center test-b d-flex flex-column w-100">
+                <div className="text-center d-flex flex-column w-100">
                   <div className="d-flex w-100">
                     <span className="test-b p-2 test-r w-25"> Sr No.</span>
                     <div className="d-flex flex-column w-50">

@@ -14,6 +14,7 @@ import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import Link from "@material-ui/core/Link";
+import { Button } from "reactstrap";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -258,7 +259,7 @@ function AccountName(props) {
                 </form>
               </div>
               <div className="flex-large">
-                <table className="table" style={{ fontSize: "12px" }}>
+                <table className="table table-sm" style={{ fontSize: "12px" }}>
                   <thead>
                     <tr>
                       {/* <th>ID</th> */}
@@ -281,7 +282,8 @@ function AccountName(props) {
                           </td>
 
                           <td className="d-flex">
-                            <button
+                            <Button
+                              className="btn-warning p-1"
                               onClick={() =>
                                 props.onEditAccountNameRow(
                                   data,
@@ -294,10 +296,10 @@ function AccountName(props) {
                               }
                             >
                               <i className="fa fa-edit" aria-hidden="true"></i>
-                            </button>
+                            </Button>
 
-                            <button
-                              className="ml-3"
+                            <Button
+                              className="btn-danger ml-3 p-1"
                               onClick={() => {
                                 if (
                                   window.confirm(
@@ -312,7 +314,7 @@ function AccountName(props) {
                                 value={user.id}
                                 aria-hidden="true"
                               ></i>
-                            </button>
+                            </Button>
                           </td>
                         </tr>
                       ))

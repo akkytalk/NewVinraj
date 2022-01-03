@@ -108,6 +108,8 @@ function NewPrefix(props) {
       prefix: values.prefix,
       title: values.title,
       rev_no: values.rev_no,
+      rev_date: values.rev_date,
+      di_no: values.di_no,
     };
     // user.append("name", values.name);
     // user.append("department_id", values.department_id);
@@ -146,6 +148,8 @@ function NewPrefix(props) {
                   prefix: "",
                   title: "",
                   rev_no: "",
+                  rev_date: "",
+                  di_no: "",
                 }}
                 onSubmit={handleSubmit}
                 validationSchema={Yup.object().shape({
@@ -283,14 +287,38 @@ function NewPrefix(props) {
                     </Row>
                     <Row className="form-group">
                       <Col md={6}>
-                        <Label for="prefix">Enter Prefix/Di No</Label>
+                        <Label for="rev_date">Rev Date</Label>
+                        <InputGroup>
+                          <Field
+                            component={CustomInput}
+                            type="date"
+                            name="rev_date"
+                            id="rev_date"
+                            className={
+                              "form-control" +
+                              (formProps.errors.rev_date &&
+                              formProps.touched.rev_date
+                                ? " is-invalid"
+                                : "")
+                            }
+                          />
+
+                          <ErrorMessage
+                            name="rev_date"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </InputGroup>
+                      </Col>
+                      <Col md={6}>
+                        <Label for="prefix">Enter Prefix</Label>
                         <InputGroup>
                           <Field
                             component={CustomInput}
                             type="text"
                             name="prefix"
                             id="prefix"
-                            placeholder="Enter Prefix/Di No"
+                            placeholder="Enter Prefix"
                             className={
                               "form-control" +
                               (formProps.errors.prefix &&
@@ -302,6 +330,32 @@ function NewPrefix(props) {
 
                           <ErrorMessage
                             name="prefix"
+                            component="div"
+                            className="invalid-feedback"
+                          />
+                        </InputGroup>
+                      </Col>
+                    </Row>
+                    <Row className="form-group">
+                      <Col md={6}>
+                        <Label for="di_no">Di No</Label>
+                        <InputGroup>
+                          <Field
+                            component={CustomInput}
+                            type="text"
+                            name="di_no"
+                            id="di_no"
+                            placeholder="Enter Di No"
+                            className={
+                              "form-control" +
+                              (formProps.errors.di_no && formProps.touched.di_no
+                                ? " is-invalid"
+                                : "")
+                            }
+                          />
+
+                          <ErrorMessage
+                            name="di_no"
                             component="div"
                             className="invalid-feedback"
                           />
@@ -343,6 +397,8 @@ function NewPrefix(props) {
                 <th scope="col">Department Name</th>
                 <th scope="col">Title</th>
                 <th scope="col">Rev No</th>
+                <th scope="col">Rev Date</th>
+                <th scope="col">Di No</th>
 
                 <th scope="col">Prefix</th>
 
@@ -369,6 +425,8 @@ function NewPrefix(props) {
                         <td>{user.department ? user.department.name : null}</td>
                         <td>{user.title}</td>
                         <td>{user.rev_no}</td>
+                        <td>{user.rev_date}</td>
+                        <td>{user.di_no}</td>
                         <td>{user.prefix}</td>
 
                         <td className="d-flex justify-content-center">

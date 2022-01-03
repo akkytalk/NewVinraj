@@ -61,35 +61,6 @@ function UserMaster(props) {
 
   return (
     <Fragment>
-      {/* <div className="wrapper">
-        
-        <nav className="main-header navbar navbar-expand navbar-white navbar-light">
-        
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                data-widget="pushmenu"
-                href="n"
-                role="button"
-              >
-                <i className="fas fa-bars"> </i>
-              </a>
-            </li>
-            <li className="nav-item d-none d-sm-inline-block">
-              <a href="/" className="nav-link">
-                Home
-              </a>
-            </li>
-          </ul>
-       
-        </nav>
-     
-
-        <Sidebar />
-        <div class="content-wrapper">
-          <section className="content">
-            <div className="container-fluid"> */}
       <div className={classes.root}>
         <AppBar position="static">
           <Tabs
@@ -108,10 +79,6 @@ function UserMaster(props) {
           <RightsUserMaster />
         </TabPanel>
       </div>
-      {/* </div>
-          </section>
-        </div>
-      </div> */}
     </Fragment>
   );
 }

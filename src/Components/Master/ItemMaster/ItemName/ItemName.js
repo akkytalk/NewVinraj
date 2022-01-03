@@ -14,6 +14,7 @@ import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import Link from "@material-ui/core/Link";
+import { Button } from "reactstrap";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -280,7 +281,7 @@ function ItemName(props) {
                 </form>
               </div>
               <div className="flex-large">
-                <table className="table" style={{ fontSize: "12px" }}>
+                <table className="table table-sm" style={{ fontSize: "12px" }}>
                   <thead>
                     <tr>
                       {/* <th>ID</th> */}
@@ -303,7 +304,8 @@ function ItemName(props) {
                           <td>{user.unit ? user.unit.unit_name : null}</td>
 
                           <td className="d-flex">
-                            <button
+                            <Button
+                              className="btn-warning p-1"
                               onClick={() =>
                                 props.onEditItemNameRow(
                                   data,
@@ -316,10 +318,10 @@ function ItemName(props) {
                               }
                             >
                               <i className="fa fa-edit" aria-hidden="true"></i>
-                            </button>
+                            </Button>
 
-                            <button
-                              className="ml-3"
+                            <Button
+                              className="btn-danger p-1 ml-3"
                               onClick={() => {
                                 if (
                                   window.confirm(
@@ -334,7 +336,7 @@ function ItemName(props) {
                                 value={user.id}
                                 aria-hidden="true"
                               ></i>
-                            </button>
+                            </Button>
                           </td>
                         </tr>
                       ))

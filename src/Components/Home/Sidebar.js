@@ -15,6 +15,8 @@ import {
 } from "../../reduxStore/actions";
 import { connect } from "react-redux";
 
+import "./Sidebar.css";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -73,7 +75,7 @@ function Sidebar(props) {
       <Fragment>
         {/* Main Sidebar Container */}
         <aside
-          className="main-sidebar sidebar-dark-primary elevation-4"
+          className="main-sidebar sidebar-pattern sidebar-dark-primary elevation-4"
           style={{ overflow: "scroll", width: "250px;", height: "100vh" }}
         >
           {/* Sidebar */}
@@ -190,7 +192,12 @@ function Sidebar(props) {
 
                     <li className="nav-item">
                       <NavLink to="/prefix" className="nav-link">
-                        <p>Form Prefix Master</p>
+                        <p>Form Header Master</p>
+                      </NavLink>
+                    </li>
+                    <li className="nav-item">
+                      <NavLink to="/user-master" className="nav-link">
+                        <p>Users & Pws</p>
                       </NavLink>
                     </li>
                     {/* </ul> */}
@@ -199,54 +206,64 @@ function Sidebar(props) {
                 </li>
 
                 <li className="nav-item">
-                  <NavLink to="/user-master" className="nav-link">
-                    <p>Users & Pws</p>
+                  <Link
+                    to="#"
+                    className="nav-link d-flex justify-content-between"
+                  >
+                    <p>Transaction</p>
+                    <ArrowDropDownIcon fontSize="small" />
+                  </Link>
+                  <ul className="nav nav-treeview">
+                    {props.department.isLoading ? (
+                      <div className={classes.root}>
+                        <CircularProgress
+                          variant="determinate"
+                          className={classes.CircularProgress}
+                          value={progress}
+                        />
+                      </div>
+                    ) : (
+                      props.department?.department?.map((dep, index) => (
+                        <li key={dep.id} className="nav-item">
+                          <Link
+                            to="#"
+                            className="nav-link d-flex justify-content-between"
+                          >
+                            <p>{dep.name}</p>
+
+                            <ArrowDropDownIcon fontSize="small" />
+                          </Link>
+                          <ul className="nav nav-treeview">
+                            {props.form.map((form) => {
+                              // eslint-disable-next-line eqeqeq
+                              if (dep.id == form.department_id) {
+                                // console.log("form data", dep.id);
+                                // console.log("form else data", form.department_id);
+
+                                return (
+                                  <li key={form.id} className="nav-item">
+                                    <NavLink
+                                      to={form.url ? form.url : "#"}
+                                      className="nav-link"
+                                    >
+                                      <p>{form.name}</p>
+                                    </NavLink>
+                                  </li>
+                                );
+                              }
+                              return <div></div>;
+                            })}
+                          </ul>
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                </li>
+                <li className="nav-item">
+                  <NavLink to="/report" className="nav-link">
+                    <p>Report</p>
                   </NavLink>
                 </li>
-
-                {props.department.isLoading ? (
-                  <div className={classes.root}>
-                    <CircularProgress
-                      variant="determinate"
-                      className={classes.CircularProgress}
-                      value={progress}
-                    />
-                  </div>
-                ) : (
-                  props.department?.department?.map((dep, index) => (
-                    <li key={dep.id} className="nav-item">
-                      <Link
-                        to="#"
-                        className="nav-link d-flex justify-content-between"
-                      >
-                        <p>{dep.name}</p>
-
-                        <ArrowDropDownIcon fontSize="small" />
-                      </Link>
-                      <ul className="nav nav-treeview">
-                        {props.form.map((form) => {
-                          // eslint-disable-next-line eqeqeq
-                          if (dep.id == form.department_id) {
-                            // console.log("form data", dep.id);
-                            // console.log("form else data", form.department_id);
-
-                            return (
-                              <li key={form.id} className="nav-item">
-                                <NavLink
-                                  to={form.url ? form.url : "#"}
-                                  className="nav-link"
-                                >
-                                  <p>{form.name}</p>
-                                </NavLink>
-                              </li>
-                            );
-                          }
-                          return <div></div>;
-                        })}
-                      </ul>
-                    </li>
-                  ))
-                )}
               </ul>
             </nav>
           </div>
@@ -388,58 +405,71 @@ function Sidebar(props) {
                     <p>Users & Pws</p>
                   </NavLink>
                 </li> */}
+                <li className="nav-item">
+                  <Link
+                    to="#"
+                    className="nav-link d-flex justify-content-between"
+                  >
+                    <p>Master</p>
+                    <ArrowDropDownIcon fontSize="small" />
+                  </Link>
+                  <ul className="nav nav-treeview">
+                    {props.department.isLoading ? (
+                      <div className={classes.root}>
+                        <CircularProgress
+                          variant="determinate"
+                          className={classes.CircularProgress}
+                          value={progress}
+                        />
+                      </div>
+                    ) : (
+                      props.department?.department?.map((dep, index) => {
+                        return unique.map((uniq) => {
+                          if (uniq == dep.name)
+                            return (
+                              <li key={dep.id} className="nav-item">
+                                <Link
+                                  to="#"
+                                  className="nav-link d-flex justify-content-between"
+                                >
+                                  <p>{dep.name}</p>
 
-                {props.department.isLoading ? (
-                  <div className={classes.root}>
-                    <CircularProgress
-                      variant="determinate"
-                      className={classes.CircularProgress}
-                      value={progress}
-                    />
-                  </div>
-                ) : (
-                  props.department?.department?.map((dep, index) => {
-                    return unique.map((uniq) => {
-                      if (uniq == dep.name)
-                        return (
-                          <li key={dep.id} className="nav-item">
-                            <Link
-                              to="#"
-                              className="nav-link d-flex justify-content-between"
-                            >
-                              <p>{dep.name}</p>
-
-                              <ArrowDropDownIcon fontSize="small" />
-                            </Link>
-                            <ul className="nav nav-treeview">
-                              {props.login?.login?.user?.rights?.map(
-                                (right) => {
-                                  return props.form.map((form) => {
-                                    if (
-                                      dep.id == form.department_id &&
-                                      right.view_status == 1 &&
-                                      right.form_id == form.id
-                                    ) {
-                                      return (
-                                        <li key={form.id} className="nav-item">
-                                          <NavLink
-                                            to={form.url ? form.url : "#"}
-                                            className="nav-link"
-                                          >
-                                            <p>{form.name}</p>
-                                          </NavLink>
-                                        </li>
-                                      );
+                                  <ArrowDropDownIcon fontSize="small" />
+                                </Link>
+                                <ul className="nav nav-treeview">
+                                  {props.login?.login?.user?.rights?.map(
+                                    (right) => {
+                                      return props.form.map((form) => {
+                                        if (
+                                          dep.id == form.department_id &&
+                                          right.view_status == 1 &&
+                                          right.form_id == form.id
+                                        ) {
+                                          return (
+                                            <li
+                                              key={form.id}
+                                              className="nav-item"
+                                            >
+                                              <NavLink
+                                                to={form.url ? form.url : "#"}
+                                                className="nav-link"
+                                              >
+                                                <p>{form.name}</p>
+                                              </NavLink>
+                                            </li>
+                                          );
+                                        }
+                                      });
                                     }
-                                  });
-                                }
-                              )}
-                            </ul>
-                          </li>
-                        );
-                    });
-                  })
-                )}
+                                  )}
+                                </ul>
+                              </li>
+                            );
+                        });
+                      })
+                    )}
+                  </ul>
+                </li>
               </ul>
             </nav>
           </div>

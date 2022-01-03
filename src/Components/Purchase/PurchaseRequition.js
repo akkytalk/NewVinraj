@@ -42,7 +42,7 @@ function PurchaseRequition(props) {
   };
 
   useEffect(() => {
-    // props.detailsGetData(data);
+    props.detailsGetData(data);
   }, []);
 
   const printMutliple = () => {
@@ -62,15 +62,15 @@ function PurchaseRequition(props) {
     console.log("values in Bio Data:", values);
 
     user = {
-      form_id: values.form_id,
-      title: values.title,
-      rev_no: values.rev_no,
-      // rev_date: Date().toLocaleString(),
-      // date: Date().toLocaleString(),
+      // form_id: values.form_id,
+      // title: values.title,
+      // rev_no: values.rev_no,
+      // rev_date: values.rev_date,
+      // date: values.date,
       // ref_no: values.ref_no,
       details: values.details,
-      department_id: values.department_id,
-      di_no: values.di_no,
+      // department_id: values.department_id,
+      // di_no: values.di_no,
     };
     console.log("Data of User of details:", user);
     props.postDetailsData(data, user, toggle, setSubmitting, setShowTable);
@@ -80,57 +80,155 @@ function PurchaseRequition(props) {
   };
 
   // console.log("users", props.users);
-  console.log("post details", props.details.postDetails);
+  // console.log("post details", props.details.postDetails);
 
   return (
     <Fragment>
       <Button
         className="btn-success"
-        style={{ position: "absolute", top: "6px", right: "15px" }}
+        style={{
+          position: "absolute",
+          top: "5px",
+          right: "15px",
+          fontSize: "12px",
+          padding: "3px",
+        }}
         data-toggle="modal"
         data-target="#extraLargeModal"
         onClick={toggle}
       >
         Add Requistion
       </Button>
-      <Modal className="modal-info modal-lg" isOpen={modal} toggle={toggle}>
+      <Modal className="modal-info modal-xl" isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>Purchase Requisition</ModalHeader>
         <ModalBody>
           <Formik
             initialValues={{
               form_id: 27,
               department_id: 8,
+              prefix_id: "",
               di_no: "",
               title: "",
               rev_no: "",
-              rev_date: Date().toLocaleString(),
-              date: Date().toLocaleString(),
+              rev_date: "",
+              date: "",
               // ref_no: "",
               details: [],
               row: "",
             }}
             onSubmit={handleSubmit}
             validationSchema={Yup.object().shape({
-              // title: Yup.string().required("title is required"),
-              // di_no: Yup.string().required("Di No is required"),
-              // rev_no: Yup.string().required("rev_no is required"),
-              // rev_date: Yup.string().required("rev_date is required"),
-              // date: Yup.string().required("date is required"),
-              // ref_no: Yup.string().required("ref_no is required"),
+              date: Yup.string().required("date is required"),
             })}
           >
             {(formProps) => {
               props.prefix?.map((pre) => {
                 if (pre.form_id == 27 && pre.department_id == 8) {
                   formProps.values.title = pre.title;
-                  formProps.values.di_no = pre.prefix;
+                  formProps.values.di_no = pre.di_no;
                   formProps.values.rev_no = pre.rev_no;
+                  formProps.values.prefix_id = pre.id;
+                  formProps.values.rev_date = pre.rev_date;
                 }
               });
 
               return !showtable ? (
                 <Form>
-                  <Row className="form-group">
+                  <div id="htmlToPdf2" style={{ marginLeft: "20px" }}>
+                    <div className="row">
+                      <div className="col-md-3">
+                        <img src="https://uditsolutions.in/vinraj.png" alt="" />
+                      </div>
+                      <div className="col-md-3">
+                        <div className="d-flex">
+                          <th>Dept: </th>
+                          <td className="ml-2">Purchase</td>
+                        </div>
+                        <br />
+
+                        <div className="d-flex">
+                          <th>Di.No: </th>
+                          <td className="ml-2">{formProps.values?.di_no}</td>
+                        </div>
+                      </div>
+                    </div>
+                    <hr />
+                    <div className="">
+                      <div className="d-flex mb-4 w-100">
+                        <div className="mr-3 w-25">
+                          <span className="">Title: </span>
+                          <span>{formProps.values?.title}</span>
+                        </div>
+                        <div className="mr-3 w-25">
+                          <span className="">Rev. No.: </span>
+                          <span>{formProps.values?.rev_no}</span>
+                        </div>
+                        <div className="mr-3 w-50">
+                          <span className="">Rev. Date: </span>
+                          <span>{formProps.values?.rev_date}</span>
+                        </div>
+                      </div>
+                      <div className="d-flex mb-4 w-100">
+                        <div className="mr-3 w-50 d-flex">
+                          <span className="">Date: </span>
+                          <span className="w-100">
+                            <Col md={6}>
+                              <InputGroup>
+                                <Field
+                                  component={CustomInput}
+                                  type="date"
+                                  name="date"
+                                  id="date"
+                                  placeholder="Enter date"
+                                  className={
+                                    "form-control" +
+                                    (formProps.errors.date &&
+                                    formProps.touched.date
+                                      ? " is-invalid"
+                                      : "")
+                                  }
+                                />
+
+                                <ErrorMessage
+                                  name="date"
+                                  component="div"
+                                  className="invalid-feedback"
+                                />
+                              </InputGroup>
+                            </Col>
+                          </span>
+                        </div>
+                        <div className="mr-3 w-50">
+                          <span className="">Ref No: </span>
+                          <span>It will auto-generated</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* <Table size="sm" className=" mt-4">
+                      <thead>
+                        <tr>
+                          <th>Item Name</th>
+                          <th>Required Qty</th>
+                          <th>Remarks</th>
+                          <th>Approx Price </th>
+                        </tr>
+                      </thead>
+                      <tbody className="">
+                        {formProps.values?.details?.map((detail, index) => {
+                          return (
+                            <tr key={index} className="">
+                              <td>{detail.item_id}</td>
+                              <td>{detail.quantity}</td>
+                              <td>{detail.remarks}</td>
+                              <td>{detail.price}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </Table> */}
+                  </div>
+                  {/* <Row className="form-group">
                     <Col md={3}>
                       <Label for="department_id">Department</Label>
                       <InputGroup>
@@ -156,11 +254,7 @@ function PurchaseRequition(props) {
                           })}
                         </Field>
 
-                        {/* <ErrorMessage
-                          name="department_id"
-                          component="div"
-                          className="invalid-feedback"
-                        /> */}
+                    
                       </InputGroup>
                     </Col>
 
@@ -243,7 +337,7 @@ function PurchaseRequition(props) {
                     </Col>
                   </Row>
 
-                  {/* <Row className="form-group">
+                  <Row className="form-group">
                     <Col md={6}>
                       <Label for="rev_date">Rev Date</Label>
                       <InputGroup>
@@ -252,6 +346,7 @@ function PurchaseRequition(props) {
                           type="date"
                           name="rev_date"
                           id="rev_date"
+                          disabled
                           className={
                             "form-control" +
                             (formProps.errors.rev_date &&
@@ -293,8 +388,9 @@ function PurchaseRequition(props) {
                         />
                       </InputGroup>
                     </Col>
-                  </Row>
+                  </Row> */}
 
+                  {/*
                   <Row className="form-group">
                     <Col md={6}>
                       <Label for="ref_no">ref no</Label>
@@ -323,7 +419,7 @@ function PurchaseRequition(props) {
                   </Row> */}
 
                   <Row className="form-group">
-                    <Col md={6}>
+                    <Col md={3}>
                       <Label for="row">Add Table Rows</Label>
                       <InputGroup>
                         <Field
@@ -374,10 +470,13 @@ function PurchaseRequition(props) {
                                           ) {
                                             arrayHelpers.push({
                                               form_id: formProps.values.form_id,
-                                              item_name: "",
-                                              qty: "",
+                                              date: formProps.values.date,
+                                              prefix_id:
+                                                formProps.values.prefix_id,
+                                              item_id: "",
+                                              quantity: "",
                                               remarks: "",
-                                              approx_price: "",
+                                              price: "",
                                             });
                                           }
                                         }}
@@ -395,9 +494,9 @@ function PurchaseRequition(props) {
                                   <th>Item Name</th>
                                   <th>Required Qty</th>
                                   <th>Remarks</th>
-                                  <th className="d-flex flex-column">
-                                    <span>Approx Price</span>
-                                  </th>
+
+                                  <th>Approx Price</th>
+                                  <th>Delete</th>
                                 </tr>
                               </thead>
                               <tbody className="text-center">
@@ -411,19 +510,31 @@ function PurchaseRequition(props) {
                                       <tr key={index} className="text-center">
                                         <td>
                                           <Field
-                                            component={CustomInput}
-                                            type="text"
-                                            name={`details.${index}.item_name`}
-                                            id="item_name"
+                                            component={CustomSelect}
+                                            type="select"
+                                            name={`details.${index}.item_id`}
+                                            id="item_id"
                                             placeholder="Enter Item Name"
-                                          />
+                                          >
+                                            <option value="">
+                                              Select Item Name
+                                            </option>
+                                            {props.itemName?.map((item) => (
+                                              <option
+                                                key={item.id}
+                                                value={item.id}
+                                              >
+                                                {item.name}
+                                              </option>
+                                            ))}
+                                          </Field>
                                         </td>
                                         <td>
                                           <Field
                                             component={CustomInput}
                                             type="number"
-                                            name={`details.${index}.qty`}
-                                            id={`details.${index}.qty`}
+                                            name={`details.${index}.quantity`}
+                                            id={`details.${index}.quantity`}
                                             placeholder="Enter Quantity"
                                           />
                                         </td>
@@ -440,10 +551,21 @@ function PurchaseRequition(props) {
                                           <Field
                                             component={CustomInput}
                                             type="number"
-                                            name={`details.${index}.approx_price`}
-                                            id={`details.${index}.approx_price`}
+                                            name={`details.${index}.price`}
+                                            id={`details.${index}.price`}
                                             placeholder="Enter approx price"
                                           />
+                                        </td>
+                                        <td>
+                                          <Button
+                                            color="danger p-1"
+                                            size="sm"
+                                            onClick={() =>
+                                              arrayHelpers.remove(index)
+                                            }
+                                          >
+                                            <i className="fa fa-trash" />
+                                          </Button>
                                         </td>
                                       </tr>
                                     );
@@ -456,6 +578,11 @@ function PurchaseRequition(props) {
                       />
                     </Col>
                   </Row>
+                  <p className="mt-4 pr-5 mb-2">
+                    Note: In 1 PR, do not mix 2 stock groups. Make separate PR
+                    for the other stock group. Write “URGENT” in Remarks if Item
+                    is required urgently.
+                  </p>
                   <br />
                   <Row style={{ justifyContent: "center" }}>
                     <Col md={4}>
@@ -508,7 +635,7 @@ function PurchaseRequition(props) {
                         </div>
                         <div className="mr-3 w-50">
                           <span className="">Rev. Date: </span>
-                          <span>{props.details.postDetails?.rev_date}</span>
+                          <span>{formProps.values?.rev_date}</span>
                         </div>
                       </div>
                       <div className="d-flex mb-4 w-100">
@@ -536,10 +663,10 @@ function PurchaseRequition(props) {
                         {formProps.values?.details?.map((detail, index) => {
                           return (
                             <tr key={index} className="">
-                              <td>{detail.item_name}</td>
-                              <td>{detail.qty}</td>
+                              <td>{detail.item_id}</td>
+                              <td>{detail.quantity}</td>
                               <td>{detail.remarks}</td>
-                              <td>{detail.approx_price}</td>
+                              <td>{detail.price}</td>
                             </tr>
                           );
                         })}
@@ -594,11 +721,13 @@ const mapStateToProps = (state) => {
     right: state.right.right,
     users: state.userMaster.userMaster,
     details: state.details,
+    itemName: state.itemName.itemName,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    onItemNameGetData: (data) => dispatch(actions.itemNameGetData(data)),
     detailsGetData: (data) => dispatch(actions.detailsGetData(data)),
     deleteDetails: (data) => dispatch(actions.deleteDetails(data)),
     postDetailsData: (data, user, toggle, setSubmitting, setShowTable) =>

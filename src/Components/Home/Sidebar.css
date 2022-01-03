@@ -1,0 +1,17 @@
+/* .sidebar-pattern {
+  max-width: 230px !important;
+  
+} */
+.sidebar-pattern::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.sidebar-pattern {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* .content-wrapper {
+  margin-left: 230px !important;
+} */

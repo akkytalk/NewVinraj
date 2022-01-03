@@ -9,7 +9,7 @@ import * as actions from "../../../reduxStore/actions";
 
 import printJS from "print-js";
 import { Button, Modal, ModalBody, ModalHeader } from "reactstrap";
-
+import planningImg from "../../../assets/img/planning.png";
 import "../../Purchase/PurchaseOrder.css";
 import "../../../css/Format.css";
 
@@ -25,8 +25,12 @@ function ViewProductionPlanningCf(props) {
     printJS({
       printable: "htmlToPdf2",
       type: "html",
-      scanStyles: "true",
+      scanStyles: true,
       targetStyles: "[*]",
+      honorMarginPadding: false,
+      font_size: "8pt",
+      maxWidth: 1080,
+      // style: "@page { size: Letter landscape; }",
     });
   };
 
@@ -41,23 +45,28 @@ function ViewProductionPlanningCf(props) {
       >
         <i className="fa fa-eye" aria-hidden="true"></i>
       </Button>
-      <Modal className="modal-info modal-lg" isOpen={modal} toggle={toggle}>
+      <Modal className="modal-info modal-xl" isOpen={modal} toggle={toggle}>
         {/* {props.details?.isPostLoading && <Loader2 />} */}
         <ModalHeader toggle={toggle}>View Production Planning Cf</ModalHeader>
         <ModalBody>
           <div>
-            <div
-              id="htmlToPdf2"
-              className="d-flex flex-column flex-wrap f-10 w-100"
-            >
-              <div className="d-flex test">
+            <div id="htmlToPdf2" className="d-flex flex-column  w-100">
+              <div className="d-flex test w-100">
                 <div className="w-25 test-r p-1 text-center">
                   <img src="https://uditsolutions.in/vinraj.png" alt="" />
                 </div>
-                <div className="w-50 test-r d-flex justify-content-center align-items-center">
-                  <h5 className="font-weight-bold text-underline">
-                    DAILY PRODUCTION PLANNING SHEET.
-                  </h5>
+                <div className="w-50 test-r">
+                  <img
+                    src={planningImg}
+                    alt="DAILY PRODUCTION PLANNING SHEET."
+                    style={{
+                      objectFit: "contain",
+                      maxWidth: "600px",
+                      position: "relative",
+                      top: "15px",
+                      left: "-50px",
+                    }}
+                  />
                 </div>
                 <div className="w-25 f-12 p-0 text-center d-flex flex-column justify-content-between">
                   <div className="d-flex">
@@ -79,15 +88,15 @@ function ViewProductionPlanningCf(props) {
                 <div className="d-flex mb-1 w-100">
                   <div className="ml-3 w-50">
                     <span className="">Date: </span>
-                    <span>{props.data?.date}</span>
+                    <span>{props.date}</span>
                   </div>
                   <div className="ml-3 w-50">
                     <span className="">Ref No: </span>
-                    <span>{props.data?.ref_no}</span>
+                    <span>{props.ref_no}</span>
                   </div>
                 </div>
               </div>
-              <div className="w-100">
+              <div className="w-100 f-10">
                 <table className="table-sm w-100">
                   <thead className="w-50">
                     <tr className="w-100">
@@ -110,7 +119,7 @@ function ViewProductionPlanningCf(props) {
                     </tr>
                   </thead>
                   <tbody className="w-50">
-                    {props.data?.details?.map((de, index) => {
+                    {props.formdata?.data?.map((de, index) => {
                       return (
                         <tr key={index} className="w-100">
                           <td className="test">{index + 1}</td>

@@ -20,6 +20,7 @@ import RDetails from "./reducers/RDetails";
 import RProcess from "./reducers/RProcess";
 import RBreakMainRecord from "./reducers/RBreakMainRecord";
 import REnquiriesForm from "./reducers/REquiriesForm";
+import RProdPlanCf from "./reducers/RProdPlanCf";
 
 const config = {
   key: "vinraj",
@@ -46,6 +47,7 @@ export const configureStore = () => {
       process: RProcess,
       breakMainRecord: RBreakMainRecord,
       enquiriesForm: REnquiriesForm,
+      prodPlanCf: RProdPlanCf,
     }),
     applyMiddleware(thunk, logger)
   );

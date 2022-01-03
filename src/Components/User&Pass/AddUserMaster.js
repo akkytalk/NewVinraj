@@ -1,54 +1,13 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { Button } from "reactstrap";
 import * as actions from "../../reduxStore/actions/index";
 
 function AddUserMaster(props) {
-  // const initialFormState = { id: null, name: "", username: "" };
-  // const [user, setUser] = useState(initialFormState);
-
-  // const handleInputChange = (event) => {
-  //   const { name, value } = event.target;
-  //   setUser({ ...user, [name]: value });
-  // };
-
-  // const usersData = [
-  //   { id: 1, name: "AAA", username: "aiueo", phone: "9967258482" },
-  //   { id: 2, name: "BBB", username: "kakikukeko", phone: "1234567898" },
-  //   { id: 3, name: "CCC", username: "sasisuseso", phone: "7584986321" },
-  // ];
-
-  // const [users, setUsers] = useState(usersData);
-
-  // const addUser = (user) => {
-  //   user.id = users.length + 1;
-  //   setUsers([...users, user]);
-  // };
-
-  // const deleteUser = (id) => {
-  //   setUsers(users.filter((user) => user.id !== id));
-  // };
-
-  // const [editing, setEditing] = useState(false);
-  // const initialFormStates = { id: null, name: "", username: "" };
-
-  // const [currentUser, setCurrentUser] = useState(initialFormStates);
-
-  // const editRow = (user) => {
-  //   setEditing(true);
-  //   setCurrentUser({ id: user.id, name: user.name, username: user.username });
-  // };
-
-  // const updateUser = (id, updateUser) => {
-  //   setEditing(false);
-  //   setUsers(users.map((user) => (user.id === id ? updateUser : user)));
-  // };
-
   let data = {
     token: props.login?.login?.token,
   };
 
-  //  console.log("data", data);
-  //  console.log("login", props.login?.login);
   useEffect(() => {
     console.log("currentUser data from redux ", currentUser);
 
@@ -299,7 +258,7 @@ function AddUserMaster(props) {
             </form>
           </div>
           <div className="flex-large">
-            <table className="table" style={{ fontSize: "10px" }}>
+            <table className="table table-sm" style={{ fontSize: "12px" }}>
               <thead>
                 <tr>
                   <th scope="col">User Name</th>
@@ -316,7 +275,8 @@ function AddUserMaster(props) {
                       <td>{user.email}</td>
                       {/* <td>{user.phone}</td> */}
                       <td className="d-flex">
-                        <button
+                        <Button
+                          className="btn-warning p-1"
                           onClick={() =>
                             props.onEditUserMasterRow(
                               data,
@@ -329,10 +289,10 @@ function AddUserMaster(props) {
                           }
                         >
                           <i className="fa fa-edit" aria-hidden="true"></i>
-                        </button>
+                        </Button>
 
-                        <button
-                          className="ml-3"
+                        <Button
+                          className="btn-danger p-1 ml-3"
                           onClick={() =>
                             props.onDeleteUserMaster(user.id, data)
                           }
@@ -342,7 +302,7 @@ function AddUserMaster(props) {
                             value={user.id}
                             aria-hidden="true"
                           ></i>
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                   ))

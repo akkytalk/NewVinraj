@@ -78,9 +78,12 @@ function EnquiryForm(props) {
     printJS({
       printable: "htmlToPdf2",
       CSS: "",
-      scanStyles: "true",
       type: "html",
+      scanStyles: true,
       targetStyles: "[*]",
+      honorMarginPadding: false,
+      font_size: "12pt",
+      maxWidth: 1080,
     });
   };
   let user;
@@ -91,7 +94,10 @@ function EnquiryForm(props) {
       form_id: values.form_id,
       title: values.title,
       rev_no: values.rev_no,
+      rev_date: values.rev_date,
+      date: values.date,
       customer_name: values.customer_name,
+      prefix_id: values.prefix_id,
 
       contact_name: values.contact_name,
       contact_no: values.contact_no,
@@ -133,7 +139,7 @@ function EnquiryForm(props) {
               Add Enquiry Form
             </Button>
           </div>
-          <Modal className="modal-info modal-lg" isOpen={modal} toggle={toggle}>
+          <Modal className="modal-info modal-xl" isOpen={modal} toggle={toggle}>
             <ModalHeader toggle={toggle}>Add New Enquiry Form</ModalHeader>
             {props.enquiriesForm?.isPostLoading && <Loader2 />}
             <ModalBody>
@@ -141,6 +147,7 @@ function EnquiryForm(props) {
                 initialValues={{
                   form_id: 34,
                   department_id: 11,
+                  prefix_id: "",
                   di_no: "",
                   title: "",
                   rev_no: "",
@@ -180,8 +187,10 @@ function EnquiryForm(props) {
                   props.prefix?.map((pre) => {
                     if (pre.form_id == 34 && pre.department_id == 11) {
                       formProps.values.title = pre.title;
-                      formProps.values.di_no = pre.prefix;
+                      formProps.values.di_no = pre.di_no;
                       formProps.values.rev_no = pre.rev_no;
+                      formProps.values.prefix_id = pre.id;
+                      formProps.values.rev_date = pre.rev_date;
                     }
                   });
 
@@ -520,6 +529,59 @@ function EnquiryForm(props) {
                           </InputGroup>
                         </Col>
                       </Row>
+
+                      <Row className="form-group">
+                        <Col md={6}>
+                          <Label for="rev_date">Rev Date</Label>
+                          <InputGroup>
+                            <Field
+                              component={CustomInput}
+                              type="date"
+                              name="rev_date"
+                              id="rev_date"
+                              disabled
+                              className={
+                                "form-control" +
+                                (formProps.errors.rev_date &&
+                                formProps.touched.rev_date
+                                  ? " is-invalid"
+                                  : "")
+                              }
+                            />
+
+                            <ErrorMessage
+                              name="rev_date"
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                          </InputGroup>
+                        </Col>
+
+                        <Col md={6}>
+                          <Label for="date">Date</Label>
+                          <InputGroup>
+                            <Field
+                              component={CustomInput}
+                              type="date"
+                              name="date"
+                              id="date"
+                              placeholder="Enter date"
+                              className={
+                                "form-control" +
+                                (formProps.errors.date && formProps.touched.date
+                                  ? " is-invalid"
+                                  : "")
+                              }
+                            />
+
+                            <ErrorMessage
+                              name="date"
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                          </InputGroup>
+                        </Col>
+                      </Row>
                       <Row className="form-group">
                         <Col md={6}>
                           <Label for="row">Add Table Rows</Label>
@@ -561,9 +623,6 @@ function EnquiryForm(props) {
                                           <Button
                                             block
                                             className="btn-success"
-                                            // disabled={
-                                            //   formProps.values.details.length > 0
-                                            // }
                                             onClick={() => {
                                               for (
                                                 let i = 1;
@@ -780,15 +839,13 @@ function EnquiryForm(props) {
                             </div>
                             <div className="ml-3 w-25">
                               <span className="">Rev. Date: </span>
-                              <span>
-                                {props.postEnquiriesForm?.data?.rev_date}
-                              </span>
+                              <span>{formProps.values?.rev_date}</span>
                             </div>
                           </div>
                           <div className="d-flex mb-1 w-100">
                             <div className="ml-3 w-50">
                               <span className="">Date: </span>
-                              <span>{props.postEnquiriesForm?.data?.date}</span>
+                              <span>{formProps.values?.date}</span>
                             </div>
                             <div className="ml-3 w-50">
                               <span className="">Ref No: </span>
@@ -830,7 +887,7 @@ function EnquiryForm(props) {
                               {formProps.values?.email}
                             </span>
                           </div>
-                          <div className="text-center test-b d-flex flex-column w-100">
+                          <div className="text-center  d-flex flex-column w-100">
                             <div className="d-flex w-100">
                               <span className="test-b p-2 test-r w-25">
                                 {" "}
@@ -1057,7 +1114,7 @@ function EnquiryForm(props) {
               </Button>
             )}
           </div>
-          <Modal className="modal-info modal-lg" isOpen={modal} toggle={toggle}>
+          <Modal className="modal-info modal-xl" isOpen={modal} toggle={toggle}>
             <ModalHeader toggle={toggle}>Add New Enquiry Form</ModalHeader>
             {props.enquiriesForm?.isPostLoading && <Loader2 />}
             <ModalBody>
@@ -1065,6 +1122,7 @@ function EnquiryForm(props) {
                 initialValues={{
                   form_id: 34,
                   department_id: 11,
+                  prefix_id: "",
                   di_no: "",
                   title: "",
                   rev_no: "",
@@ -1104,8 +1162,10 @@ function EnquiryForm(props) {
                   props.prefix?.map((pre) => {
                     if (pre.form_id == 34 && pre.department_id == 11) {
                       formProps.values.title = pre.title;
-                      formProps.values.di_no = pre.prefix;
+                      formProps.values.di_no = pre.di_no;
                       formProps.values.rev_no = pre.rev_no;
+                      formProps.values.prefix_id = pre.id;
+                      formProps.values.rev_date = pre.rev_date;
                     }
                   });
 
@@ -1444,6 +1504,59 @@ function EnquiryForm(props) {
                           </InputGroup>
                         </Col>
                       </Row>
+
+                      <Row className="form-group">
+                        <Col md={6}>
+                          <Label for="rev_date">Rev Date</Label>
+                          <InputGroup>
+                            <Field
+                              component={CustomInput}
+                              type="date"
+                              name="rev_date"
+                              id="rev_date"
+                              disabled
+                              className={
+                                "form-control" +
+                                (formProps.errors.rev_date &&
+                                formProps.touched.rev_date
+                                  ? " is-invalid"
+                                  : "")
+                              }
+                            />
+
+                            <ErrorMessage
+                              name="rev_date"
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                          </InputGroup>
+                        </Col>
+
+                        <Col md={6}>
+                          <Label for="date">Date</Label>
+                          <InputGroup>
+                            <Field
+                              component={CustomInput}
+                              type="date"
+                              name="date"
+                              id="date"
+                              placeholder="Enter date"
+                              className={
+                                "form-control" +
+                                (formProps.errors.date && formProps.touched.date
+                                  ? " is-invalid"
+                                  : "")
+                              }
+                            />
+
+                            <ErrorMessage
+                              name="date"
+                              component="div"
+                              className="invalid-feedback"
+                            />
+                          </InputGroup>
+                        </Col>
+                      </Row>
                       <Row className="form-group">
                         <Col md={6}>
                           <Label for="row">Add Table Rows</Label>
@@ -1485,9 +1598,6 @@ function EnquiryForm(props) {
                                           <Button
                                             block
                                             className="btn-success"
-                                            // disabled={
-                                            //   formProps.values.details.length > 0
-                                            // }
                                             onClick={() => {
                                               for (
                                                 let i = 1;
@@ -1704,15 +1814,13 @@ function EnquiryForm(props) {
                             </div>
                             <div className="ml-3 w-25">
                               <span className="">Rev. Date: </span>
-                              <span>
-                                {props.postEnquiriesForm?.data?.rev_date}
-                              </span>
+                              <span>{formProps.values?.rev_date}</span>
                             </div>
                           </div>
                           <div className="d-flex mb-1 w-100">
                             <div className="ml-3 w-50">
                               <span className="">Date: </span>
-                              <span>{props.postEnquiriesForm?.data?.date}</span>
+                              <span>{formProps.values?.date}</span>
                             </div>
                             <div className="ml-3 w-50">
                               <span className="">Ref No: </span>
@@ -1754,7 +1862,7 @@ function EnquiryForm(props) {
                               {formProps.values?.email}
                             </span>
                           </div>
-                          <div className="text-center test-b d-flex flex-column w-100">
+                          <div className="text-center  d-flex flex-column w-100">
                             <div className="d-flex w-100">
                               <span className="test-b p-2 test-r w-25">
                                 {" "}

@@ -28,7 +28,7 @@ export const detailsGetData = (data) => {
   return (dispatch) => {
     dispatch(detailsLoading());
     axios
-      .get(baseUrl + "details", {
+      .get(baseUrl + "requistions", {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export const deleteDetails = (id, data) => {
   return (dispatch) => {
     if (id) {
       axios
-        .delete(baseUrl + `details/${id}`, {
+        .delete(baseUrl + `requistions/${id}`, {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -64,7 +64,7 @@ export const deleteDetails = (id, data) => {
         })
         .then(() => {
           console.log("swal");
-          swal("Successfully Deleted Details!").then(() => {
+          swal("Successfully Deleted requistions!").then(() => {
             dispatch(detailsGetData(data));
           });
         })
@@ -110,7 +110,7 @@ export const postDetailsData = (
     dispatch(postDetailsDataStart());
     dispatch(detailsPostLoading());
     axios
-      .post(baseUrl + "details", user, {
+      .post(baseUrl + "requistions", user, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -120,9 +120,9 @@ export const postDetailsData = (
       .then((res) => {
         console.log("swal");
         console.log("res", res.data);
-        swal("Successfully Created Details!").then(() => {
-          // dispatch(detailsGetData(data));
-          dispatch(formGetData(data));
+        swal("Successfully Created requistions!").then(() => {
+          dispatch(detailsGetData(data));
+          // dispatch(formGetData(data));
           dispatch(detailsPostSuccess(res.data));
           // if (toggle) {
           //   toggle();
@@ -206,7 +206,7 @@ export const updateDetailsData = (data, user, toggle, setSubmitting) => {
     dispatch(detailsUpdateLoading());
 
     axios
-      .put(baseUrl + `details/${data.id}`, user, {
+      .put(baseUrl + `requistions/${data.id}`, user, {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -215,7 +215,7 @@ export const updateDetailsData = (data, user, toggle, setSubmitting) => {
       })
       .then(() => {
         console.log("swal");
-        swal("Successfully Updated details!").then(() => {
+        swal("Successfully Updated requistions!").then(() => {
           dispatch(detailsGetData(data));
           if (toggle) {
             toggle();
